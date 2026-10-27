@@ -44,7 +44,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value="University Email (aau.edu.et)" />
 
                     <TextInput
                         id="email"
@@ -53,9 +53,14 @@ export default function Register() {
                         value={data.email}
                         className="mt-1 block w-full"
                         autoComplete="username"
+                        placeholder="student@aau.edu.et"
                         onChange={(e) => setData('email', e.target.value)}
                         required
                     />
+
+                    <p className="mt-1 text-xs text-gray-500">
+                        Only official Addis Ababa University email addresses (@aau.edu.et) are accepted.
+                    </p>
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>

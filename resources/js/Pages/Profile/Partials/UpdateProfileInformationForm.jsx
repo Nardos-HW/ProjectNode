@@ -54,21 +54,20 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value="University Email" />
 
                     <TextInput
                         id="email"
                         type="email"
-                        className="mt-1 block w-full"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                        autoComplete="username"
+                        className="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed border-gray-300 shadow-sm"
+                        value={user.email}
+                        disabled
                     />
 
-                    <InputError className="mt-2" message={errors.email} />
+                    <p className="mt-1 text-xs text-gray-500">
+                        University email addresses are permanent and cannot be modified.
+                    </p>
                 </div>
-
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="mt-2 text-sm text-gray-800">
