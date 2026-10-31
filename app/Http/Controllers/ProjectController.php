@@ -21,16 +21,22 @@ class ProjectController extends Controller
      */
     public function index(Request $request): Response
     {
+        $includeClosed = $request->boolean('include_closed');
+
         $projects = Project::query()
-            ->with(['owner:id,name', 'skills:id,name', 'department:id,name'])
-            ->recruiting()
-            ->latest()
+            ->with(['owner:id,name', 'department:id,name', 'skills:id,name'])
+            ->withCount(['acceptedRequests as accepted_count'])
+            ->when(! $includeClosed, fn ($query) => $query->recruiting())
+            ->when($includeClosed, fn ($query) => $query->where('status', '!=', 'cancelled'))
             ->latest('id')
-            ->paginate(config('projectnode.feed_page_size', 12))
+            ->paginate(12)
             ->withQueryString();
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
+            'filters' => [
+                'include_closed' => $includeClosed,
+            ],
         ]);
     }
 

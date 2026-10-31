@@ -14,215 +14,172 @@ class DemoSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Create 3 verified AAU demo students
-        $abebe = User::firstOrCreate(
+        // 1. Departments & Key Skills
+        $cs = Department::firstOrCreate(['name' => 'Computer Science']);
+        $se = Department::firstOrCreate(['name' => 'Software Engineering']);
+        $is = Department::firstOrCreate(['name' => 'Information Systems']);
+        $ee = Department::firstOrCreate(['name' => 'Electrical Engineering']);
+
+        $findSkill = function (string $name, string $slug) {
+            return Skill::where('name', $name)
+                ->orWhere('slug', $slug)
+                ->first() ?? Skill::create(['name' => $name, 'slug' => $slug]);
+        };
+
+        $laravel  = $findSkill('Laravel', 'laravel');
+        $react    = $findSkill('React', 'react');
+        $python   = $findSkill('Python', 'python');
+        $uiux     = $findSkill('UI/UX Design', 'ui-ux-design');
+        $postgres = $findSkill('PostgreSQL', 'postgresql');
+        $tailwind = $findSkill('Tailwind CSS', 'tailwind-css');
+        $fastapi  = $findSkill('FastAPI', 'fastapi');
+
+        // 2. Demo Student 1: Abebe Kebede (Owner)
+        $abebe = User::updateOrCreate(
             ['email' => 'abebe@aau.edu.et'],
             [
                 'name' => 'Abebe Kebede',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'department_id' => $cs->id,
+                'year_of_study' => 3,
+                'bio' => 'Junior CS student passionate about building practical software for AAU campus life.',
+                'interests' => 'Web Systems, Distributed Infrastructure',
+                'telegram_handle' => 'abebe_k',
+                'profile_completed_at' => now(),
             ]
         );
+        $abebe->skills()->sync([$laravel->id, $react->id, $tailwind->id]);
 
-        $hana = User::firstOrCreate(
+        // 3. Demo Student 2: Hana Tesfaye (First Applicant)
+        $hana = User::updateOrCreate(
             ['email' => 'hana@aau.edu.et'],
             [
                 'name' => 'Hana Tesfaye',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'department_id' => $is->id,
+                'year_of_study' => 2,
+                'bio' => 'Information Systems enthusiast focused on UI/UX research, wireframing, and frontend development.',
+                'interests' => 'Product Design, Usability',
+                'telegram_handle' => 'hana_t',
+                'profile_completed_at' => now(),
             ]
         );
+        $hana->skills()->sync([$uiux->id, $react->id]);
 
-        $samuel = User::firstOrCreate(
+        // 4. Demo Student 3: Samuel Alemu (Second Applicant)
+        $samuel = User::updateOrCreate(
             ['email' => 'samuel@aau.edu.et'],
             [
                 'name' => 'Samuel Alemu',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'department_id' => $se->id,
+                'year_of_study' => 4,
+                'bio' => 'Senior software engineering student building data pipelines and backend web APIs.',
+                'interests' => 'Data Engineering, Cloud Architecture',
+                'telegram_handle' => 'samuel_a',
+                'profile_completed_at' => now(),
             ]
         );
+        $samuel->skills()->sync([$python->id, $postgres->id, $fastapi->id]);
 
-        $csDept = Department::where('name', 'Computer Science')->first();
-        $seDept = Department::where('name', 'Software Engineering')->first();
-        $isDept = Department::where('name', 'Information Systems')->first();
+        // 5. Target Demo Project: Campus Bus Tracker (1 Slot Capacity)
+        $targetProject = Project::forceCreate([
+            'owner_id' => $abebe->id,
+            'title' => 'AAU Campus Shuttle Tracker',
+            'description' => 'A lightweight mobile-responsive web application tracking internal campus shuttle arrival times between 4 Kilo, 5 Kilo, and 6 Kilo campuses. Looking for an enthusiastic designer/frontend developer to create intuitive stop schedules.',
+            'category' => ProjectCategory::StudentInitiative,
+            'department_id' => $cs->id,
+            'slots_total' => 1,
+            'hours_per_week' => 8,
+            'duration_weeks' => 6,
+            'application_deadline' => now()->addDays(10)->toDateString(),
+            'telegram_contact' => 'abebe_k',
+            'status' => 'open',
+        ]);
+        $targetProject->skills()->sync([$laravel->id, $react->id, $uiux->id]);
 
-        $allSkills = Skill::all()->keyBy('name');
-
-        // 2. Define 12 realistic projects across categories
-        $projectsData = [
+        // 6. Additional Seed Projects (To test feed discovery and pagination)
+        $otherProjects = [
             [
-                'owner_id' => $abebe->id,
-                'title' => 'Campus Bus Tracker',
-                'description' => "Real-time tracker for AAU shuttle buses between 4 Kilo, 5 Kilo, and 6 Kilo campuses. Looking for frontend and backend contributors to help finalize the web dashboard.",
-                'category' => ProjectCategory::StudentInitiative,
-                'department_id' => $csDept?->id,
-                'slots_total' => 2,
-                'hours_per_week' => 8,
-                'duration_weeks' => 6,
-                'application_deadline' => now()->addDays(21)->toDateString(),
-                'telegram_contact' => 'abebe_k',
-                'skills' => ['Laravel', 'React', 'Tailwind CSS'],
-            ],
-            [
-                'owner_id' => $abebe->id,
-                'title' => 'AAU Hackathon Team (HealthTech)',
-                'description' => "Forming a 4-person team for the upcoming national university hackathon. We are designing a mobile clinic queue management app for Tikur Anbessa Hospital.",
+                'owner' => $abebe,
+                'title' => 'AAU Hackathon Team - FinTech Track',
+                'description' => 'Forming a 4-person team for the upcoming national inter-university hackathon. Need backend and data engineers familiar with PostgreSQL and modern payment APIs.',
                 'category' => ProjectCategory::Hackathon,
-                'department_id' => $seDept?->id,
-                'slots_total' => 3,
-                'hours_per_week' => 15,
-                'duration_weeks' => 2,
-                'application_deadline' => now()->addDays(5)->toDateString(),
-                'telegram_contact' => 'abebe_k',
-                'skills' => ['Flutter', 'Python', 'FastAPI', 'Figma'],
+                'dept' => $cs,
+                'slots' => 3,
+                'hours' => 12,
+                'weeks' => 3,
+                'skills' => [$python->id, $postgres->id],
+                'days' => 7,
             ],
             [
-                'owner_id' => $hana->id,
-                'title' => 'Study Group Matching App',
-                'description' => "Academic project matching 1st and 2nd year students with upper-class study mentors based on shared courses and schedule availability.",
+                'owner' => $samuel,
+                'title' => 'Distributed Sensor Network Dashboard',
+                'description' => 'Academic capstone project visualizing environmental telemetry data across laboratory nodes at 5 Kilo campus. Need clean charting and Tailwind CSS layouts.',
                 'category' => ProjectCategory::Academic,
-                'department_id' => $isDept?->id,
-                'slots_total' => 2,
-                'hours_per_week' => 6,
-                'duration_weeks' => 8,
-                'application_deadline' => now()->addDays(14)->toDateString(),
-                'telegram_contact' => 'hana_t',
-                'skills' => ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+                'dept' => $se,
+                'slots' => 2,
+                'hours' => 10,
+                'weeks' => 12,
+                'skills' => [$react->id, $fastapi->id],
+                'days' => 14,
             ],
             [
-                'owner_id' => $hana->id,
-                'title' => 'Campus Event Calendar & Noticeboard',
-                'description' => "A centralized, verified bulletin board for student club meetings, tech talks, and guest lectures across all AAU institutes.",
-                'category' => ProjectCategory::StudentInitiative,
-                'department_id' => $isDept?->id,
-                'slots_total' => 1,
-                'hours_per_week' => 5,
-                'duration_weeks' => 4,
-                'application_deadline' => now()->addDays(12)->toDateString(),
-                'telegram_contact' => 'hana_t',
-                'skills' => ['Vue.js', 'Tailwind CSS', 'Laravel'],
-            ],
-            [
-                'owner_id' => $samuel->id,
-                'title' => 'Amharic Sentiment Analysis on Campus Reviews',
-                'description' => "NLP research project processing student feedback and course reviews in Amharic script using transformer models.",
-                'category' => ProjectCategory::Academic,
-                'department_id' => $csDept?->id,
-                'slots_total' => 2,
-                'hours_per_week' => 10,
-                'duration_weeks' => 10,
-                'application_deadline' => now()->addDays(25)->toDateString(),
-                'telegram_contact' => 'samuel_a',
-                'skills' => ['Python', 'Machine Learning', 'Data Analysis'],
-            ],
-            [
-                'owner_id' => $samuel->id,
-                'title' => 'Peer-to-Peer Textbook Exchange',
-                'description' => "Simple portal for students to sell or exchange engineering textbooks at the end of each semester instead of letting them sit unused.",
+                'owner' => $hana,
+                'title' => 'Peer Tutoring & Study Group Exchange',
+                'description' => 'A web portal matching upperclassmen tutors with freshmen students in engineering fundamentals. Looking for a fullstack developer to help build the scheduling engine.',
                 'category' => ProjectCategory::Personal,
-                'department_id' => $seDept?->id,
-                'slots_total' => 1,
-                'hours_per_week' => 4,
-                'duration_weeks' => 3,
-                'application_deadline' => now()->addDays(18)->toDateString(),
-                'telegram_contact' => 'samuel_a',
-                'skills' => ['React', 'Tailwind CSS', 'PostgreSQL'],
+                'dept' => $is,
+                'slots' => 2,
+                'hours' => 6,
+                'weeks' => 8,
+                'skills' => [$laravel->id, $tailwind->id],
+                'days' => 21,
             ],
             [
-                'owner_id' => $abebe->id,
-                'title' => 'Dormitory Maintenance Issue Reporter',
-                'description' => "Digital ticketing system to report water and electricity issues in student dormitories directly to facilities management.",
+                'owner' => $samuel,
+                'title' => 'Amharic OCR Pipeline Integration',
+                'description' => 'Open-source initiative training lightweight vision models to digitize AAU library archives and past examination papers. Python and PyTorch proficiency preferred.',
                 'category' => ProjectCategory::StudentInitiative,
-                'department_id' => $csDept?->id,
-                'slots_total' => 2,
-                'hours_per_week' => 6,
-                'duration_weeks' => 5,
-                'application_deadline' => now()->addDays(9)->toDateString(),
-                'telegram_contact' => 'abebe_k',
-                'skills' => ['PHP', 'Laravel', 'MySQL'],
+                'dept' => $se,
+                'slots' => 3,
+                'hours' => 15,
+                'weeks' => 10,
+                'skills' => [$python->id, $postgres->id],
+                'days' => 18,
             ],
             [
-                'owner_id' => $hana->id,
-                'title' => 'AAU Competitive Programming Portal',
-                'description' => "Platform hosting weekly programming challenges and campus-wide leaderboards for ICPC training sessions.",
-                'category' => ProjectCategory::Academic,
-                'department_id' => $csDept?->id,
-                'slots_total' => 2,
-                'hours_per_week' => 8,
-                'duration_weeks' => 7,
-                'application_deadline' => now()->addDays(30)->toDateString(),
-                'telegram_contact' => 'hana_t',
-                'skills' => ['Python', 'Docker', 'React'],
-            ],
-            [
-                'owner_id' => $samuel->id,
-                'title' => 'Robotics Club Telemetry Dashboard',
-                'description' => "Building an IoT web interface to visualize sensor data streamed from microcontrollers over WebSockets.",
-                'category' => ProjectCategory::Personal,
-                'department_id' => $seDept?->id,
-                'slots_total' => 1,
-                'hours_per_week' => 12,
-                'duration_weeks' => 4,
-                'application_deadline' => now()->addDays(7)->toDateString(),
-                'telegram_contact' => 'samuel_a',
-                'skills' => ['TypeScript', 'Node.js', 'UI/UX Design'],
-            ],
-            [
-                'owner_id' => $abebe->id,
-                'title' => 'Digital Cafeteria Menu & Feedback',
-                'description' => "Daily menu display and nutrition breakdown for the central student cafeteria with an anonymous rating system.",
+                'owner' => $abebe,
+                'title' => 'Dormitory Maintenance Ticketing Portal',
+                'description' => 'Streamlined issue reporting system for student dormitories. Enables facility managers to receive and resolve maintenance requests with photo logs.',
                 'category' => ProjectCategory::StudentInitiative,
-                'department_id' => $isDept?->id,
-                'slots_total' => 1,
-                'hours_per_week' => 5,
-                'duration_weeks' => 3,
-                'application_deadline' => now()->addDays(15)->toDateString(),
-                'telegram_contact' => 'abebe_k',
-                'skills' => ['React', 'Tailwind CSS'],
-            ],
-            [
-                'owner_id' => $hana->id,
-                'title' => 'Open Source AAU Map & Indoor Navigation',
-                'description' => "Interactive map of 5 Kilo campus buildings, lecture halls, and department offices using OpenStreetMap.",
-                'category' => ProjectCategory::Hackathon,
-                'department_id' => $seDept?->id,
-                'slots_total' => 3,
-                'hours_per_week' => 10,
-                'duration_weeks' => 4,
-                'application_deadline' => now()->addDays(16)->toDateString(),
-                'telegram_contact' => 'hana_t',
-                'skills' => ['JavaScript', 'Figma', 'UI/UX Design'],
-            ],
-            [
-                'owner_id' => $samuel->id,
-                'title' => 'Expired Senior Capstone Archive',
-                'description' => "This is a past project whose deadline passed 5 days ago to test that expired listings are excluded from the active recruiting feed.",
-                'category' => ProjectCategory::Academic,
-                'department_id' => $csDept?->id,
-                'slots_total' => 2,
-                'hours_per_week' => 5,
-                'duration_weeks' => 4,
-                'application_deadline' => now()->subDays(5)->toDateString(),
-                'telegram_contact' => 'samuel_a',
-                'skills' => ['Technical Writing', 'Git'],
+                'dept' => $cs,
+                'slots' => 2,
+                'hours' => 8,
+                'weeks' => 5,
+                'skills' => [$laravel->id, $react->id],
+                'days' => 12,
             ],
         ];
 
-        foreach ($projectsData as $data) {
-            $skillNames = $data['skills'];
-            unset($data['skills']);
-
-            $project = Project::updateOrCreate(
-                ['title' => $data['title']],
-                $data
-            );
-
-            $skillIds = collect($skillNames)
-                ->map(fn ($name) => $allSkills->get($name)?->id)
-                ->filter()
-                ->values();
-
-            $project->skills()->sync($skillIds);
+        foreach ($otherProjects as $p) {
+            $proj = Project::forceCreate([
+                'owner_id' => $p['owner']->id,
+                'title' => $p['title'],
+                'description' => $p['description'],
+                'category' => $p['category'],
+                'department_id' => $p['dept']->id,
+                'slots_total' => $p['slots'],
+                'hours_per_week' => $p['hours'],
+                'duration_weeks' => $p['weeks'],
+                'application_deadline' => now()->addDays($p['days'])->toDateString(),
+                'telegram_contact' => $p['owner']->telegram_handle,
+                'status' => 'open',
+            ]);
+            $proj->skills()->sync($p['skills']);
         }
     }
 }

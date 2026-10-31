@@ -141,4 +141,27 @@ class JoinRequestTest extends TestCase
         $response = $this->actingAs($stranger)->patch(route('join-requests.accept', $request));
         $response->assertForbidden();
     }
+    public function test_student_can_view_their_submitted_applications(): void
+    {
+        $owner = $this->createStudent();
+        $applicant = $this->createStudent();
+        $project = $this->createProject($owner);
+
+        JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Applying to collaborate.',
+            'status' => JoinRequestStatus::Pending,
+        ]);
+
+        $response = $this->actingAs($applicant)->get(route('applications.index'));
+
+        $response->assertOk();
+        $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+            ->component('Applications/Index')
+            ->has('applications', 1)
+            ->where('applications.0.project.title', $project->title)
+            ->where('applications.0.status', 'pending')
+        );
+    }
 }

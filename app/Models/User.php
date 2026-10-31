@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\JoinRequest;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -73,5 +75,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isProfileComplete(): bool
     {
         return $this->profile_completed_at !== null;
+    }
+    public function joinRequests(): HasMany
+    {
+        return $this->hasMany(JoinRequest::class, 'applicant_id');
     }
 }
