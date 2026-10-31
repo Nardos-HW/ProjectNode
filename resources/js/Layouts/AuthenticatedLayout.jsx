@@ -30,6 +30,18 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    href={route('projects.index')}
+                                    active={route().current('projects.index')}
+                                >
+                                    Browse Projects
+                                </NavLink>
+                                <NavLink
+                                    href={route('projects.create')}
+                                    active={route().current('projects.create')}
+                                >
+                                    Post a Project
+                                </NavLink>
                             </div>
                         </div>
 
@@ -133,6 +145,18 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('projects.index')}
+                            active={route().current('projects.index')}
+                        >
+                            Browse Projects
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('projects.create')}
+                            active={route().current('projects.create')}
+                        >
+                            Post a Project
                         </ResponsiveNavLink>
                     </div>
 

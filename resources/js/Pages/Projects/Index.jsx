@@ -1,0 +1,122 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, Link } from '@inertiajs/react';
+
+export default function Index({ projects }) {
+    return (
+        <AuthenticatedLayout
+            header={
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                        Active Projects
+                    </h2>
+                    <Link
+                        href={route('projects.create')}
+                        className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                    >
+                        Post a Project
+                    </Link>
+                </div>
+            }
+        >
+            <Head title="Browse Projects" />
+
+            <div className="py-8">
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    {projects.data.length === 0 ? (
+                        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
+                            <h3 className="text-lg font-medium text-gray-900">No active projects recruiting</h3>
+                            <p className="mt-2 text-sm text-gray-500">
+                                Be the first student to publish a collaboration opportunity!
+                            </p>
+                            <div className="mt-6">
+                                <Link
+                                    href={route('projects.create')}
+                                    className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                                >
+                                    Post a Project
+                                </Link>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {projects.data.map((project) => (
+                                <div
+                                    key={project.id}
+                                    className="flex flex-col justify-between rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+                                >
+                                    <div>
+                                        <div className="flex items-center justify-between gap-2">
+                                            <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 capitalize">
+                                                {project.category.replace('_', ' ')}
+                                            </span>
+                                            <span className="text-xs text-gray-500">
+                                                {project.slots_total} opening{project.slots_total === 1 ? '' : 's'}
+                                            </span>
+                                        </div>
+
+                                        <h3 className="mt-3 text-lg font-semibold text-gray-900 line-clamp-1">
+                                            <Link
+                                                href={route('projects.show', project.id)}
+                                                className="hover:text-indigo-600"
+                                            >
+                                                {project.title}
+                                            </Link>
+                                        </h3>
+
+                                        <p className="mt-2 text-sm text-gray-600 line-clamp-3">
+                                            {project.description}
+                                        </p>
+
+                                        {project.skills && project.skills.length > 0 && (
+                                            <div className="mt-4 flex flex-wrap gap-1.5">
+                                                {project.skills.slice(0, 4).map((skill) => (
+                                                    <span
+                                                        key={skill.id}
+                                                        className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700"
+                                                    >
+                                                        {skill.name}
+                                                    </span>
+                                                ))}
+                                                {project.skills.length > 4 && (
+                                                    <span className="text-xs text-gray-400 self-center">
+                                                        +{project.skills.length - 4} more
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-6 border-t border-gray-100 pt-4 flex items-center justify-between text-xs text-gray-500">
+                                        <span>By {project.owner?.name ?? 'Student'}</span>
+                                        <span>Deadline: {project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : 'Open'}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Pagination Links */}
+                    {projects.links && projects.links.length > 3 && (
+                        <div className="mt-8 flex justify-center">
+                            <div className="flex gap-1">
+                                {projects.links.map((link, idx) => (
+                                    <Link
+                                        key={idx}
+                                        href={link.url || '#'}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        className={`rounded px-3 py-1.5 text-sm ${link.active
+                                                ? 'bg-indigo-600 text-white font-semibold'
+                                                : link.url
+                                                    ? 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                                                    : 'text-gray-400 cursor-not-allowed'
+                                            }`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </AuthenticatedLayout>
+    );
+}
