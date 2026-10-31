@@ -80,22 +80,51 @@ class ProjectController extends Controller
      */
     public function show(Project $project, Request $request): Response
     {
-        $project->load([
-            'owner:id,name',
-            'department:id,name',
-            'skills:id,name',
-        ]);
+        $project->load(['owner:id,name', 'department:id,name', 'skills:id,name']);
 
-        // Reveal contact only if authorized (owner or admin)
-        if ($request->user() && $request->user()->can('viewContact', $project)) {
-            $project->makeVisible('telegram_contact');
+        $user = $request->user();
+        $existingRequest = $user
+            ? $project->joinRequests()->where('applicant_id', $user->id)->first()
+            : null;
+
+        $projectData = [
+            'id' => $project->id,
+            'title' => $project->title,
+            'description' => $project->description,
+            'category' => $project->category->value,
+            'department' => $project->department?->name,
+            'slots_total' => $project->slots_total,
+            'accepted_count' => $project->acceptedRequests()->count(),
+            'hours_per_week' => $project->hours_per_week,
+            'duration_weeks' => $project->duration_weeks,
+            'application_deadline' => $project->application_deadline->toDateString(),
+            'status' => $project->status,
+            'is_recruiting' => $project->isRecruiting(),
+            'owner' => [
+                'id' => $project->owner->id,
+                'name' => $project->owner->name,
+            ],
+            'skills' => $project->skills->map(fn ($s) => ['id' => $s->id, 'name' => $s->name]),
+        ];
+
+        // Only attach telegram_contact when the viewer is authorized (FR-PROJ-05, FR-JOIN-09)
+        if (Gate::allows('viewContact', $project)) {
+            $projectData['telegram_contact'] = $project->telegram_contact;
         }
 
         return Inertia::render('Projects/Show', [
-            'project' => $project,
+            'project' => $projectData,
+            'existingRequest' => $existingRequest ? [
+                'id' => $existingRequest->id,
+                'status' => $existingRequest->status->value,
+                'status_label' => $existingRequest->status->label(),
+                'message' => $existingRequest->message,
+            ] : null,
             'can' => [
-                'delete' => $request->user()?->can('delete', $project) ?? false,
-                'viewContact' => $request->user()?->can('viewContact', $project) ?? false,
+                'delete' => Gate::allows('delete', $project),
+                'viewContact' => Gate::allows('viewContact', $project),
+                'manageRequests' => Gate::allows('viewAny', [\App\Models\JoinRequest::class, $project]),
+                'apply' => $user && $user->id !== $project->owner_id && ! $existingRequest && $project->isRecruiting(),
             ],
         ]);
     }

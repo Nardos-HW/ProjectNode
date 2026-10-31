@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
+use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
     use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     * Note: owner_id and status are intentionally excluded.
-     */
     protected $fillable = [
         'title',
         'description',
@@ -29,10 +27,6 @@ class Project extends Model
         'telegram_contact',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     * Protects personal contact info from leaking in Inertia props.
-     */
     protected $hidden = [
         'telegram_contact',
     ];
@@ -42,19 +36,10 @@ class Project extends Model
         return [
             'category' => ProjectCategory::class,
             'application_deadline' => 'date',
-            'completed_at' => 'datetime',
+            'slots_total' => 'integer',
+            'hours_per_week' => 'integer',
+            'duration_weeks' => 'integer',
         ];
-    }
-
-    /**
-     * Scope a query to only include currently recruiting projects.
-     * Enforces active status and deadline on or after today (Addis Ababa time).
-     */
-    public function scopeRecruiting(Builder $query): Builder
-    {
-        return $query
-            ->where('status', 'open')
-            ->whereDate('application_deadline', '>=', today()->toDateString());
     }
 
     public function owner(): BelongsTo
@@ -70,5 +55,40 @@ class Project extends Model
     public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class);
+    }
+
+    public function joinRequests(): HasMany
+    {
+        return $this->hasMany(JoinRequest::class);
+    }
+
+    public function acceptedRequests(): HasMany
+    {
+        return $this->hasMany(JoinRequest::class)->where('status', JoinRequestStatus::Accepted);
+    }
+
+    /**
+     * Scope a query to only include active recruiting projects with available openings.
+     */
+    public function scopeRecruiting(Builder $query): Builder
+    {
+        return $query
+            ->where('status', 'open')
+            ->whereDate('application_deadline', '>=', today()->toDateString())
+            ->whereRaw(
+                '(select count(*) from join_requests jr
+                  where jr.project_id = projects.id and jr.status = ?) < projects.slots_total',
+                [JoinRequestStatus::Accepted->value]
+            );
+    }
+
+    /**
+     * Check if project is currently accepting new applications.
+     */
+    public function isRecruiting(): bool
+    {
+        return $this->status === 'open'
+            && $this->application_deadline->gte(today())
+            && $this->acceptedRequests()->count() < $this->slots_total;
     }
 }
