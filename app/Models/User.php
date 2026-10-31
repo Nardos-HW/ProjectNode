@@ -22,6 +22,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'department_id',
+        'year_of_study',
+        'bio',
+        'interests',
+        'telegram_handle',
+        'profile_completed_at',
     ];
 
     /**
@@ -44,11 +50,28 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'profile_completed_at' => 'datetime',
+            'year_of_study' => 'integer',
         ];
     }
 
     public function ownedProjects(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Project::class, 'owner_id');
+    }
+
+    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function skills(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class);
+    }
+
+    public function isProfileComplete(): bool
+    {
+        return $this->profile_completed_at !== null;
     }
 }

@@ -37,7 +37,7 @@ class ProjectController extends Controller
     /**
      * Show the form for creating a new project.
      */
-    public function create(): Response
+    public function create(Request $request): Response
     {
         Gate::authorize('create', Project::class);
 
@@ -50,6 +50,7 @@ class ProjectController extends Controller
             'departments' => Department::orderBy('name')->get(['id', 'name']),
             'skills' => Skill::orderBy('name')->get(['id', 'name']),
             'categories' => $categories,
+            'defaultTelegram' => $request->user()->telegram_handle ?? '',
         ]);
     }
 

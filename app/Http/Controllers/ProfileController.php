@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Department;
+use App\Models\Skill;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +20,14 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user()->load(['skills:id,name', 'department:id,name']);
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'skills' => Skill::orderBy('name')->get(['id', 'name']),
+            'userSkills' => $user->skills->pluck('id')->all(),
         ]);
     }
 
@@ -29,15 +36,15 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+        $user->fill($request->safe()->except('skill_ids'));
+        $user->profile_completed_at = $user->profile_completed_at ?? now();
+        $user->save();
 
-        $request->user()->save();
+        $user->skills()->sync($request->validated('skill_ids'));
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**

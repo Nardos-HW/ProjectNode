@@ -2,22 +2,35 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('telegram_handle')) {
+            $this->merge([
+                'telegram_handle' => ltrim(trim((string) $this->telegram_handle), '@'),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name'            => ['required', 'string', 'max:100'],
+            'department_id'   => ['required', 'exists:departments,id'],
+            'year_of_study'   => ['required', 'integer', 'between:1,7'],
+            'bio'             => ['required', 'string', 'min:20', 'max:500'],
+            'interests'       => ['nullable', 'string', 'max:255'],
+            'telegram_handle' => ['required', 'regex:/^[A-Za-z][A-Za-z0-9_]{4,31}$/'],
+            'skill_ids'       => ['required', 'array', 'min:1', 'max:15'],
+            'skill_ids.*'     => ['integer', 'distinct', 'exists:skills,id'],
         ];
     }
 }

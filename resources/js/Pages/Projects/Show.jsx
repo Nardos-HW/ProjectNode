@@ -47,7 +47,13 @@ export default function Show({ project, can }) {
                                     </span>
                                 </div>
                                 <span className="text-sm text-gray-500">
-                                    Posted by {project.owner?.name}
+                                    Posted by{' '}
+                                    <Link
+                                        href={route('students.show', project.owner?.id)}
+                                        className="font-medium text-indigo-600 hover:underline"
+                                    >
+                                        {project.owner?.name}
+                                    </Link>
                                 </span>
                             </div>
 
