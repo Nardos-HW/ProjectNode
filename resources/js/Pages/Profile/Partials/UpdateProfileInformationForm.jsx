@@ -3,7 +3,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 
 export default function UpdateProfileInformationForm({
     departments = [],
@@ -11,7 +11,7 @@ export default function UpdateProfileInformationForm({
     userSkills = [],
     className = '',
 }) {
-    const user = window.route().params?.user || {};
+    const user = usePage().props.auth.user || {};
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name || '',
@@ -20,7 +20,7 @@ export default function UpdateProfileInformationForm({
         bio: user.bio || '',
         interests: user.interests || '',
         telegram_handle: user.telegram_handle || '',
-        skill_ids: userSkills || [],
+        skill_ids: user.skill_ids || userSkills || [],
     });
 
     const handleSkillToggle = (skillId) => {
