@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function Create({ departments, skills, categories }) {
+export default function Create({ departments, skills, categories, defaultTelegram = '' }) {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
@@ -16,7 +16,7 @@ export default function Create({ departments, skills, categories }) {
         hours_per_week: 10,
         duration_weeks: 4,
         application_deadline: '',
-        telegram_contact: '',
+        telegram_contact: defaultTelegram || '',
     });
 
     const handleSkillToggle = (skillId) => {

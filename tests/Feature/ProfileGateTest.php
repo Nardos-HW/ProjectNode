@@ -43,6 +43,10 @@ class ProfileGateTest extends TestCase
         $response = $this->actingAs($user)->get(route('projects.create'));
 
         $response->assertStatus(200);
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Projects/Create')
+            ->where('defaultTelegram', 'valid_handle')
+        );
     }
 
     public function test_incomplete_profile_cannot_access_owner_inbox_or_decide_requests(): void
