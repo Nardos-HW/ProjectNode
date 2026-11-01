@@ -164,4 +164,47 @@ class JoinRequestTest extends TestCase
             ->where('applications.0.status', 'pending')
         );
     }
+
+    public function test_owner_can_view_incoming_requests_inbox(): void
+    {
+        $owner = $this->createStudent();
+        $applicant = $this->createStudent();
+        $project = $this->createProject($owner);
+
+        $request = JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Pending applicant message.',
+            'status' => JoinRequestStatus::Pending,
+        ]);
+
+        $response = $this->actingAs($owner)->get(route('projects.requests', $project));
+
+        $response->assertOk();
+        $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+            ->component('Projects/Requests')
+            ->has('requests', 1)
+            ->where('requests.0.id', $request->id)
+            ->where('requests.0.message', 'Pending applicant message.')
+        );
+    }
+
+    public function test_owner_can_reject_applicant(): void
+    {
+        $owner = $this->createStudent();
+        $applicant = $this->createStudent();
+        $project = $this->createProject($owner);
+
+        $request = JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Applicant message to decline.',
+            'status' => JoinRequestStatus::Pending,
+        ]);
+
+        $response = $this->actingAs($owner)->patch(route('join-requests.reject', $request));
+
+        $response->assertSessionHasNoErrors();
+        $this->assertSame(JoinRequestStatus::Rejected, $request->fresh()->status);
+    }
 }

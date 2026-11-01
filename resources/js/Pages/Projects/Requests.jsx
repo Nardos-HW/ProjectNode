@@ -1,14 +1,25 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Requests({ project, requests }) {
+    const [processingId, setProcessingId] = useState(null);
+
     const handleAccept = (requestId) => {
-        router.patch(route('join-requests.accept', requestId));
+        router.patch(route('join-requests.accept', requestId), {}, {
+            onStart: () => setProcessingId(requestId),
+            onFinish: () => setProcessingId(null),
+        });
     };
 
     const handleReject = (requestId) => {
-        router.patch(route('join-requests.reject', requestId));
+        router.patch(route('join-requests.reject', requestId), {}, {
+            onStart: () => setProcessingId(requestId),
+            onFinish: () => setProcessingId(null),
+        });
     };
+
+    const isBusy = processingId !== null;
 
     return (
         <AuthenticatedLayout
@@ -131,20 +142,30 @@ export default function Requests({ project, requests }) {
                                         <button
                                             type="button"
                                             onClick={() => handleReject(req.id)}
-                                            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+                                            disabled={isBusy}
+                                            className={`rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold shadow-sm ${
+                                                isBusy
+                                                    ? 'opacity-50 cursor-not-allowed text-gray-400'
+                                                    : 'text-gray-700 hover:bg-gray-50'
+                                            }`}
                                         >
-                                            Decline
+                                            {processingId === req.id ? 'Declining...' : 'Decline'}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => handleAccept(req.id)}
-                                            disabled={project.accepted_count >= project.slots_total}
-                                            className={`rounded-md px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm ${project.accepted_count >= project.slots_total
+                                            disabled={isBusy || project.accepted_count >= project.slots_total}
+                                            className={`rounded-md px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm ${
+                                                isBusy || project.accepted_count >= project.slots_total
                                                     ? 'bg-gray-400 cursor-not-allowed'
                                                     : 'bg-indigo-600 hover:bg-indigo-500'
-                                                }`}
+                                            }`}
                                         >
-                                            {project.accepted_count >= project.slots_total ? 'Project Full' : 'Accept Applicant'}
+                                            {processingId === req.id
+                                                ? 'Accepting...'
+                                                : project.accepted_count >= project.slots_total
+                                                ? 'Project Full'
+                                                : 'Accept Applicant'}
                                         </button>
                                     </div>
                                 )}
