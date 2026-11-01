@@ -149,4 +149,22 @@ class ProjectTest extends TestCase
         $this->assertNotSoftDeleted($project);
         $this->assertFalse(\Illuminate\Support\Facades\Gate::forUser($owner)->allows('delete', $project));
     }
+
+    public function test_feed_pagination_provides_null_urls_for_disabled_links(): void
+    {
+        $user = $this->createVerifiedUser();
+
+        for ($i = 0; $i < 13; $i++) {
+            $this->createSampleProject($user);
+        }
+
+        $response = $this->actingAs($user)->get(route('projects.index'));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Projects/Index')
+            ->has('projects.data', 12)
+            ->where('projects.links.0.url', null)
+        );
+    }
 }

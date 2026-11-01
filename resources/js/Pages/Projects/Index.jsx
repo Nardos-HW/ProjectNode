@@ -142,19 +142,30 @@ export default function Index({ projects, filters = {} }) {
                     {projects.links && projects.links.length > 3 && (
                         <div className="mt-8 flex justify-center">
                             <div className="flex gap-1">
-                                {projects.links.map((link, idx) => (
-                                    <Link
-                                        key={idx}
-                                        href={link.url || '#'}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                        className={`rounded px-3 py-1.5 text-sm ${link.active
-                                                ? 'bg-indigo-600 text-white font-semibold'
-                                                : link.url
-                                                    ? 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                                                    : 'text-gray-400 cursor-not-allowed'
+                                {projects.links.map((link, idx) => {
+                                    if (!link.url) {
+                                        return (
+                                            <span
+                                                key={idx}
+                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                                className="rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-400 cursor-not-allowed select-none"
+                                            />
+                                        );
+                                    }
+
+                                    return (
+                                        <Link
+                                            key={idx}
+                                            href={link.url}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            className={`rounded px-3 py-1.5 text-sm ${
+                                                link.active
+                                                    ? 'bg-indigo-600 text-white font-semibold'
+                                                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
                                             }`}
-                                    />
-                                ))}
+                                        />
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
