@@ -82,6 +82,30 @@ class ProjectTest extends TestCase
         );
     }
 
+    public function test_telegram_contact_is_visible_to_accepted_applicant_props(): void
+    {
+        $owner = $this->createVerifiedUser();
+        $applicant = $this->createVerifiedUser();
+        $project = $this->createSampleProject($owner);
+
+        \App\Models\JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Applying to collaborate on project.',
+            'status' => \App\Enums\JoinRequestStatus::Accepted,
+            'decided_at' => now(),
+        ]);
+
+        $response = $this->actingAs($applicant)->get(route('projects.show', $project));
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Projects/Show')
+            ->where('project.telegram_contact', $project->telegram_contact)
+            ->where('can.viewContact', true)
+        );
+    }
+
     public function test_stranger_cannot_delete_another_users_project(): void
     {
         $owner = $this->createVerifiedUser();
