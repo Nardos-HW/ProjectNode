@@ -45,6 +45,56 @@ class ProfileGateTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_incomplete_profile_cannot_access_owner_inbox_or_decide_requests(): void
+    {
+        $owner = User::factory()->create([
+            'email' => 'owner' . uniqid() . '@aau.edu.et',
+            'email_verified_at' => now(),
+            'profile_completed_at' => null,
+        ]);
+
+        $project = \App\Models\Project::forceCreate([
+            'owner_id' => $owner->id,
+            'title' => 'Sample Project',
+            'description' => 'A valid project description for testing profile gate middleware.',
+            'category' => \App\Enums\ProjectCategory::Personal,
+            'slots_total' => 2,
+            'hours_per_week' => 10,
+            'duration_weeks' => 4,
+            'application_deadline' => now()->addDays(14)->toDateString(),
+            'telegram_contact' => 'owner_tg',
+            'status' => 'open',
+        ]);
+
+        $applicant = User::factory()->create([
+            'email' => 'applicant' . uniqid() . '@aau.edu.et',
+            'email_verified_at' => now(),
+            'profile_completed_at' => now(),
+        ]);
+
+        $request = \App\Models\JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Valid join request message.',
+            'status' => \App\Enums\JoinRequestStatus::Pending,
+        ]);
+
+        // Owner inbox check
+        $inboxResponse = $this->actingAs($owner)->get(route('projects.requests', $project));
+        $inboxResponse->assertRedirect(route('profile.edit'));
+        $inboxResponse->assertSessionHas('info');
+
+        // Accept request check
+        $acceptResponse = $this->actingAs($owner)->patch(route('join-requests.accept', $request));
+        $acceptResponse->assertRedirect(route('profile.edit'));
+        $acceptResponse->assertSessionHas('info');
+
+        // Reject request check
+        $rejectResponse = $this->actingAs($owner)->patch(route('join-requests.reject', $request));
+        $rejectResponse->assertRedirect(route('profile.edit'));
+        $rejectResponse->assertSessionHas('info');
+    }
+
     public function test_peer_profile_view_never_exposes_email_or_telegram_handle(): void
     {
         $dept = Department::create(['name' => 'Computer Science']);
