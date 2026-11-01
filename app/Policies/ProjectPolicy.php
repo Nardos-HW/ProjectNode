@@ -29,7 +29,11 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        return $user->id === $project->owner_id && $project->status !== 'completed';
+        if ($user->id !== $project->owner_id || $project->status === 'completed') {
+            return false;
+        }
+
+        return ! $project->acceptedRequests()->exists();
     }
 
     /**

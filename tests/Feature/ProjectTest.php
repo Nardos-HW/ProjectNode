@@ -128,4 +128,25 @@ class ProjectTest extends TestCase
         $response->assertRedirect(route('projects.index'));
         $this->assertSoftDeleted($project);
     }
+
+    public function test_owner_cannot_delete_project_with_accepted_members(): void
+    {
+        $owner = $this->createVerifiedUser();
+        $applicant = $this->createVerifiedUser();
+        $project = $this->createSampleProject($owner);
+
+        \App\Models\JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Accepted team member.',
+            'status' => \App\Enums\JoinRequestStatus::Accepted,
+            'decided_at' => now(),
+        ]);
+
+        $response = $this->actingAs($owner)->delete(route('projects.destroy', $project));
+
+        $response->assertSessionHasErrors('message');
+        $this->assertNotSoftDeleted($project);
+        $this->assertFalse(\Illuminate\Support\Facades\Gate::forUser($owner)->allows('delete', $project));
+    }
 }
