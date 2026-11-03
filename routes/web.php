@@ -18,6 +18,12 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    if (app()->environment(['local', 'testing'])) {
+        Route::middleware(['auth'])->get('/design-system', function () {
+            return Inertia::render('DesignSystem');
+        })->name('design-system');
+    }
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
