@@ -34,11 +34,26 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $user ? array_merge($user->toArray(), [
-                    'skill_ids' => $user->relationLoaded('skills')
-                        ? $user->skills->pluck('id')->all()
-                        : $user->skills()->allRelatedIds()->all(),
-                ]) : null,
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role ?? 'student',
+                    'department_id' => $user->department_id,
+                    'year_of_study' => $user->year_of_study,
+                    'bio' => $user->bio,
+                    'interests' => $user->interests,
+                    'telegram_handle' => $user->telegram_handle,
+                    'profile_completed_at' => $user->profile_completed_at,
+                    'skill_ids' => $user->relationLoaded('skills') 
+                        ? $user->skills->pluck('id')->values()->all() 
+                        : $user->skills()->pluck('skills.id')->all(),
+                ] : null,
+            ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
             ],
         ];
     }
