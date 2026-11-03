@@ -13,7 +13,22 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['"Inter Variable"', ...defaultTheme.fontFamily.sans],
+                display: ['"Space Grotesk Variable"', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                ink: '#0E1030',
+                surface: '#171A45',
+                'surface-2': '#20246B',
+                text: '#EDEFFF',
+                muted: '#A9AEDD',
+                violet: '#7C5CFF',
+                amber: '#FFB84D',
+                mint: '#3DDBA4',
+                coral: '#FF6B8A',
+            },
+            borderRadius: {
+                '2xl': '16px',
             },
         },
     },
