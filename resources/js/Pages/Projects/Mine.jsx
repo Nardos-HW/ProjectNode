@@ -9,7 +9,7 @@ import EmptyState from '@/Components/ui/EmptyState';
 import ProjectStatusBadge from '@/Components/ProjectStatusBadge';
 import CategoryBadge from '@/Components/CategoryBadge';
 import { Head, Link, router } from '@inertiajs/react';
-import { PlusCircle, Inbox, Eye } from 'lucide-react';
+import { PlusCircle, Inbox, Eye, Edit3 } from 'lucide-react';
 
 export default function Mine({ projects, currentStatus = 'all' }) {
     const statuses = [
@@ -51,8 +51,8 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                             type="button"
                             onClick={() => handleFilterStatus(tab.value)}
                             className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${currentStatus === tab.value
-                                    ? 'bg-violet text-text shadow-sm shadow-violet/30'
-                                    : 'bg-surface text-muted hover:text-text hover:bg-surface-2 border border-surface-2'
+                                ? 'bg-violet text-text shadow-sm shadow-violet/30'
+                                : 'bg-surface text-muted hover:text-text hover:bg-surface-2 border border-surface-2'
                                 }`}
                         >
                             {tab.label}
@@ -134,6 +134,16 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                                     </div>
 
                                     <div className="flex items-center justify-end gap-2 pt-2">
+                                        {project.status !== 'completed' && project.status !== 'cancelled' && (
+                                            <Button
+                                                href={route('projects.edit', project.id)}
+                                                variant="ghost"
+                                                size="sm"
+                                            >
+                                                <Edit3 className="w-3.5 h-3.5 mr-1" /> Edit
+                                            </Button>
+                                        )}
+
                                         <Button
                                             href={route('projects.show', project.id)}
                                             variant="ghost"
@@ -141,6 +151,7 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                                         >
                                             <Eye className="w-3.5 h-3.5 mr-1" /> View
                                         </Button>
+
                                         <Button
                                             href={route('projects.requests', project.id)}
                                             variant="secondary"

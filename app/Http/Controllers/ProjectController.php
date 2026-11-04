@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
+use App\Enums\ProjectStatus;
 use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\Skill;
+use App\Support\SkillResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +21,7 @@ use Inertia\Response;
 class ProjectController extends Controller
 {
     /**
-     * Display a paginated listing of recruiting projects.
+     * Display a paginated listing of recruiting projects (excludes own projects).
      */
     public function index(Request $request): Response
     {
@@ -28,7 +32,7 @@ class ProjectController extends Controller
             ->withCount(['acceptedRequests as accepted_count'])
             ->where('owner_id', '!=', $request->user()->id)
             ->when(! $includeClosed, fn ($query) => $query->recruiting())
-            ->when($includeClosed, fn ($query) => $query->where('status', '!=', 'cancelled'))
+            ->when($includeClosed, fn ($query) => $query->where('status', '!=', ProjectStatus::Cancelled->value))
             ->latest('id')
             ->paginate(12)
             ->withQueryString();
@@ -41,6 +45,9 @@ class ProjectController extends Controller
         ]);
     }
 
+    /**
+     * Display the authenticated user's own projects.
+     */
     public function mine(Request $request): Response
     {
         $status = $request->input('status', 'all');
@@ -51,7 +58,7 @@ class ProjectController extends Controller
             ->withCount([
                 'acceptedRequests as accepted_count',
                 'joinRequests as pending_requests_count' => function ($query) {
-                    $query->where('status', \App\Enums\JoinRequestStatus::Pending);
+                    $query->where('status', JoinRequestStatus::Pending);
                 },
             ])
             ->when($status !== 'all' && in_array($status, ['open', 'in_progress', 'completed', 'cancelled']), function ($query) use ($status) {
@@ -92,7 +99,9 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request): RedirectResponse
     {
-        $finalSkillIds = \App\Support\SkillResolver::resolve(
+        Gate::authorize('create', Project::class);
+
+        $finalSkillIds = SkillResolver::resolve(
             $request->validated('skill_ids', []),
             $request->validated('new_skills', []),
             $request->user(),
@@ -103,7 +112,7 @@ class ProjectController extends Controller
             $project = Project::forceCreate([
                 ...$request->safe()->except(['skill_ids', 'new_skills']),
                 'owner_id' => $request->user()->id,
-                'status' => 'open',
+                'status' => ProjectStatus::Open->value,
             ]);
 
             $project->skills()->sync($finalSkillIds);
@@ -117,6 +126,9 @@ class ProjectController extends Controller
     /**
      * Display the specified project detail page.
      */
+    /**
+     * Display the specified project detail page.
+     */
     public function show(Project $project, Request $request): Response
     {
         $project->load(['owner:id,name', 'department:id,name', 'skills:id,name']);
@@ -125,6 +137,8 @@ class ProjectController extends Controller
         $existingRequest = $user
             ? $project->joinRequests()->where('applicant_id', $user->id)->first()
             : null;
+
+        $statusValue = $project->status instanceof ProjectStatus ? $project->status->value : $project->status;
 
         $projectData = [
             'id' => $project->id,
@@ -137,7 +151,7 @@ class ProjectController extends Controller
             'hours_per_week' => $project->hours_per_week,
             'duration_weeks' => $project->duration_weeks,
             'application_deadline' => $project->application_deadline->toDateString(),
-            'status' => $project->status,
+            'status' => $statusValue,
             'is_recruiting' => $project->isRecruiting(),
             'owner' => [
                 'id' => $project->owner->id,
@@ -146,7 +160,7 @@ class ProjectController extends Controller
             'skills' => $project->skills->map(fn ($s) => ['id' => $s->id, 'name' => $s->name]),
         ];
 
-        // Only attach telegram_contact when the viewer is authorized (FR-PROJ-05, FR-JOIN-09)
+        // Omit key completely when not authorized (satisfies Inertia missing() assertions)
         if (Gate::allows('viewContact', $project)) {
             $projectData['telegram_contact'] = $project->telegram_contact;
         }
@@ -160,6 +174,8 @@ class ProjectController extends Controller
                 'message' => $existingRequest->message,
             ] : null,
             'can' => [
+                'update' => Gate::allows('update', $project),
+                'changeStatus' => Gate::allows('changeStatus', $project),
                 'delete' => Gate::allows('delete', $project),
                 'viewContact' => Gate::allows('viewContact', $project),
                 'manageRequests' => Gate::allows('viewAny', [\App\Models\JoinRequest::class, $project]),
@@ -169,12 +185,118 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show the form for editing the project.
+     */
+    public function edit(Project $project): Response
+    {
+        Gate::authorize('update', $project);
+
+        $project->load(['skills:id,name']);
+
+        $categories = collect(ProjectCategory::cases())->map(fn ($category) => [
+            'value' => $category->value,
+            'label' => $category->label(),
+        ]);
+
+        return Inertia::render('Projects/Edit', [
+            'project' => [
+                'id' => $project->id,
+                'title' => $project->title,
+                'description' => $project->description,
+                'category' => $project->category->value,
+                'department_id' => $project->department_id,
+                'slots_total' => $project->slots_total,
+                'hours_per_week' => $project->hours_per_week,
+                'duration_weeks' => $project->duration_weeks,
+                'application_deadline' => $project->application_deadline->toDateString(),
+                'telegram_contact' => $project->telegram_contact,
+                'skill_ids' => $project->skills->pluck('id')->all(),
+            ],
+            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'skills' => Skill::orderBy('name')->get(['id', 'name']),
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Update the specified project in storage.
+     */
+    public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
+    {
+        Gate::authorize('update', $project);
+
+        $finalSkillIds = SkillResolver::resolve(
+            $request->validated('skill_ids', []),
+            $request->validated('new_skills', []),
+            $request->user(),
+            10
+        );
+
+        DB::transaction(function () use ($request, $project, $finalSkillIds) {
+            $project->fill($request->safe()->except(['skill_ids', 'new_skills']));
+            $project->save();
+
+            $project->skills()->sync($finalSkillIds);
+        });
+
+        return redirect()->route('projects.show', $project)->with('success', 'Project updated successfully.');
+    }
+
+    /**
+     * Update project recruitment/lifecycle status.
+     */
+    public function updateStatus(Request $request, Project $project): RedirectResponse
+    {
+        Gate::authorize('changeStatus', $project);
+
+        $request->validate([
+            'status' => ['required', 'string', 'in:open,in_progress,cancelled'],
+        ]);
+
+        $targetStatus = ProjectStatus::from($request->input('status'));
+        $currentStatus = $project->status instanceof ProjectStatus
+            ? $project->status
+            : ProjectStatus::from($project->status);
+
+        if (! $currentStatus->canTransitionTo($targetStatus)) {
+            return back()->with('error', "Cannot transition project status from {$currentStatus->value} to {$targetStatus->value}.");
+        }
+
+        // Reopening check: deadline must be today or later
+        if ($targetStatus === ProjectStatus::Open) {
+            $today = now(config('app.timezone', 'Africa/Addis_Ababa'))->startOfDay();
+            if ($project->application_deadline->lt($today)) {
+                return back()->with('error', 'Extend the deadline first before reopening recruitment.');
+            }
+        }
+
+        $project->forceFill(['status' => $targetStatus->value])->save();
+
+        $message = match ($targetStatus) {
+            ProjectStatus::InProgress => 'Recruitment stopped. Project is now in progress.',
+            ProjectStatus::Open => 'Project reopened for applications.',
+            ProjectStatus::Cancelled => 'Project has been cancelled.',
+            default => 'Status updated.',
+        };
+
+        return back()->with('success', $message);
+    }
+
+    /**
      * Remove the specified project from storage (soft delete).
      */
-    public function destroy(Project $project, Request $request): RedirectResponse
+    public function destroy(Project $project): RedirectResponse
     {
-        if ($project->owner_id === $request->user()->id && $project->acceptedRequests()->exists()) {
-            return back()->withErrors(['message' => 'Projects with accepted members cannot be deleted.']);
+        // Stranger receives 403
+        if (auth()->id() !== $project->owner_id) {
+            abort(403);
+        }
+
+        // Owner with accepted members receives session validation error
+        if (! $project->canBeDeleted()) {
+            return back()->withErrors([
+                'message' => 'Cannot delete project with accepted collaborators. Cancel the project instead.',
+            ]);
         }
 
         Gate::authorize('delete', $project);

@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
+use App\Enums\ProjectStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -35,10 +36,9 @@ class Project extends Model
     {
         return [
             'category' => ProjectCategory::class,
+            'status' => ProjectStatus::class,
             'application_deadline' => 'date',
-            'slots_total' => 'integer',
-            'hours_per_week' => 'integer',
-            'duration_weeks' => 'integer',
+            'completed_at' => 'datetime',
         ];
     }
 
@@ -64,31 +64,44 @@ class Project extends Model
 
     public function acceptedRequests(): HasMany
     {
-        return $this->hasMany(JoinRequest::class)->where('status', JoinRequestStatus::Accepted);
+        return $this->hasMany(JoinRequest::class)->where('status', \App\Enums\JoinRequestStatus::Accepted);
     }
 
-    /**
-     * Scope a query to only include active recruiting projects with available openings.
-     */
     public function scopeRecruiting(Builder $query): Builder
     {
-        return $query
-            ->where('status', 'open')
-            ->whereDate('application_deadline', '>=', today()->toDateString())
-            ->whereRaw(
-                '(select count(*) from join_requests jr
-                  where jr.project_id = projects.id and jr.status = ?) < projects.slots_total',
-                [JoinRequestStatus::Accepted->value]
-            );
+        return $query->where('status', ProjectStatus::Open->value)
+            ->whereDate('application_deadline', '>=', now(config('app.timezone', 'Africa/Addis_Ababa'))->toDateString())
+            ->whereRaw('(SELECT COUNT(*) FROM join_requests WHERE join_requests.project_id = projects.id AND join_requests.status = ?) < projects.slots_total', [\App\Enums\JoinRequestStatus::Accepted->value]);
     }
 
-    /**
-     * Check if project is currently accepting new applications.
-     */
     public function isRecruiting(): bool
     {
-        return $this->status === 'open'
-            && $this->application_deadline->gte(today())
-            && $this->acceptedRequests()->count() < $this->slots_total;
+        $statusVal = $this->status instanceof ProjectStatus ? $this->status->value : $this->status;
+
+        if ($statusVal !== ProjectStatus::Open->value) {
+            return false;
+        }
+
+        if ($this->application_deadline->lt(now(config('app.timezone', 'Africa/Addis_Ababa'))->startOfDay())) {
+            return false;
+        }
+
+        return $this->acceptedRequests()->count() < $this->slots_total;
+    }
+
+    public function canBeEdited(): bool
+    {
+        $statusVal = $this->status instanceof ProjectStatus ? $this->status : ProjectStatus::from($this->status);
+        return ! $statusVal->isTerminal();
+    }
+
+    public function canBeDeleted(): bool
+    {
+        $statusVal = $this->status instanceof ProjectStatus ? $this->status : ProjectStatus::from($this->status);
+        if ($statusVal === ProjectStatus::Completed) {
+            return false;
+        }
+
+        return $this->acceptedRequests()->count() === 0;
     }
 }

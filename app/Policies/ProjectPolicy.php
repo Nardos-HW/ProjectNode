@@ -2,51 +2,72 @@
 
 namespace App\Policies;
 
-use App\Enums\JoinRequestStatus;
+use App\Enums\ProjectStatus;
 use App\Models\Project;
 use App\Models\User;
 
 class ProjectPolicy
 {
-    /**
-     * Determine whether the user can create projects.
-     */
+    public function viewAny(?User $user): bool
+    {
+        return true;
+    }
+
+    public function view(?User $user, Project $project): bool
+    {
+        return true;
+    }
+
     public function create(User $user): bool
     {
-        return $user->hasVerifiedEmail();
+        return true;
     }
 
-    /**
-     * Determine whether the user can update the project.
-     */
     public function update(User $user, Project $project): bool
     {
-        return $user->id === $project->owner_id && $project->status === 'open';
-    }
-
-    /**
-     * Determine whether the user can delete the project.
-     */
-    public function delete(User $user, Project $project): bool
-    {
-        if ($user->id !== $project->owner_id || $project->status === 'completed') {
+        if ($user->id !== $project->owner_id) {
             return false;
         }
 
-        return ! $project->acceptedRequests()->exists();
+        return $project->canBeEdited();
     }
 
-    /**
-     * Determine whether the user can view the project's Telegram contact.
-     */
-    public function viewContact(User $user, Project $project): bool
+    public function changeStatus(User $user, Project $project): bool
     {
-        if ($user->id === $project->owner_id || ($user->role ?? null) === 'admin') {
+        if ($user->id !== $project->owner_id) {
+            return false;
+        }
+
+        $status = $project->status instanceof ProjectStatus ? $project->status : ProjectStatus::from($project->status);
+        return ! $status->isTerminal();
+    }
+
+    public function delete(User $user, Project $project): bool
+    {
+        if ($user->id !== $project->owner_id) {
+            return false;
+        }
+
+        return $project->canBeDeleted();
+    }
+
+    public function viewContact(?User $user, Project $project): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        if (($user->role ?? null) === 'admin') {
             return true;
         }
 
-        return $project->acceptedRequests()
+        if ($user->id === $project->owner_id) {
+            return true;
+        }
+
+        return $project->joinRequests()
             ->where('applicant_id', $user->id)
+            ->where('status', \App\Enums\JoinRequestStatus::Accepted)
             ->exists();
     }
 }
