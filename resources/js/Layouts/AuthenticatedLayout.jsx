@@ -11,6 +11,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const navLinks = [
         { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
         { name: 'Discover', href: route('projects.index'), active: route().current('projects.index') || route().current('projects.show') },
+        { name: 'My Projects', href: route('projects.mine'), active: route().current('projects.mine') },
         { name: 'Applications', href: route('applications.index'), active: route().current('applications.index') },
     ];
 
@@ -37,8 +38,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                         key={item.name}
                                         href={item.href}
                                         className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-colors ${item.active
-                                                ? 'bg-surface-2 text-text border border-surface-2'
-                                                : 'text-muted hover:text-text hover:bg-surface-2/50'
+                                            ? 'bg-surface-2 text-text border border-surface-2'
+                                            : 'text-muted hover:text-text hover:bg-surface-2/50'
                                             }`}
                                     >
                                         {item.name}
@@ -113,8 +114,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                 href={item.href}
                                 onClick={() => setShowingNavigationDropdown(false)}
                                 className={`block px-3 py-2 rounded-xl text-sm font-medium ${item.active
-                                        ? 'bg-surface-2 text-text'
-                                        : 'text-muted hover:text-text hover:bg-surface-2/50'
+                                    ? 'bg-surface-2 text-text'
+                                    : 'text-muted hover:text-text hover:bg-surface-2/50'
                                     }`}
                             >
                                 {item.name}

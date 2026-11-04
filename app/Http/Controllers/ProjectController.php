@@ -26,6 +26,7 @@ class ProjectController extends Controller
         $projects = Project::query()
             ->with(['owner:id,name', 'department:id,name', 'skills:id,name'])
             ->withCount(['acceptedRequests as accepted_count'])
+            ->where('owner_id', '!=', $request->user()->id)
             ->when(! $includeClosed, fn ($query) => $query->recruiting())
             ->when($includeClosed, fn ($query) => $query->where('status', '!=', 'cancelled'))
             ->latest('id')
@@ -37,6 +38,32 @@ class ProjectController extends Controller
             'filters' => [
                 'include_closed' => $includeClosed,
             ],
+        ]);
+    }
+
+    public function mine(Request $request): Response
+    {
+        $status = $request->input('status', 'all');
+
+        $projects = Project::query()
+            ->where('owner_id', $request->user()->id)
+            ->with(['department:id,name', 'skills:id,name'])
+            ->withCount([
+                'acceptedRequests as accepted_count',
+                'joinRequests as pending_requests_count' => function ($query) {
+                    $query->where('status', \App\Enums\JoinRequestStatus::Pending);
+                },
+            ])
+            ->when($status !== 'all' && in_array($status, ['open', 'in_progress', 'completed', 'cancelled']), function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->latest('id')
+            ->paginate(12)
+            ->withQueryString();
+
+        return Inertia::render('Projects/Mine', [
+            'projects' => $projects,
+            'currentStatus' => $status,
         ]);
     }
 

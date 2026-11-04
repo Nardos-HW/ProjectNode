@@ -21,6 +21,7 @@ class NavigationTest extends TestCase
         $routes = [
             'dashboard',
             'projects.index',
+            'projects.mine',
             'applications.index',
         ];
 

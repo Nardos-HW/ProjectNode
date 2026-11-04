@@ -31,6 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Projects (browsing open to verified students)
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 
+    //My Projects
+    Route::get('/my-projects', [ProjectController::class, 'mine'])->name('projects.mine');
+    
     // Gated actions (require completed profile)
     Route::middleware('profile.complete')->group(function () {
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');

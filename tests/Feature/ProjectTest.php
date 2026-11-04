@@ -39,11 +39,12 @@ class ProjectTest extends TestCase
 
     public function test_feed_only_lists_active_recruiting_projects(): void
     {
-        $user = $this->createVerifiedUser();
-        $active = $this->createSampleProject($user);
+        $owner = $this->createVerifiedUser();
+        $viewer = $this->createVerifiedUser();
+        $active = $this->createSampleProject($owner);
 
         $expired = Project::forceCreate([
-            'owner_id' => $user->id,
+            'owner_id' => $owner->id,
             'title' => 'Expired Project Listing',
             'description' => 'A valid project description for an expired project listing.',
             'category' => ProjectCategory::Academic,
@@ -55,7 +56,7 @@ class ProjectTest extends TestCase
             'status' => 'open',
         ]);
 
-        $response = $this->actingAs($user)->get(route('projects.index'));
+        $response = $this->actingAs($viewer)->get(route('projects.index'));
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page
@@ -152,13 +153,26 @@ class ProjectTest extends TestCase
 
     public function test_feed_pagination_provides_null_urls_for_disabled_links(): void
     {
-        $user = $this->createVerifiedUser();
+        $owner = $this->createVerifiedUser();
+        $viewer = $this->createVerifiedUser();
 
-        for ($i = 0; $i < 13; $i++) {
-            $this->createSampleProject($user);
+        // Create 13 projects to force 2 pages (page size is 12)
+        for ($i = 1; $i <= 13; $i++) {
+            Project::forceCreate([
+                'owner_id' => $owner->id,
+                'title' => "Pagination Project {$i}",
+                'description' => "Description for project {$i} with sufficient text.",
+                'category' => ProjectCategory::Personal,
+                'slots_total' => 2,
+                'hours_per_week' => 5,
+                'duration_weeks' => 2,
+                'application_deadline' => now()->addDays(7)->toDateString(),
+                'telegram_contact' => 'page_handle',
+                'status' => 'open',
+            ]);
         }
 
-        $response = $this->actingAs($user)->get(route('projects.index'));
+        $response = $this->actingAs($viewer)->get(route('projects.index'));
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
