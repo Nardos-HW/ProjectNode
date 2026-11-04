@@ -92,13 +92,12 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request): RedirectResponse
     {
-        Gate::authorize('create', Project::class);
-
         $project = DB::transaction(function () use ($request) {
-            $project = new Project($request->safe()->except('skill_ids'));
-            $project->owner_id = $request->user()->id;
-            $project->status = 'open';
-            $project->save();
+            $project = Project::forceCreate([
+                ...$request->safe()->except('skill_ids'),
+                'owner_id' => $request->user()->id,
+                'status' => 'open',
+            ]);
 
             $project->skills()->sync($request->validated('skill_ids'));
 

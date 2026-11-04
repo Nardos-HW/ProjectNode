@@ -115,7 +115,7 @@ export default function ProjectForm({
                     value={data.telegram_contact}
                     onChange={(e) => setData('telegram_contact', e.target.value)}
                     error={errors.telegram_contact}
-                    hint="Prefilled from your profile. Visible to accepted collaborators only."
+                    hint="Using your profile handle. Change it for this project only."
                     placeholder="username"
                 />
             </div>
