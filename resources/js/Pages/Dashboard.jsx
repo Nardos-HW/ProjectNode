@@ -1,19 +1,47 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Card from '@/Components/ui/Card';
-import PageHeader from '@/Components/ui/PageHeader';
 import Button from '@/Components/ui/Button';
-import { Head, Link } from '@inertiajs/react';
-import { Compass, PlusCircle, FileText } from 'lucide-react';
+import PageHeader from '@/Components/ui/PageHeader';
+import SlotDots from '@/Components/ui/SlotDots';
+import DeadlineRing from '@/Components/ui/DeadlineRing';
+import ProjectStatusBadge from '@/Components/ProjectStatusBadge';
+import CategoryBadge from '@/Components/CategoryBadge';
+import { Head, Link, usePage } from '@inertiajs/react';
+import {
+    Briefcase,
+    Inbox,
+    Clock,
+    Users,
+    PlusCircle,
+    ArrowRight,
+    Sparkles,
+    AlertCircle,
+    CheckCircle2,
+    Calendar,
+} from 'lucide-react';
 
-export default function Dashboard() {
+export default function Dashboard({
+    stats,
+    attention,
+    my_projects = [],
+    matches = [],
+    profile,
+}) {
+    const { auth } = usePage().props;
+
+    const hasAttention =
+        attention.requests_to_review.length > 0 ||
+        attention.accepted_applications.length > 0 ||
+        attention.closing_soon.length > 0;
+
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
 
-            <div className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <PageHeader
-                    title="Student Dashboard"
-                    subtitle="Welcome to your ProjectNode collaboration hub."
+                    title={`Welcome, ${auth.user.name.split(' ')[0]}`}
+                    subtitle="Track your project recruiting, collaborator requests, and skill matches."
                     actions={
                         <Button href={route('projects.create')} variant="primary" size="sm">
                             <PlusCircle className="w-4 h-4 mr-1.5" /> Post a Project
@@ -21,51 +49,239 @@ export default function Dashboard() {
                     }
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Card hover className="p-6 space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-violet/15 flex items-center justify-center text-violet">
-                            <Compass className="w-5 h-5" />
+                {/* Profile Completion Banner (if under 100%) */}
+                {profile.percent < 100 && (
+                    <Card className="p-5 border-violet/40 bg-violet/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-violet" />
+                                <h3 className="text-sm font-bold font-display text-text">
+                                    Your profile is {profile.percent}% complete
+                                </h3>
+                            </div>
+                            <p className="text-xs text-muted">
+                                Complete your profile to build credibility: missing{' '}
+                                <span className="text-text font-medium">{profile.missing.join(', ')}</span>.
+                            </p>
                         </div>
-                        <h3 className="text-base font-bold font-display text-text">Explore Projects</h3>
-                        <p className="text-xs text-muted leading-relaxed">
-                            Find fellow AAU students actively recruiting team members across campus.
-                        </p>
-                        <div className="pt-2">
-                            <Button href={route('projects.index')} variant="secondary" size="sm">
-                                Browse Feed
-                            </Button>
+                        <Button href={route('profile.edit')} variant="secondary" size="sm">
+                            Complete Profile
+                        </Button>
+                    </Card>
+                )}
+
+                {/* Four Stat Tiles */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card hover className="p-5 space-y-2">
+                        <div className="flex items-center justify-between text-muted text-xs">
+                            <span>Active Projects</span>
+                            <Briefcase className="w-4 h-4 text-violet" />
                         </div>
+                        <div className="text-2xl font-bold font-display text-text">
+                            {stats.active_projects}
+                        </div>
+                        <p className="text-[11px] text-muted">Owned and in progress</p>
                     </Card>
 
-                    <Card hover className="p-6 space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-mint/15 flex items-center justify-center text-mint">
-                            <FileText className="w-5 h-5" />
+                    <Card hover className="p-5 space-y-2">
+                        <div className="flex items-center justify-between text-muted text-xs">
+                            <span>Pending Inquiries</span>
+                            <Inbox className="w-4 h-4 text-amber" />
                         </div>
-                        <h3 className="text-base font-bold font-display text-text">My Applications</h3>
-                        <p className="text-xs text-muted leading-relaxed">
-                            Track the status of your join requests and connect with project creators.
-                        </p>
-                        <div className="pt-2">
-                            <Button href={route('applications.index')} variant="secondary" size="sm">
-                                View Applications
-                            </Button>
+                        <div className="text-2xl font-bold font-display text-text">
+                            {stats.pending_requests}
                         </div>
+                        <p className="text-[11px] text-muted">Awaiting your decision</p>
                     </Card>
 
-                    <Card hover className="p-6 space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-amber/15 flex items-center justify-center text-amber">
-                            <PlusCircle className="w-5 h-5" />
+                    <Card hover className="p-5 space-y-2">
+                        <div className="flex items-center justify-between text-muted text-xs">
+                            <span>Accepted Teams</span>
+                            <CheckCircle2 className="w-4 h-4 text-mint" />
                         </div>
-                        <h3 className="text-base font-bold font-display text-text">Start a Project</h3>
-                        <p className="text-xs text-muted leading-relaxed">
-                            Publish a side project, hackathon, or study group to recruit collaborators.
-                        </p>
-                        <div className="pt-2">
-                            <Button href={route('projects.create')} variant="secondary" size="sm">
-                                Create Listing
-                            </Button>
+                        <div className="text-2xl font-bold font-display text-text">
+                            {stats.applications.accepted}
                         </div>
+                        <p className="text-[11px] text-muted">Applications accepted</p>
                     </Card>
+
+                    <Card hover className="p-5 space-y-2">
+                        <div className="flex items-center justify-between text-muted text-xs">
+                            <span>Pending Applications</span>
+                            <Clock className="w-4 h-4 text-muted" />
+                        </div>
+                        <div className="text-2xl font-bold font-display text-text">
+                            {stats.applications.pending}
+                        </div>
+                        <p className="text-[11px] text-muted">Awaiting project owners</p>
+                    </Card>
+                </div>
+
+                {/* Needs Your Attention Section */}
+                {hasAttention && (
+                    <div className="space-y-4">
+                        <h2 className="text-lg font-bold font-display text-text flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4 text-amber" /> Needs Your Attention
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Requests to review */}
+                            {attention.requests_to_review.length > 0 && (
+                                <Card className="p-5 space-y-3">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+                                        Pending Applicants
+                                    </h3>
+                                    <div className="space-y-2.5">
+                                        {attention.requests_to_review.map((req) => (
+                                            <div key={req.id} className="text-xs flex items-center justify-between gap-2 pb-2 border-b border-surface-2 last:border-0 last:pb-0">
+                                                <div className="truncate">
+                                                    <span className="font-semibold text-text">{req.applicant_name}</span>
+                                                    <span className="text-muted block truncate">{req.project_title}</span>
+                                                </div>
+                                                <Button href={route('projects.requests', req.project_id)} variant="secondary" size="sm" className="text-xs px-2 py-1">
+                                                    Review
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Card>
+                            )}
+
+                            {/* Accepted applications */}
+                            {attention.accepted_applications.length > 0 && (
+                                <Card className="p-5 space-y-3">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+                                        Accepted Collaborations
+                                    </h3>
+                                    <div className="space-y-2.5">
+                                        {attention.accepted_applications.map((app) => (
+                                            <div key={app.id} className="text-xs flex items-center justify-between gap-2 pb-2 border-b border-surface-2 last:border-0 last:pb-0">
+                                                <div className="truncate">
+                                                    <span className="font-semibold text-mint block truncate">{app.project_title}</span>
+                                                    <span className="text-muted text-[11px]">Contact unlocked</span>
+                                                </div>
+                                                <Button href={route('projects.show', app.project_id)} variant="ghost" size="sm" className="text-xs px-2 py-1">
+                                                    View
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Card>
+                            )}
+
+                            {/* Closing soon */}
+                            {attention.closing_soon.length > 0 && (
+                                <Card className="p-5 space-y-3">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+                                        Closing Soon
+                                    </h3>
+                                    <div className="space-y-2.5">
+                                        {attention.closing_soon.map((p) => (
+                                            <div key={p.id} className="text-xs flex items-center justify-between gap-2 pb-2 border-b border-surface-2 last:border-0 last:pb-0">
+                                                <span className="font-semibold text-text truncate">{p.title}</span>
+                                                <DeadlineRing deadline={p.application_deadline} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Card>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* My Projects & Skill Matches Columns */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Left: My Projects (Latest 3) */}
+                    <div className="lg:col-span-5 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold font-display text-text">My Projects</h2>
+                            <Link href={route('projects.mine')} className="text-xs text-violet hover:underline flex items-center gap-1 font-medium">
+                                View all <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                        </div>
+
+                        {my_projects.length === 0 ? (
+                            <Card className="p-6 text-center space-y-3">
+                                <p className="text-xs text-muted">You haven't posted any projects yet.</p>
+                                <Button href={route('projects.create')} variant="secondary" size="sm">
+                                    Post Your First Project
+                                </Button>
+                            </Card>
+                        ) : (
+                            <div className="space-y-3">
+                                {my_projects.map((p) => (
+                                    <Card key={p.id} hover className="p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-sm font-bold font-display text-text truncate">
+                                                <Link href={route('projects.show', p.id)} className="hover:text-violet transition-colors">
+                                                    {p.title}
+                                                </Link>
+                                            </h3>
+                                            <ProjectStatusBadge status={p.status} />
+                                        </div>
+                                        <div className="flex items-center justify-between text-xs text-muted pt-1">
+                                            <SlotDots filled={p.members_count} total={p.slots_total} />
+                                            <Button href={route('projects.requests', p.id)} variant="ghost" size="sm" className="text-xs px-2 py-1">
+                                                Requests
+                                            </Button>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right: Projects for You (Matches) */}
+                    <div className="lg:col-span-7 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold font-display text-text">Projects for You</h2>
+                            <Link href={route('projects.index')} className="text-xs text-violet hover:underline flex items-center gap-1 font-medium">
+                                Browse all <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                        </div>
+
+                        {matches.length === 0 ? (
+                            <Card className="p-6 text-center space-y-3">
+                                <p className="text-xs text-muted">
+                                    Add skills to your profile to receive tailored project recommendations.
+                                </p>
+                                <Button href={route('profile.edit')} variant="secondary" size="sm">
+                                    Update Profile Skills
+                                </Button>
+                            </Card>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {matches.map((m) => (
+                                    <Card key={m.id} hover className="p-4 flex flex-col justify-between space-y-3">
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between gap-1">
+                                                <CategoryBadge category={m.category} />
+                                                <DeadlineRing deadline={m.application_deadline} />
+                                            </div>
+                                            <h3 className="text-sm font-bold font-display text-text line-clamp-1">
+                                                <Link href={route('projects.show', m.id)} className="hover:text-violet transition-colors">
+                                                    {m.title}
+                                                </Link>
+                                            </h3>
+                                            <div className="flex flex-wrap gap-1">
+                                                {m.matched_skills.map((skillName) => (
+                                                    <span key={skillName} className="px-2 py-0.5 rounded bg-violet/15 text-violet text-[10px] font-medium border border-violet/30">
+                                                        {skillName}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="pt-2 border-t border-surface-2 flex items-center justify-between text-xs text-muted">
+                                            <SlotDots filled={m.members_count} total={m.slots_total} />
+                                            <Button href={route('projects.show', m.id)} variant="ghost" size="sm" className="text-xs px-2 py-1">
+                                                Apply
+                                            </Button>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

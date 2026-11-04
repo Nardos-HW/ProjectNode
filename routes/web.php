@@ -7,6 +7,7 @@ use App\Http\Controllers\StudentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -24,9 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('DesignSystem');
         })->name('design-system');
     }
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     // Projects (browsing open to verified students)
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -49,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::patch('/projects/{project}/status', [ProjectController::class, 'updateStatus'])->name('projects.status');
-    
+
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
