@@ -18,6 +18,12 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    if (app()->environment(['local', 'testing'])) {
+        Route::middleware(['auth'])->get('/design-system', function () {
+            return Inertia::render('DesignSystem');
+        })->name('design-system');
+    }
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
@@ -30,15 +36,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
         Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
         Route::post('/projects/{project}/join', [JoinRequestController::class, 'store'])->name('projects.join');
+
+        // Owner request review and decisions
+        Route::get('/projects/{project}/requests', [JoinRequestController::class, 'index'])->name('projects.requests');
+        Route::patch('/join-requests/{joinRequest}/accept', [JoinRequestController::class, 'accept'])->name('join-requests.accept');
+        Route::patch('/join-requests/{joinRequest}/reject', [JoinRequestController::class, 'reject'])->name('join-requests.reject');
     });
 
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
-    // Join Request Management (Owner & Applicant)
-    Route::get('/projects/{project}/requests', [JoinRequestController::class, 'index'])->name('projects.requests');
-    Route::patch('/join-requests/{joinRequest}/accept', [JoinRequestController::class, 'accept'])->name('join-requests.accept');
-    Route::patch('/join-requests/{joinRequest}/reject', [JoinRequestController::class, 'reject'])->name('join-requests.reject');
+    // Join Request Management (Applicant)
     Route::get('/my-applications', [JoinRequestController::class, 'mine'])->name('applications.index');
 
     // Peer Student Profiles

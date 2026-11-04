@@ -1,212 +1,166 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import { Menu, X, User as UserIcon, LogOut, ChevronDown } from 'lucide-react';
+import Toast from '@/Components/ui/Toast';
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const { auth } = usePage().props;
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const navLinks = [
+        { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
+        { name: 'Discover', href: route('projects.index'), active: route().current('projects.index') || route().current('projects.show') },
+        { name: 'Applications', href: route('applications.index'), active: route().current('applications.index') },
+    ];
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
+        <div className="min-h-screen bg-ink text-text flex flex-col selection:bg-violet selection:text-white">
+            {/* Top Navigation Bar */}
+            <nav className="bg-surface/90 backdrop-blur-md border-b border-surface-2 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between h-16">
+                        {/* Left: Brand & Nav Links */}
+                        <div className="flex items-center gap-8">
+                            <Link href={route('dashboard')} className="flex items-center gap-2 group">
+                                <div className="w-8 h-8 rounded-xl bg-violet/20 border border-violet/40 flex items-center justify-center group-hover:border-violet transition-colors">
+                                    <span className="text-violet font-bold font-display text-sm">PN</span>
+                                </div>
+                                <span className="font-display font-bold text-lg text-text tracking-tight group-hover:text-violet transition-colors">
+                                    ProjectNode
+                                </span>
+                            </Link>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('applications.index')}
-                                    active={route().current('applications.index')}
-                                >
-                                    My Applications
-                                </NavLink>
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
-                                    href={route('projects.index')}
-                                    active={route().current('projects.index')}
-                                >
-                                    Browse Projects
-                                </NavLink>
-                                <NavLink
-                                    href={route('projects.create')}
-                                    active={route().current('projects.create')}
-                                >
-                                    Post a Project
-                                </NavLink>
+                            <div className="hidden sm:flex items-center gap-1">
+                                {navLinks.map((item) => (
+                                    <Link
+                                        key={item.name}
+                                        href={item.href}
+                                        className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-colors ${item.active
+                                                ? 'bg-surface-2 text-text border border-surface-2'
+                                                : 'text-muted hover:text-text hover:bg-surface-2/50'
+                                            }`}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
                             </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                        {/* Right: User Menu */}
+                        <div className="hidden sm:flex sm:items-center sm:gap-3">
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm text-text bg-surface-2/60 border border-surface-2 hover:bg-surface-2 transition-colors focus:outline-none focus:ring-2 focus:ring-violet"
+                                >
+                                    <span className="font-medium">{auth.user.name}</span>
+                                    <ChevronDown className={`w-4 h-4 text-muted transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {userDropdownOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-10"
+                                            onClick={() => setUserDropdownOpen(false)}
+                                        />
+                                        <div className="absolute right-0 mt-2 w-48 rounded-xl bg-surface border border-surface-2 shadow-xl shadow-black/40 py-1.5 z-20">
+                                            <Link
+                                                href={route('profile.edit')}
+                                                onClick={() => setUserDropdownOpen(false)}
+                                                className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:text-text hover:bg-surface-2 transition-colors"
                                             >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
+                                                <UserIcon className="w-4 h-4 text-muted" />
+                                                Profile Settings
+                                            </Link>
+                                            <Link
+                                                href={route('logout')}
+                                                method="post"
+                                                as="button"
+                                                onClick={() => setUserDropdownOpen(false)}
+                                                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-coral hover:bg-coral/10 transition-colors text-left"
+                                            >
+                                                <LogOut className="w-4 h-4 text-coral" />
+                                                Log Out
+                                            </Link>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
 
-                        <div className="-me-2 flex items-center sm:hidden">
+                        {/* Mobile Menu Hamburger */}
+                        <div className="flex items-center sm:hidden">
                             <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                                type="button"
+                                onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}
+                                className="p-2 rounded-xl text-muted hover:text-text hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-violet"
+                                aria-label="Toggle navigation menu"
                             >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
+                                {showingNavigationDropdown ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('applications.index')}
-                            active={route().current('applications.index')}
-                        >
-                            My Applications
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('projects.index')}
-                            active={route().current('projects.index')}
-                        >
-                            Browse Projects
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('projects.create')}
-                            active={route().current('projects.create')}
-                        >
-                            Post a Project
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
+                {/* Mobile Drawer */}
+                {showingNavigationDropdown && (
+                    <div className="sm:hidden border-t border-surface-2 bg-surface px-4 pt-2 pb-4 space-y-1">
+                        {navLinks.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setShowingNavigationDropdown(false)}
+                                className={`block px-3 py-2 rounded-xl text-sm font-medium ${item.active
+                                        ? 'bg-surface-2 text-text'
+                                        : 'text-muted hover:text-text hover:bg-surface-2/50'
+                                    }`}
+                            >
+                                {item.name}
+                            </Link>
+                        ))}
+                        <div className="pt-3 mt-3 border-t border-surface-2 space-y-1">
+                            <div className="px-3 py-1 text-xs text-muted font-medium">
+                                Signed in as <span className="text-text">{auth.user.name}</span>
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
+                            <Link
+                                href={route('profile.edit')}
+                                onClick={() => setShowingNavigationDropdown(false)}
+                                className="block px-3 py-2 rounded-xl text-sm text-muted hover:text-text hover:bg-surface-2/50"
+                            >
+                                Profile Settings
+                            </Link>
+                            <Link
                                 href={route('logout')}
+                                method="post"
                                 as="button"
+                                onClick={() => setShowingNavigationDropdown(false)}
+                                className="w-full block px-3 py-2 rounded-xl text-sm text-coral hover:bg-coral/10 text-left"
                             >
                                 Log Out
-                            </ResponsiveNavLink>
+                            </Link>
                         </div>
                     </div>
-                </div>
+                )}
             </nav>
 
+            {/* Optional Header Banner */}
             {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <header className="bg-surface/50 border-b border-surface-2/70 py-4">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         {header}
                     </div>
                 </header>
             )}
 
-            <main>{children}</main>
+            {/* Main Page Content */}
+            <main className="flex-1">
+                {children}
+            </main>
+
+            {/* Global Notification Toast */}
+            <Toast />
         </div>
     );
 }

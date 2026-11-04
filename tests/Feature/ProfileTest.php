@@ -26,6 +26,39 @@ class ProfileTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_profile_page_shares_logged_in_user_profile_fields_and_skill_ids(): void
+    {
+        $department = Department::create(['name' => 'Computer Science']);
+        $skill = Skill::create(['name' => 'React', 'slug' => 'react']);
+
+        $user = User::factory()->create([
+            'email' => 'student@aau.edu.et',
+            'email_verified_at' => now(),
+            'department_id' => $department->id,
+            'year_of_study' => 3,
+            'bio' => 'A valid biography description for testing.',
+            'interests' => 'Distributed Systems',
+            'telegram_handle' => 'student_tg',
+        ]);
+        $user->skills()->attach($skill);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
+
+        $response->assertOk();
+        $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+            ->component('Profile/Edit')
+            ->where('auth.user.name', $user->name)
+            ->where('auth.user.department_id', $department->id)
+            ->where('auth.user.year_of_study', 3)
+            ->where('auth.user.bio', 'A valid biography description for testing.')
+            ->where('auth.user.interests', 'Distributed Systems')
+            ->where('auth.user.telegram_handle', 'student_tg')
+            ->where('auth.user.skill_ids', [$skill->id])
+        );
+    }
+
     public function test_profile_information_can_be_updated(): void
     {
         $user = User::factory()->create([

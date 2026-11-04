@@ -82,6 +82,30 @@ class ProjectTest extends TestCase
         );
     }
 
+    public function test_telegram_contact_is_visible_to_accepted_applicant_props(): void
+    {
+        $owner = $this->createVerifiedUser();
+        $applicant = $this->createVerifiedUser();
+        $project = $this->createSampleProject($owner);
+
+        \App\Models\JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Applying to collaborate on project.',
+            'status' => \App\Enums\JoinRequestStatus::Accepted,
+            'decided_at' => now(),
+        ]);
+
+        $response = $this->actingAs($applicant)->get(route('projects.show', $project));
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Projects/Show')
+            ->where('project.telegram_contact', $project->telegram_contact)
+            ->where('can.viewContact', true)
+        );
+    }
+
     public function test_stranger_cannot_delete_another_users_project(): void
     {
         $owner = $this->createVerifiedUser();
@@ -103,5 +127,44 @@ class ProjectTest extends TestCase
 
         $response->assertRedirect(route('projects.index'));
         $this->assertSoftDeleted($project);
+    }
+
+    public function test_owner_cannot_delete_project_with_accepted_members(): void
+    {
+        $owner = $this->createVerifiedUser();
+        $applicant = $this->createVerifiedUser();
+        $project = $this->createSampleProject($owner);
+
+        \App\Models\JoinRequest::create([
+            'project_id' => $project->id,
+            'applicant_id' => $applicant->id,
+            'message' => 'Accepted team member.',
+            'status' => \App\Enums\JoinRequestStatus::Accepted,
+            'decided_at' => now(),
+        ]);
+
+        $response = $this->actingAs($owner)->delete(route('projects.destroy', $project));
+
+        $response->assertSessionHasErrors('message');
+        $this->assertNotSoftDeleted($project);
+        $this->assertFalse(\Illuminate\Support\Facades\Gate::forUser($owner)->allows('delete', $project));
+    }
+
+    public function test_feed_pagination_provides_null_urls_for_disabled_links(): void
+    {
+        $user = $this->createVerifiedUser();
+
+        for ($i = 0; $i < 13; $i++) {
+            $this->createSampleProject($user);
+        }
+
+        $response = $this->actingAs($user)->get(route('projects.index'));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Projects/Index')
+            ->has('projects.data', 12)
+            ->where('projects.links.0.url', null)
+        );
     }
 }

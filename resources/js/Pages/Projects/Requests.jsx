@@ -1,157 +1,142 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import Card from '@/Components/ui/Card';
+import Button from '@/Components/ui/Button';
+import EmptyState from '@/Components/ui/EmptyState';
 import { Head, Link, router } from '@inertiajs/react';
+import { ArrowLeft, Check, X } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Requests({ project, requests }) {
+    const [actionId, setActionId] = useState(null);
+
     const handleAccept = (requestId) => {
-        router.patch(route('join-requests.accept', requestId));
+        setActionId(requestId);
+        router.patch(route('join-requests.accept', requestId), {}, {
+            onFinish: () => setActionId(null),
+        });
     };
 
     const handleReject = (requestId) => {
-        router.patch(route('join-requests.reject', requestId));
+        setActionId(requestId);
+        router.patch(route('join-requests.reject', requestId), {}, {
+            onFinish: () => setActionId(null),
+        });
     };
 
     return (
-        <AuthenticatedLayout
-            header={
-                <div className="flex items-center justify-between">
-                    <div>
-                        <Link
-                            href={route('projects.show', project.id)}
-                            className="text-xs font-medium text-gray-500 hover:text-gray-700"
-                        >
-                            ← Back to Project
-                        </Link>
-                        <h2 className="mt-1 text-xl font-semibold leading-tight text-gray-800">
-                            Applicant Inbox: {project.title}
-                        </h2>
-                    </div>
-                    <div className="text-right">
-                        <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-                            Capacity: {project.accepted_count} / {project.slots_total} filled
-                        </span>
-                    </div>
-                </div>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title={`Applications - ${project.title}`} />
 
-            <div className="py-8">
-                <div className="mx-auto max-w-5xl space-y-6 sm:px-6 lg:px-8">
-                    {requests.length === 0 ? (
-                        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
-                            <h3 className="text-lg font-medium text-gray-900">No join requests yet</h3>
-                            <p className="mt-2 text-sm text-gray-500">
-                                When students submit applications to collaborate, they will appear here for review[cite: 1, 3].
-                            </p>
-                        </div>
-                    ) : (
-                        requests.map((req) => (
-                            <div
-                                key={req.id}
-                                className="overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
-                            >
-                                <div className="flex flex-wrap items-start justify-between gap-4 border-b border-gray-100 pb-4">
+            <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <Button href={route('projects.show', project.id)} variant="ghost" size="sm">
+                            <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Project
+                        </Button>
+                        <h1 className="text-xl font-bold font-display text-text mt-2">
+                            Applicant Inbox: {project.title}
+                        </h1>
+                    </div>
+                    <div className="text-xs text-muted font-medium bg-surface-2 px-3 py-1.5 rounded-xl border border-surface-2 self-start sm:self-auto">
+                        Capacity: {project.accepted_count} / {project.slots_total} filled
+                    </div>
+                </div>
+
+                {requests.length === 0 ? (
+                    <EmptyState
+                        title="No join requests yet"
+                        description="When students apply to collaborate on this project, their requests will appear here."
+                    />
+                ) : (
+                    <div className="space-y-4">
+                        {requests.map((req) => (
+                            <Card key={req.id} className="p-6 space-y-4">
+                                <div className="flex flex-wrap items-start justify-between gap-3 pb-3 border-b border-surface-2">
                                     <div>
                                         <div className="flex items-center gap-3">
                                             <Link
                                                 href={route('students.show', req.applicant.id)}
-                                                className="text-lg font-bold text-gray-900 hover:text-indigo-600 hover:underline"
+                                                className="text-base font-bold font-display text-text hover:text-violet transition-colors"
                                             >
                                                 {req.applicant.name}
                                             </Link>
-                                            <span className="text-xs text-gray-500">
+                                            <span className="text-xs text-muted">
                                                 {req.applicant.department?.name || 'General Campus'} &bull; Year {req.applicant.year_of_study || 'N/A'}
                                             </span>
                                         </div>
-                                        <p className="mt-1 text-xs text-indigo-600">
+                                        <p className="text-xs text-mint mt-1">
                                             Telegram:{' '}
                                             <a
                                                 href={`https://t.me/${req.applicant.telegram_handle}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="font-semibold hover:underline"
+                                                className="font-medium hover:underline"
                                             >
                                                 @{req.applicant.telegram_handle}
                                             </a>
                                         </p>
                                     </div>
 
-                                    <div>
-                                        <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${req.status === 'accepted'
-                                                ? 'bg-green-100 text-green-800'
-                                                : req.status === 'rejected'
-                                                    ? 'bg-red-100 text-red-800'
-                                                    : 'bg-yellow-100 text-yellow-800'
-                                            }`}>
-                                            {req.status}
-                                        </span>
-                                    </div>
+                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-2 text-text border border-surface-2 capitalize">
+                                        {req.status}
+                                    </span>
                                 </div>
 
-                                {/* Application Note */}
-                                <div className="mt-4 rounded-md bg-gray-50 p-4">
-                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                        Application Message
-                                    </h4>
-                                    <p className="mt-1 whitespace-pre-line text-sm text-gray-800">
-                                        {req.message}
+                                <div className="p-3.5 rounded-xl bg-surface-2/40 border border-surface-2 text-xs text-text leading-relaxed">
+                                    <p className="font-semibold text-muted text-[11px] uppercase tracking-wider mb-1">
+                                        Application Note:
                                     </p>
+                                    {req.message}
                                 </div>
 
-                                {/* Applicant Skills & Bio */}
-                                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                                     <div>
-                                        <h4 className="text-xs font-semibold text-gray-500">Skills</h4>
-                                        <div className="mt-1 flex flex-wrap gap-1">
+                                        <p className="text-muted font-medium mb-1">Applicant Skills:</p>
+                                        <div className="flex flex-wrap gap-1">
                                             {req.applicant.skills && req.applicant.skills.length > 0 ? (
                                                 req.applicant.skills.map((skill) => (
-                                                    <span
-                                                        key={skill.id}
-                                                        className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700"
-                                                    >
+                                                    <span key={skill.id} className="px-2 py-0.5 rounded bg-surface-2 text-[11px] text-text">
                                                         {skill.name}
                                                     </span>
                                                 ))
                                             ) : (
-                                                <span className="text-xs text-gray-400">No skills listed</span>
+                                                <span className="text-muted">None listed</span>
                                             )}
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 className="text-xs font-semibold text-gray-500">Bio</h4>
-                                        <p className="mt-1 text-xs text-gray-600 line-clamp-2">
-                                            {req.applicant.bio || 'No bio provided'}
-                                        </p>
+                                        <p className="text-muted font-medium mb-1">Bio:</p>
+                                        <p className="text-muted line-clamp-2">{req.applicant.bio || 'No bio provided'}</p>
                                     </div>
                                 </div>
 
-                                {/* Decision Actions (Pending Requests Only) */}
                                 {req.status === 'pending' && (
-                                    <div className="mt-6 flex items-center justify-end gap-3 border-t border-gray-100 pt-4">
-                                        <button
-                                            type="button"
+                                    <div className="pt-3 border-t border-surface-2 flex items-center justify-end gap-3">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
                                             onClick={() => handleReject(req.id)}
-                                            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+                                            loading={actionId === req.id}
+                                            disabled={actionId !== null}
                                         >
-                                            Decline
-                                        </button>
-                                        <button
-                                            type="button"
+                                            <X className="w-4 h-4 mr-1" /> Decline
+                                        </Button>
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
                                             onClick={() => handleAccept(req.id)}
-                                            disabled={project.accepted_count >= project.slots_total}
-                                            className={`rounded-md px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm ${project.accepted_count >= project.slots_total
-                                                    ? 'bg-gray-400 cursor-not-allowed'
-                                                    : 'bg-indigo-600 hover:bg-indigo-500'
-                                                }`}
+                                            loading={actionId === req.id}
+                                            disabled={actionId !== null || project.accepted_count >= project.slots_total}
                                         >
+                                            <Check className="w-4 h-4 mr-1" />
                                             {project.accepted_count >= project.slots_total ? 'Project Full' : 'Accept Applicant'}
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
-                            </div>
-                        ))
-                    )}
-                </div>
+                            </Card>
+                        ))}
+                    </div>
+                )}
             </div>
         </AuthenticatedLayout>
     );

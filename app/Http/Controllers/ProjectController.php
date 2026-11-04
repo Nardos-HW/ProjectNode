@@ -138,8 +138,12 @@ class ProjectController extends Controller
     /**
      * Remove the specified project from storage (soft delete).
      */
-    public function destroy(Project $project): RedirectResponse
+    public function destroy(Project $project, Request $request): RedirectResponse
     {
+        if ($project->owner_id === $request->user()->id && $project->acceptedRequests()->exists()) {
+            return back()->withErrors(['message' => 'Projects with accepted members cannot be deleted.']);
+        }
+
         Gate::authorize('delete', $project);
 
         $project->delete();
