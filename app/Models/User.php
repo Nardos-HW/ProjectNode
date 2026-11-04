@@ -86,4 +86,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(JoinRequest::class, 'applicant_id');
     }
+    public function moderationActions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ModerationAction::class, 'admin_id');
+    }
 }
