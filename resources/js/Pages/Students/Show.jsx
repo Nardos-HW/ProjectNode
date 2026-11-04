@@ -1,87 +1,65 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import Card from '@/Components/ui/Card';
+import Button from '@/Components/ui/Button';
+import { Head } from '@inertiajs/react';
+import { ArrowLeft, User } from 'lucide-react';
 
 export default function Show({ student }) {
     return (
-        <AuthenticatedLayout
-            header={
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href={route('projects.index')}
-                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
-                        >
-                            ← Back to Projects
-                        </Link>
-                    </div>
-                </div>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title={`${student.name}'s Profile`} />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-3xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm p-8">
-                        <div className="border-b border-gray-200 pb-6">
-                            <h1 className="text-2xl font-bold text-gray-900">
-                                {student.name}
-                            </h1>
-                            <p className="mt-1 text-sm text-gray-600">
+            <div className="py-8 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                <Button href={route('projects.index')} variant="ghost" size="sm">
+                    <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Projects
+                </Button>
+
+                <Card className="p-6 sm:p-8 space-y-6">
+                    <div className="flex items-center gap-4 pb-6 border-b border-surface-2">
+                        <div className="w-14 h-14 rounded-2xl bg-surface-2 flex items-center justify-center text-violet border border-surface-2">
+                            <User className="w-7 h-7" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold font-display text-text">{student.name}</h1>
+                            <p className="text-xs text-muted mt-0.5">
                                 {student.department} &bull; Year {student.year_of_study || 'N/A'}
                             </p>
                         </div>
+                    </div>
 
-                        {/* Bio */}
-                        <div className="mt-6">
-                            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                About
-                            </h2>
-                            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-gray-700">
-                                {student.bio || 'No bio provided yet.'}
-                            </p>
+                    <div className="space-y-2">
+                        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">About</h2>
+                        <p className="text-sm text-text whitespace-pre-line leading-relaxed">
+                            {student.bio || 'No bio provided yet.'}
+                        </p>
+                    </div>
+
+                    {student.interests && (
+                        <div className="space-y-1">
+                            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">Interests & Focus Areas</h2>
+                            <p className="text-sm text-text">{student.interests}</p>
                         </div>
+                    )}
 
-                        {/* Interests */}
-                        {student.interests && (
-                            <div className="mt-6">
-                                <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                    Interests & Focus Areas
-                                </h2>
-                                <p className="mt-2 text-sm text-gray-700">
-                                    {student.interests}
-                                </p>
-                            </div>
-                        )}
-
-                        {/* Skills */}
-                        <div className="mt-6">
-                            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Verified Skill Tags
-                            </h2>
-                            <div className="mt-3 flex flex-wrap gap-2">
-                                {student.skills && student.skills.length > 0 ? (
-                                    student.skills.map((skill) => (
-                                        <span
-                                            key={skill.id}
-                                            className="inline-flex items-center rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700"
-                                        >
-                                            {skill.name}
-                                        </span>
-                                    ))
-                                ) : (
-                                    <span className="text-xs text-gray-400">No skills listed</span>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Privacy Notice */}
-                        <div className="mt-8 rounded-md bg-gray-50 p-4 border border-gray-100">
-                            <p className="text-xs text-gray-500">
-                                Contact information and email addresses are protected. Telegram handles are only shared with project owners upon collaboration request acceptance[cite: 10, 11].
-                            </p>
+                    <div className="space-y-2">
+                        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">Verified Skill Tags</h2>
+                        <div className="flex flex-wrap gap-1.5">
+                            {student.skills && student.skills.length > 0 ? (
+                                student.skills.map((skill) => (
+                                    <span key={skill.id} className="px-2.5 py-1 rounded-lg bg-surface-2 text-xs font-medium text-text">
+                                        {skill.name}
+                                    </span>
+                                ))
+                            ) : (
+                                <span className="text-xs text-muted">No skills listed</span>
+                            )}
                         </div>
                     </div>
-                </div>
+
+                    <div className="p-4 rounded-xl bg-surface-2/40 border border-surface-2 text-xs text-muted">
+                        University emails and contact handles are private. Handles are revealed to project creators only upon request acceptance.
+                    </div>
+                </Card>
             </div>
         </AuthenticatedLayout>
     );

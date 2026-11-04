@@ -1,17 +1,24 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
+import Card from '@/Components/ui/Card';
+import Button from '@/Components/ui/Button';
+import TextArea from '@/Components/ui/TextArea';
+import SlotDots from '@/Components/ui/SlotDots';
+import DeadlineRing from '@/Components/ui/DeadlineRing';
+import CategoryBadge from '@/Components/CategoryBadge';
+import ProjectStatusBadge from '@/Components/ProjectStatusBadge';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog';
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { ArrowLeft, Clock, Calendar, Users, Send } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Show({ project, existingRequest, can }) {
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         message: '',
     });
 
     const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this project listing? This cannot be undone.')) {
-            router.delete(route('projects.destroy', project.id));
-        }
+        router.delete(route('projects.destroy', project.id));
     };
 
     const handleApply = (e) => {
@@ -22,201 +29,181 @@ export default function Show({ project, existingRequest, can }) {
     };
 
     return (
-        <AuthenticatedLayout
-            header={
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href={route('projects.index')}
-                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
-                        >
-                            ← Back to Projects
-                        </Link>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        {can.manageRequests && (
-                            <Link
-                                href={route('projects.requests', project.id)}
-                                className="rounded-md bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                            >
-                                Review Applications ({project.accepted_count} / {project.slots_total} filled)
-                            </Link>
-                        )}
-                        {can.delete && (
-                            <button
-                                onClick={handleDelete}
-                                className="rounded-md bg-red-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500"
-                            >
-                                Delete Project
-                            </button>
-                        )}
-                    </div>
-                </div>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title={project.title} />
 
-            <div className="py-8">
-                <div className="mx-auto max-w-4xl space-y-6 sm:px-6 lg:px-8">
-                    {/* Project Overview Card */}
-                    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 pb-4">
-                            <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 capitalize">
-                                    {project.category?.replace('_', ' ')}
-                                </span>
-                                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${project.is_recruiting
-                                        ? 'bg-green-50 text-green-700'
-                                        : 'bg-gray-100 text-gray-600'
-                                    }`}>
-                                    {project.is_recruiting ? 'Recruiting' : 'Applications Closed'}
-                                </span>
-                            </div>
-                            <span className="text-sm text-gray-500">
-                                Posted by{' '}
-                                <Link
-                                    href={route('students.show', project.owner.id)}
-                                    className="font-medium text-indigo-600 hover:underline"
-                                >
-                                    {project.owner.name}
-                                </Link>
-                            </span>
-                        </div>
+            <div className="py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                <div className="flex items-center justify-between gap-4">
+                    <Button href={route('projects.index')} variant="ghost" size="sm">
+                        <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Projects
+                    </Button>
 
-                        <h1 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                    <div className="flex items-center gap-3">
+                        {can.manageRequests && (
+                            <Button href={route('projects.requests', project.id)} variant="primary" size="sm">
+                                Review Requests ({project.accepted_count} / {project.slots_total})
+                            </Button>
+                        )}
+                        {can.delete && (
+                            <Button variant="danger" size="sm" onClick={() => setConfirmDelete(true)}>
+                                Delete Project
+                            </Button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Main Project Card */}
+                <Card className="p-6 sm:p-8 space-y-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-surface-2">
+                        <div className="flex items-center gap-2">
+                            <CategoryBadge category={project.category} />
+                            <ProjectStatusBadge status={project.status} isRecruiting={project.is_recruiting} />
+                        </div>
+                        <span className="text-xs text-muted">
+                            Posted by{' '}
+                            <Link href={route('students.show', project.owner.id)} className="text-violet hover:underline font-medium">
+                                {project.owner.name}
+                            </Link>
+                        </span>
+                    </div>
+
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-bold font-display text-text">
                             {project.title}
                         </h1>
+                        <p className="mt-4 text-sm text-muted whitespace-pre-line leading-relaxed">
+                            {project.description}
+                        </p>
+                    </div>
 
-                        <div className="mt-6 grid grid-cols-2 gap-4 rounded-lg bg-gray-50 p-4 text-center sm:grid-cols-4">
-                            <div>
-                                <dt className="text-xs font-medium text-gray-500">Capacity</dt>
-                                <dd className="mt-1 text-lg font-semibold text-gray-900">
-                                    {project.accepted_count} / {project.slots_total} filled
-                                </dd>
-                            </div>
-                            <div>
-                                <dt className="text-xs font-medium text-gray-500">Commitment</dt>
-                                <dd className="mt-1 text-lg font-semibold text-gray-900">{project.hours_per_week} hrs/wk</dd>
-                            </div>
-                            <div>
-                                <dt className="text-xs font-medium text-gray-500">Duration</dt>
-                                <dd className="mt-1 text-lg font-semibold text-gray-900">{project.duration_weeks} wks</dd>
-                            </div>
-                            <div>
-                                <dt className="text-xs font-medium text-gray-500">Deadline</dt>
-                                <dd className="mt-1 text-lg font-semibold text-gray-900">
-                                    {project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : 'Open'}
-                                </dd>
+                    {/* Constraint Stats */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-surface-2/60 border border-surface-2 text-center">
+                        <div className="space-y-1">
+                            <span className="text-xs text-muted block flex items-center justify-center gap-1">
+                                <Users className="w-3.5 h-3.5" /> Openings
+                            </span>
+                            <div className="flex justify-center pt-1">
+                                <SlotDots filled={project.accepted_count ?? 0} total={project.slots_total} />
                             </div>
                         </div>
-
-                        <div className="mt-8">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
-                                Description
-                            </h2>
-                            <p className="mt-3 whitespace-pre-line text-base leading-relaxed text-gray-700">
-                                {project.description}
-                            </p>
+                        <div className="space-y-1">
+                            <span className="text-xs text-muted block flex items-center justify-center gap-1">
+                                <Clock className="w-3.5 h-3.5" /> Commitment
+                            </span>
+                            <span className="text-sm font-semibold text-text block">{project.hours_per_week} hrs/wk</span>
                         </div>
-
-                        {project.skills && project.skills.length > 0 && (
-                            <div className="mt-8">
-                                <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
-                                    Required Skills
-                                </h2>
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                    {project.skills.map((skill) => (
-                                        <span
-                                            key={skill.id}
-                                            className="inline-flex items-center rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700"
-                                        >
-                                            {skill.name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Telegram Contact Box */}
-                        <div className="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
-                            <h2 className="text-sm font-semibold text-gray-900">
-                                Direct Contact (Telegram)
-                            </h2>
-                            {can.viewContact && project.telegram_contact ? (
-                                <p className="mt-2 text-sm text-gray-800">
-                                    Contact Handle:{' '}
-                                    <a
-                                        href={`https://t.me/${project.telegram_contact}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="font-semibold text-indigo-600 hover:underline"
-                                    >
-                                        @{project.telegram_contact}
-                                    </a>
-                                </p>
-                            ) : (
-                                <p className="mt-2 text-xs text-gray-500">
-                                    Telegram contact information is revealed only to accepted collaborators and the project creator.
-                                </p>
-                            )}
+                        <div className="space-y-1">
+                            <span className="text-xs text-muted block flex items-center justify-center gap-1">
+                                <Calendar className="w-3.5 h-3.5" /> Duration
+                            </span>
+                            <span className="text-sm font-semibold text-text block">{project.duration_weeks} wks</span>
+                        </div>
+                        <div className="space-y-1">
+                            <span className="text-xs text-muted block">Deadline</span>
+                            <DeadlineRing deadline={project.application_deadline} className="justify-center" />
                         </div>
                     </div>
 
-                    {/* Join Request Interaction Section */}
-                    {existingRequest && (
-                        <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-semibold text-blue-900">
-                                    Your Application Status
-                                </h3>
-                                <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-0.5 text-xs font-semibold text-blue-800 capitalize">
-                                    {existingRequest.status_label}
-                                </span>
+                    {/* Skills */}
+                    {project.skills && project.skills.length > 0 && (
+                        <div className="space-y-2">
+                            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">
+                                Required Skills
+                            </h2>
+                            <div className="flex flex-wrap gap-1.5">
+                                {project.skills.map((skill) => (
+                                    <span key={skill.id} className="px-2.5 py-1 rounded-lg bg-surface-2 text-xs font-medium text-text">
+                                        {skill.name}
+                                    </span>
+                                ))}
                             </div>
-                            <p className="mt-3 text-sm text-blue-800 italic">
-                                &ldquo;{existingRequest.message}&rdquo;
-                            </p>
-                            {existingRequest.status === 'accepted' && (
-                                <p className="mt-3 text-xs font-medium text-green-700">
-                                    You have been accepted into this project! Check the direct Telegram contact above to coordinate with your team[cite: 1, 3].
-                                </p>
-                            )}
                         </div>
                     )}
 
-                    {can.apply && (
-                        <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Request to Join this Project
-                            </h2>
-                            <p className="mt-1 text-sm text-gray-500">
-                                Introduce yourself to {project.owner.name}. Explain what relevant skills and time you can commit (10 to 500 characters)[cite: 1, 2].
+                    {/* Telegram Contact Box */}
+                    <div className="p-5 rounded-xl bg-surface-2/40 border border-surface-2 space-y-2">
+                        <h2 className="text-sm font-semibold text-text">Direct Contact (Telegram)</h2>
+                        {can.viewContact && project.telegram_contact ? (
+                            <p className="text-sm text-text">
+                                Username:{' '}
+                                <a
+                                    href={`https://t.me/${project.telegram_contact}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-mint font-semibold hover:underline"
+                                >
+                                    @{project.telegram_contact}
+                                </a>
                             </p>
-                            <form onSubmit={handleApply} className="mt-4 space-y-4">
-                                <div>
-                                    <textarea
-                                        rows={4}
-                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                                        placeholder="Hi! I am a 3rd year student experienced with React and Tailwind, and I have 10 hours a week to contribute..."
-                                        value={data.message}
-                                        onChange={(e) => setData('message', e.target.value)}
-                                        required
-                                    />
-                                    <div className="mt-1 flex justify-between text-xs text-gray-500">
-                                        <span>Min 10, Max 500 characters[cite: 1, 2]</span>
-                                        <span>{data.message.length} / 500</span>
-                                    </div>
-                                    <InputError message={errors.message} className="mt-2" />
-                                </div>
-                                <div className="flex justify-end">
-                                    <PrimaryButton disabled={processing || data.message.length < 10}>
-                                        {processing ? 'Submitting...' : 'Submit Join Request'}
-                                    </PrimaryButton>
-                                </div>
-                            </form>
+                        ) : (
+                            <p className="text-xs text-muted">
+                                Private. Revealed only to accepted collaborators and the project creator.
+                            </p>
+                        )}
+                    </div>
+                </Card>
+
+                {/* Existing Application Banner */}
+                {existingRequest && (
+                    <Card className="p-6 border-violet/40 bg-violet/10 space-y-2">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-bold font-display text-text">Application Status</h3>
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-2 text-violet border border-violet/30 capitalize">
+                                {existingRequest.status_label}
+                            </span>
                         </div>
-                    )}
-                </div>
+                        <p className="text-xs text-muted italic">&ldquo;{existingRequest.message}&rdquo;</p>
+                        {existingRequest.status === 'accepted' && (
+                            <p className="text-xs text-mint font-medium">
+                                You are an accepted collaborator! Use the Telegram contact above to coordinate.
+                            </p>
+                        )}
+                    </Card>
+                )}
+
+                {/* Apply Box (Counter 500 per L9) */}
+                {can.apply && (
+                    <Card className="p-6 sm:p-8 space-y-4">
+                        <h2 className="text-base font-bold font-display text-text">
+                            Request to Join this Project
+                        </h2>
+                        <p className="text-xs text-muted">
+                            Introduce yourself to {project.owner.name} with relevant skills and your availability.
+                        </p>
+                        <form onSubmit={handleApply} className="space-y-4">
+                            <TextArea
+                                label="Application Message"
+                                required
+                                rows={4}
+                                maxLength={500}
+                                value={data.message}
+                                onChange={(e) => setData('message', e.target.value)}
+                                error={errors.message}
+                                placeholder="Hi! I am a 3rd year student experienced with React and Tailwind, and I have 10 hours a week to contribute..."
+                                hint="Min 10, max 500 characters."
+                            />
+                            <div className="flex justify-end">
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    loading={processing}
+                                    disabled={data.message.length < 10}
+                                >
+                                    <Send className="w-4 h-4 mr-1.5" /> Submit Request
+                                </Button>
+                            </div>
+                        </form>
+                    </Card>
+                )}
+
+                <ConfirmDialog
+                    show={confirmDelete}
+                    title="Delete Project Listing"
+                    content="Are you sure you want to delete this project? This will soft delete the project and cannot be undone."
+                    danger
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={handleDelete}
+                />
             </div>
         </AuthenticatedLayout>
     );
