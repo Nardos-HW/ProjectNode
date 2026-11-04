@@ -59,6 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'profile_completed_at' => 'datetime',
+            'suspended_at' => 'datetime',
             'year_of_study' => 'integer',
         ];
     }
@@ -89,5 +90,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function moderationActions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ModerationAction::class, 'admin_id');
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
     }
 }

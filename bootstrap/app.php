@@ -10,17 +10,20 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\EnsureUserIsNotSuspended::class,
         ]);
 
         $middleware->alias([
             'profile.complete' => \App\Http\Middleware\EnsureProfileIsComplete::class,
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'not.suspended' => \App\Http\Middleware\EnsureUserIsNotSuspended::class,
         ]);
     })
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

@@ -38,15 +38,16 @@ class HandleInertiaRequests extends Middleware
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role ?? 'student',
+                    'role' => $user->role,
                     'department_id' => $user->department_id,
                     'year_of_study' => $user->year_of_study,
                     'bio' => $user->bio,
                     'interests' => $user->interests,
                     'telegram_handle' => $user->telegram_handle,
                     'profile_completed_at' => $user->profile_completed_at,
-                    'skill_ids' => $user->relationLoaded('skills') 
-                        ? $user->skills->pluck('id')->values()->all() 
+                    'suspended_at' => $user->suspended_at,
+                    'skill_ids' => $user->relationLoaded('skills')
+                        ? $user->skills->pluck('id')->all()
                         : $user->skills()->pluck('skills.id')->all(),
                 ] : null,
             ],

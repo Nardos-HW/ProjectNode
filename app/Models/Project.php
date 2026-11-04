@@ -71,6 +71,9 @@ class Project extends Model
     {
         return $query->where('status', ProjectStatus::Open->value)
             ->whereDate('application_deadline', '>=', now(config('app.timezone', 'Africa/Addis_Ababa'))->toDateString())
+            ->whereHas('owner', function (Builder $ownerQuery) {
+                $ownerQuery->whereNull('suspended_at');
+            })
             ->whereRaw('(SELECT COUNT(*) FROM join_requests WHERE join_requests.project_id = projects.id AND join_requests.status = ?) < projects.slots_total', [\App\Enums\JoinRequestStatus::Accepted->value]);
     }
 
