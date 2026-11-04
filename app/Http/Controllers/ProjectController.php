@@ -183,6 +183,8 @@ class ProjectController extends Controller
                 'name' => $project->owner->name,
             ],
             'skills' => $project->skills->map(fn ($s) => ['id' => $s->id, 'name' => $s->name]),
+            'outcome_summary' => $project->outcome_summary,
+            'outcome_url' => $project->outcome_url,
         ];
 
         // Omit key completely when not authorized (satisfies Inertia missing() assertions)
@@ -202,6 +204,7 @@ class ProjectController extends Controller
                 'update' => Gate::allows('update', $project),
                 'changeStatus' => Gate::allows('changeStatus', $project),
                 'delete' => Gate::allows('delete', $project),
+                'complete' => Gate::allows('complete', $project),
                 'viewContact' => Gate::allows('viewContact', $project),
                 'manageRequests' => Gate::allows('viewAny', [\App\Models\JoinRequest::class, $project]),
                 'apply' => $user && $user->id !== $project->owner_id && ! $existingRequest && $project->isRecruiting(),
