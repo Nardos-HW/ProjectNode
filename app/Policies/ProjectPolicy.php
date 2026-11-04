@@ -23,15 +23,19 @@ class ProjectPolicy
         return true;
     }
 
+    /**
+     * Determine whether the user can update the project.
+     */
     public function update(User $user, Project $project): bool
     {
-        if ($user->id !== $project->owner_id) {
+        if ($project->status === \App\Enums\ProjectStatus::Completed) {
             return false;
         }
 
-        return $project->canBeEdited();
+        return $user->id === $project->owner_id && $project->canBeEdited();
     }
 
+    
     public function changeStatus(User $user, Project $project): bool
     {
         if ($user->id !== $project->owner_id) {
@@ -79,6 +83,24 @@ class ProjectPolicy
     public function adminRestore(User $user, Project $project): bool
     {
         return $user->isAdmin() && $project->trashed();
+    }
+
+    
+
+    /**
+     * Determine whether the user can mark the project as completed.
+     */
+    public function complete(User $user, Project $project): bool
+    {
+        if ($user->id !== $project->owner_id) {
+            return false;
+        }
+
+        $status = $project->status instanceof \App\Enums\ProjectStatus
+            ? $project->status
+            : \App\Enums\ProjectStatus::from($project->status);
+
+        return in_array($status, [\App\Enums\ProjectStatus::Open, \App\Enums\ProjectStatus::InProgress], true);
     }
     
 }

@@ -96,4 +96,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->suspended_at !== null;
     }
+    public function participations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProjectParticipant::class);
+    }
 }

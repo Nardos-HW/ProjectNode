@@ -6,18 +6,19 @@ import SlotDots from '@/Components/ui/SlotDots';
 import DeadlineRing from '@/Components/ui/DeadlineRing';
 import ProjectStatusBadge from '@/Components/ProjectStatusBadge';
 import CategoryBadge from '@/Components/CategoryBadge';
-import { Head, Link, usePage } from '@inertiajs/react';
+import Badge from '@/Components/ui/Badge';
+import { Head, Link, usePage, useForm } from '@inertiajs/react';
 import {
     Briefcase,
     Inbox,
     Clock,
-    Users,
     PlusCircle,
     ArrowRight,
     Sparkles,
     AlertCircle,
     CheckCircle2,
-    Calendar,
+    Award,
+    ExternalLink,
 } from 'lucide-react';
 
 export default function Dashboard({
@@ -26,8 +27,14 @@ export default function Dashboard({
     my_projects = [],
     matches = [],
     profile,
+    pendingCredits = [],
 }) {
     const { auth } = usePage().props;
+    const { patch, processing } = useForm({});
+
+    const handleConfirmCredit = (participantId) => {
+        patch(route('participants.confirm', participantId));
+    };
 
     const hasAttention =
         attention.requests_to_review.length > 0 ||
@@ -48,6 +55,69 @@ export default function Dashboard({
                         </Button>
                     }
                 />
+
+                {/* Pending Participation Credits Banner */}
+                {pendingCredits.length > 0 && (
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                            <Award className="w-5 h-5 text-mint" />
+                            <h2 className="text-sm font-semibold text-text uppercase tracking-wider">
+                                Pending Participation Credits ({pendingCredits.length})
+                            </h2>
+                        </div>
+
+                        <div className="grid gap-4">
+                            {pendingCredits.map((credit) => (
+                                <Card key={credit.id} className="p-5 border-mint/30 bg-surface space-y-3">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold text-text text-base">
+                                                    {credit.project.title}
+                                                </h3>
+                                                <Badge variant="mint" size="sm">Credit Pending</Badge>
+                                            </div>
+                                            <p className="text-xs text-muted mt-0.5">
+                                                Created by <span className="text-text font-medium">{credit.project.owner_name}</span> &bull; Credited on {credit.credited_at}
+                                            </p>
+                                        </div>
+
+                                        <Button
+                                            type="button"
+                                            variant="primary"
+                                            size="sm"
+                                            loading={processing}
+                                            onClick={() => handleConfirmCredit(credit.id)}
+                                            className="bg-mint text-ink hover:bg-mint/90 self-start sm:self-center"
+                                        >
+                                            <CheckCircle2 className="w-4 h-4 mr-1.5" /> Confirm Credit
+                                        </Button>
+                                    </div>
+
+                                    <div className="p-3.5 rounded-xl bg-surface-2/60 border border-surface-2 text-xs text-text space-y-1">
+                                        <span className="text-[10px] font-bold text-muted uppercase tracking-wider block">
+                                            Owner's Outcome Summary:
+                                        </span>
+                                        <p className="italic leading-relaxed">
+                                            &ldquo;{credit.project.outcome_summary}&rdquo;
+                                        </p>
+                                    </div>
+
+                                    {credit.project.outcome_url && (
+                                        <a
+                                            href={credit.project.outcome_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-xs text-violet hover:underline font-medium"
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" /> View Deliverable
+                                        </a>
+                                    )}
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Profile Completion Banner (if under 100%) */}
                 {profile.percent < 100 && (

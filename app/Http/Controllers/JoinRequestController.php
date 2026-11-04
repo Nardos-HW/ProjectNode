@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\JoinRequestStatus;
+use App\Enums\ProjectStatus;
 use App\Http\Requests\StoreJoinRequestRequest;
 use App\Models\JoinRequest;
 use App\Models\Project;
@@ -16,7 +17,7 @@ use Inertia\Response;
 
 class JoinRequestController extends Controller
 {
-   /**
+    /**
      * Store a newly created join request.
      */
     public function store(StoreJoinRequestRequest $request, Project $project): RedirectResponse
@@ -77,36 +78,62 @@ class JoinRequestController extends Controller
     /**
      * Accept a pending join request with row locking to ensure capacity is not exceeded.
      */
-    public function accept(JoinRequest $joinRequest): RedirectResponse
+    public function accept(Request $request, JoinRequest $joinRequest): RedirectResponse
     {
         Gate::authorize('decide', $joinRequest);
 
-        try {
-            DB::transaction(function () use ($joinRequest) {
-                // Lock project row to prevent race conditions during acceptance
-                $project = Project::whereKey($joinRequest->project_id)->lockForUpdate()->firstOrFail();
-                $request = JoinRequest::whereKey($joinRequest->id)->lockForUpdate()->firstOrFail();
+        $errorMessage = null;
 
-                if ($request->status !== JoinRequestStatus::Pending) {
-                    throw new \RuntimeException('This request has already been decided.');
-                }
+        DB::transaction(function () use ($joinRequest, &$errorMessage) {
+            $project = Project::whereKey($joinRequest->project_id)->lockForUpdate()->firstOrFail();
+            $requestModel = JoinRequest::whereKey($joinRequest->id)->lockForUpdate()->firstOrFail();
 
-                if ($project->acceptedRequests()->count() >= $project->slots_total) {
-                    throw new \RuntimeException('No openings left on this project.');
-                }
+            $statusValue = $requestModel->status instanceof JoinRequestStatus 
+                ? $requestModel->status->value 
+                : $requestModel->status;
 
-                $request->update([
-                    'status' => JoinRequestStatus::Accepted,
-                    'decided_at' => now(),
-                ]);
-            });
-        } catch (\RuntimeException $e) {
-            return back()->withErrors(['message' => $e->getMessage()]);
+            if ($statusValue !== JoinRequestStatus::Pending->value) {
+                $errorMessage = 'This request has already been decided.';
+                return;
+            }
+
+            $projectStatusValue = $project->status instanceof ProjectStatus
+                ? $project->status->value
+                : $project->status;
+
+            if (! in_array($projectStatusValue, ['open', 'in_progress'], true)) {
+                $errorMessage = 'This project is no longer active.';
+                return;
+            }
+
+            $acceptedCount = $project->acceptedRequests()->count();
+            if ($acceptedCount >= $project->slots_total) {
+                $errorMessage = 'Cannot accept applicant: project has reached full capacity.';
+                return;
+            }
+
+            $requestModel->forceFill([
+                'status' => JoinRequestStatus::Accepted->value,
+                'decided_at' => now(),
+            ])->save();
+
+            // Record participant row
+            $project->participants()->firstOrCreate(
+                ['user_id' => $requestModel->applicant_id],
+                [
+                    'role' => 'member',
+                    'join_request_id' => $requestModel->id,
+                ]
+            );
+        });
+
+        if ($errorMessage) {
+            return back()->withErrors(['message' => $errorMessage]);
         }
 
-        return back()->with('success', 'Applicant accepted into project team.');
+        return back()->with('success', 'Applicant accepted into project.');
     }
-
+    
     /**
      * Reject a pending join request.
      */

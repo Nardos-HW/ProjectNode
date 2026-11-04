@@ -12,6 +12,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\ProjectCompletionController;
+use App\Http\Controllers\ParticipationConfirmationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -42,6 +44,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('DesignSystem');
         })->name('design-system');
     }
+    
+    Route::get('/projects/{project}/complete', [ProjectCompletionController::class, 'create'])->name('projects.complete');
+    Route::post('/projects/{project}/complete', [ProjectCompletionController::class, 'store'])->name('projects.complete.store');
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     // Projects (browsing open to verified students)
@@ -63,9 +68,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::match(['put', 'patch'], '/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');   
     Route::patch('/projects/{project}/status', [ProjectController::class, 'updateStatus'])->name('projects.status');
-
+    Route::patch('/participants/{participant}/confirm', [ParticipationConfirmationController::class, 'update'])
+    ->name('participants.confirm');
+    
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 

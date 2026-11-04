@@ -9,6 +9,9 @@ use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\ProjectParticipant;
+use App\Models\JoinRequest;
+use App\Enums\JoinRequestStatus;
 
 class DemoSeeder extends Seeder
 {
@@ -195,6 +198,28 @@ class DemoSeeder extends Seeder
                 'status' => 'open',
             ]);
             $proj->skills()->sync($p['skills']);
+        }
+
+        // Ensure all created projects have owner participant rows
+        foreach (Project::all() as $proj) {
+            $proj->participants()->firstOrCreate(
+                ['user_id' => $proj->owner_id],
+                ['role' => 'owner']
+            );
+        }
+
+        // Ensure accepted join requests have member participant rows
+        foreach (JoinRequest::where('status', JoinRequestStatus::Accepted->value)->get() as $acceptedReq) {
+            ProjectParticipant::firstOrCreate(
+                [
+                    'project_id' => $acceptedReq->project_id,
+                    'user_id' => $acceptedReq->applicant_id,
+                ],
+                [
+                    'role' => 'member',
+                    'join_request_id' => $acceptedReq->id,
+                ]
+            );
         }
     }
 }

@@ -21,7 +21,28 @@ class DashboardController extends Controller
         $user = $request->user()->loadMissing(['skills:id,name']);
         $userSkillIds = $user->skills->pluck('id')->all();
 
-        // 1. Stats
+        // 1. Pending Credits for current student
+        $pendingCredits = $user->participations()
+            ->where('role', 'member')
+            ->whereNotNull('credited_at')
+            ->whereNull('confirmed_at')
+            ->with(['project:id,title,category,outcome_summary,outcome_url,owner_id', 'project.owner:id,name'])
+            ->latest('credited_at')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'credited_at' => $p->credited_at?->toFormattedDateString(),
+                'project' => [
+                    'id' => $p->project->id,
+                    'title' => $p->project->title,
+                    'category' => $p->project->category->value,
+                    'outcome_summary' => $p->project->outcome_summary,
+                    'outcome_url' => $p->project->outcome_url,
+                    'owner_name' => $p->project->owner?->name,
+                ],
+            ]);
+
+        // 2. Stats
         $activeProjectsCount = Project::where('owner_id', $user->id)
             ->whereIn('status', [ProjectStatus::Open->value, ProjectStatus::InProgress->value])
             ->count();
@@ -46,7 +67,7 @@ class DashboardController extends Controller
             ],
         ];
 
-        // 2. Attention
+        // 3. Attention
         $requestsToReview = JoinRequest::whereHas('project', function ($q) use ($user) {
             $q->where('owner_id', $user->id);
         })
@@ -96,7 +117,7 @@ class DashboardController extends Controller
             'closing_soon' => $closingSoon,
         ];
 
-        // 3. My Projects (latest 3)
+        // 4. My Projects (latest 3)
         $myProjects = Project::where('owner_id', $user->id)
             ->withCount(['acceptedRequests as members_count'])
             ->latest('id')
@@ -110,7 +131,7 @@ class DashboardController extends Controller
                 'slots_total' => $p->slots_total,
             ]);
 
-        // 4. Matches (up to 4 recruiting projects not mine and not applied)
+        // 5. Matches (up to 4 recruiting projects not mine and not applied)
         $appliedProjectIds = JoinRequest::where('applicant_id', $user->id)->pluck('project_id')->all();
 
         $matches = [];
@@ -145,7 +166,7 @@ class DashboardController extends Controller
                 ]);
         }
 
-        // 5. Profile completeness calculation
+        // 6. Profile completeness calculation
         $profileFields = [
             'name' => [! empty($user->name), 'Full Name'],
             'department_id' => [! empty($user->department_id), 'Department'],
@@ -176,6 +197,7 @@ class DashboardController extends Controller
                 'percent' => $profilePercent,
                 'missing' => $missing,
             ],
+            'pendingCredits' => $pendingCredits,
         ]);
     }
 }
