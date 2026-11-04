@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -84,6 +86,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::post('/users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
     Route::post('/users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');
+    Route::get('/projects', [AdminProjectController::class, 'index'])->name('projects.index');
+    Route::delete('/projects/{project}', [AdminProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::post('/projects/{project}/restore', [AdminProjectController::class, 'restore'])->name('projects.restore');
 });
 
 
