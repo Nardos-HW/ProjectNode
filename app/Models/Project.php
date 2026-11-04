@@ -104,4 +104,31 @@ class Project extends Model
 
         return $this->acceptedRequests()->count() === 0;
     }
+
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        return $query
+            ->when($filters['category'] ?? null, fn ($q, $cat) => $q->where('category', $cat))
+            ->when($filters['department_id'] ?? null, fn ($q, $dept) => $q->where('department_id', $dept))
+            ->when($filters['skills'] ?? null, function ($q, $skills) {
+                $q->whereHas('skills', fn ($sq) => $sq->whereIn('skills.id', (array) $skills));
+            })
+            ->when($filters['posted'] ?? null, function ($q, $days) {
+                $q->where('created_at', '>=', now(config('app.timezone', 'Africa/Addis_Ababa'))->subDays((int) $days));
+            })
+            ->when($filters['deadline_within'] ?? null, function ($q, $days) {
+                $today = now(config('app.timezone', 'Africa/Addis_Ababa'))->startOfDay()->toDateString();
+                $target = now(config('app.timezone', 'Africa/Addis_Ababa'))->startOfDay()->addDays((int) $days)->toDateString();
+                $q->whereBetween('application_deadline', [$today, $target]);
+            })
+            ->when($filters['q'] ?? null, function ($q, $term) {
+                // Escape LIKE wildcards typed by users per L14 and doc 03
+                $escaped = addcslashes($term, '%_');
+                $like = '%' . $escaped . '%';
+                $q->where(function ($sub) use ($like) {
+                    $sub->where('title', 'ILIKE', $like)
+                        ->orWhere('description', 'ILIKE', $like);
+                });
+            });
+    }
 }

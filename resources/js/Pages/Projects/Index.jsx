@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Card from '@/Components/ui/Card';
 import Button from '@/Components/ui/Button';
@@ -9,15 +10,52 @@ import EmptyState from '@/Components/ui/EmptyState';
 import CategoryBadge from '@/Components/CategoryBadge';
 import ProjectStatusBadge from '@/Components/ProjectStatusBadge';
 import { Head, Link, router } from '@inertiajs/react';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Search, SlidersHorizontal, X, ArrowUpDown } from 'lucide-react';
 
-export default function Index({ projects, filters = {} }) {
-    const handleToggleClosed = (e) => {
-        router.get(
-            route('projects.index'),
-            e.target.checked ? { include_closed: 1 } : {},
-            { preserveState: true, replace: true }
-        );
+export default function Index({
+    projects,
+    filters = {},
+    departments = [],
+    skills = [],
+    categories = [],
+}) {
+    const [search, setSearch] = useState(filters.q || '');
+    const [showFilters, setShowFilters] = useState(false);
+
+    const applyFilter = (newFilters) => {
+        const merged = { ...filters, ...newFilters };
+
+        // Clean empty keys
+        Object.keys(merged).forEach((k) => {
+            if (merged[k] === '' || merged[k] === null || (Array.isArray(merged[k]) && merged[k].length === 0)) {
+                delete merged[k];
+            }
+        });
+
+        router.get(route('projects.index'), merged, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        applyFilter({ q: search });
+    };
+
+    const handleClearAll = () => {
+        setSearch('');
+        router.get(route('projects.index'), {}, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
+    const handleRemoveSkill = (skillId) => {
+        const currentSkills = Array.isArray(filters.skills) ? filters.skills.map(Number) : [];
+        const updated = currentSkills.filter((id) => id !== Number(skillId));
+        applyFilter({ skills: updated });
     };
 
     const isDeadlinePassed = (deadline) => {
@@ -28,6 +66,21 @@ export default function Index({ projects, filters = {} }) {
         return target < today;
     };
 
+    const activeSkillsList = Array.isArray(filters.skills)
+        ? filters.skills.map((id) => skills.find((s) => s.id === Number(id))).filter(Boolean)
+        : [];
+
+    const hasActiveFilters = Boolean(
+        filters.q ||
+        filters.category ||
+        filters.department_id ||
+        (filters.skills && filters.skills.length > 0) ||
+        filters.deadline_within ||
+        filters.posted ||
+        filters.include_closed ||
+        (filters.sort && filters.sort !== 'newest')
+    );
+
     return (
         <AuthenticatedLayout>
             <Head title="Discover Projects" />
@@ -37,38 +90,246 @@ export default function Index({ projects, filters = {} }) {
                     title="Discover Projects"
                     subtitle="Find collaboration opportunities across Addis Ababa University."
                     actions={
-                        <div className="flex items-center gap-4">
-                            <label className="flex items-center gap-2 text-xs font-medium text-muted cursor-pointer select-none">
-                                <input
-                                    type="checkbox"
-                                    className="rounded border-surface-2 text-violet focus:ring-violet bg-ink"
-                                    checked={!!filters.include_closed}
-                                    onChange={handleToggleClosed}
-                                />
-                                <span>Include closed</span>
-                            </label>
-
-                            <Button href={route('projects.create')} variant="primary" size="sm">
-                                <PlusCircle className="w-4 h-4 mr-1.5" /> Post Project
-                            </Button>
-                        </div>
+                        <Button href={route('projects.create')} variant="primary" size="sm">
+                            <PlusCircle className="w-4 h-4 mr-1.5" /> Post Project
+                        </Button>
                     }
                 />
 
-                {projects.data.length === 0 ? (
-                    <EmptyState
-                        title="No projects found"
-                        description={
-                            filters.include_closed
-                                ? 'No projects exist on campus yet.'
-                                : 'No projects are currently accepting applications. Toggle "Include closed" to see completed teams.'
-                        }
-                        action={
-                            <Button href={route('projects.create')} variant="primary">
-                                Post the First Project
+                {/* Search & Filter Toolbar */}
+                <Card className="p-4 space-y-4">
+                    <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
+                        {/* Keyword Search Box */}
+                        <form onSubmit={handleSearchSubmit} className="flex-1 w-full flex items-center gap-2">
+                            <div className="relative flex-1">
+                                <Search className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Search by title, description or keyword..."
+                                    maxLength={100}
+                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl bg-surface-2 border border-surface-2 text-text placeholder-muted/60 focus:outline-none focus:ring-2 focus:ring-violet transition-colors"
+                                />
+                            </div>
+                            <Button type="submit" variant="secondary" size="sm">
+                                Search
                             </Button>
-                        }
-                    />
+                        </form>
+
+                        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                            {/* Sort Selector */}
+                            <div className="flex items-center gap-1.5 text-xs text-muted">
+                                <ArrowUpDown className="w-3.5 h-3.5" />
+                                <select
+                                    value={filters.sort || 'newest'}
+                                    onChange={(e) => applyFilter({ sort: e.target.value })}
+                                    className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-2.5 py-1.5 focus:ring-violet focus:outline-none"
+                                >
+                                    <option value="newest">Newest First</option>
+                                    <option value="deadline">Closing Soonest</option>
+                                </select>
+                            </div>
+
+                            {/* Filter Panel Toggle */}
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowFilters(!showFilters)}
+                                className={`border ${showFilters ? 'bg-surface-2 text-text border-surface-2' : 'border-surface-2'}`}
+                            >
+                                <SlidersHorizontal className="w-3.5 h-3.5 mr-1.5" />
+                                Filters
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Filter Panel */}
+                    {showFilters && (
+                        <div className="pt-4 border-t border-surface-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                            {/* Category Filter */}
+                            <div className="space-y-1">
+                                <label className="text-muted font-medium">Category</label>
+                                <select
+                                    value={filters.category || ''}
+                                    onChange={(e) => applyFilter({ category: e.target.value })}
+                                    className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                >
+                                    <option value="">All Categories</option>
+                                    {categories.map((c) => (
+                                        <option key={c.value} value={c.value}>
+                                            {c.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Department Filter */}
+                            <div className="space-y-1">
+                                <label className="text-muted font-medium">Department</label>
+                                <select
+                                    value={filters.department_id || ''}
+                                    onChange={(e) => applyFilter({ department_id: e.target.value })}
+                                    className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                >
+                                    <option value="">All Departments</option>
+                                    {departments.map((d) => (
+                                        <option key={d.id} value={d.id}>
+                                            {d.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Deadline Filter */}
+                            <div className="space-y-1">
+                                <label className="text-muted font-medium">Application Deadline</label>
+                                <select
+                                    value={filters.deadline_within || ''}
+                                    onChange={(e) => applyFilter({ deadline_within: e.target.value })}
+                                    className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                >
+                                    <option value="">Any Deadline</option>
+                                    <option value="7">Within 7 days</option>
+                                    <option value="14">Within 14 days</option>
+                                    <option value="30">Within 30 days</option>
+                                </select>
+                            </div>
+
+                            {/* Posted Filter & Closed Toggle */}
+                            <div className="space-y-2">
+                                <div className="space-y-1">
+                                    <label className="text-muted font-medium">Posted Date</label>
+                                    <select
+                                        value={filters.posted || ''}
+                                        onChange={(e) => applyFilter({ posted: e.target.value })}
+                                        className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                    >
+                                        <option value="">Any Time</option>
+                                        <option value="7">Last 7 days</option>
+                                        <option value="30">Last 30 days</option>
+                                    </select>
+                                </div>
+
+                                <label className="flex items-center gap-2 cursor-pointer pt-1 text-muted select-none">
+                                    <input
+                                        type="checkbox"
+                                        checked={Boolean(filters.include_closed)}
+                                        onChange={(e) => applyFilter({ include_closed: e.target.checked ? 1 : '' })}
+                                        className="rounded border-surface-2 text-violet focus:ring-violet bg-ink"
+                                    />
+                                    <span>Include closed</span>
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Active Filter Chips & Result Counter */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
+                        <span className="text-muted font-medium">
+                            Showing <span className="text-text font-bold">{projects.total ?? projects.data.length}</span> project{projects.total === 1 ? '' : 's'}
+                        </span>
+
+                        {hasActiveFilters && (
+                            <div className="flex flex-wrap items-center gap-1.5">
+                                {filters.q && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                        Keyword: &ldquo;{filters.q}&rdquo;
+                                        <button type="button" onClick={() => { setSearch(''); applyFilter({ q: '' }); }}>
+                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                        </button>
+                                    </span>
+                                )}
+
+                                {filters.category && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2 capitalize">
+                                        {filters.category.replace('_', ' ')}
+                                        <button type="button" onClick={() => applyFilter({ category: '' })}>
+                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                        </button>
+                                    </span>
+                                )}
+
+                                {filters.department_id && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                        {departments.find((d) => d.id === Number(filters.department_id))?.name || 'Department'}
+                                        <button type="button" onClick={() => applyFilter({ department_id: '' })}>
+                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                        </button>
+                                    </span>
+                                )}
+
+                                {activeSkillsList.map((skill) => (
+                                    <span key={skill.id} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-violet/15 text-violet border border-violet/30">
+                                        {skill.name}
+                                        <button type="button" onClick={() => handleRemoveSkill(skill.id)}>
+                                            <X className="w-3 h-3 text-violet hover:text-coral" />
+                                        </button>
+                                    </span>
+                                ))}
+
+                                {filters.deadline_within && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                        Within {filters.deadline_within}d
+                                        <button type="button" onClick={() => applyFilter({ deadline_within: '' })}>
+                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                        </button>
+                                    </span>
+                                )}
+
+                                {filters.posted && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                        Past {filters.posted}d
+                                        <button type="button" onClick={() => applyFilter({ posted: '' })}>
+                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                        </button>
+                                    </span>
+                                )}
+
+                                {filters.include_closed && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                        Including closed
+                                        <button type="button" onClick={() => applyFilter({ include_closed: '' })}>
+                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                        </button>
+                                    </span>
+                                )}
+
+                                <button
+                                    type="button"
+                                    onClick={handleClearAll}
+                                    className="text-violet hover:underline ml-1 font-medium"
+                                >
+                                    Clear all
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                {/* Results Listing */}
+                {projects.data.length === 0 ? (
+                    hasActiveFilters ? (
+                        <EmptyState
+                            title="No projects match your filters"
+                            description="Try adjusting or clearing your search term, category, or deadline filters."
+                            action={
+                                <Button onClick={handleClearAll} variant="secondary">
+                                    Reset Filters
+                                </Button>
+                            }
+                        />
+                    ) : (
+                        <EmptyState
+                            title="No projects yet"
+                            description="No projects are currently open for recruitment across campus."
+                            action={
+                                <Button href={route('projects.create')} variant="primary">
+                                    Post the First Project
+                                </Button>
+                            }
+                        />
+                    )
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {projects.data.map((project) => {

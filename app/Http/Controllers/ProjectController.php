@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
 use App\Enums\ProjectStatus;
+use App\Http\Requests\ProjectIndexRequest;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Department;
@@ -23,25 +24,43 @@ class ProjectController extends Controller
     /**
      * Display a paginated listing of recruiting projects (excludes own projects).
      */
-    public function index(Request $request): Response
+    public function index(ProjectIndexRequest $request): Response
     {
+        $filters = $request->validated();
         $includeClosed = $request->boolean('include_closed');
+        $sort = $filters['sort'] ?? 'newest';
 
-        $projects = Project::query()
+        $query = Project::query()
             ->with(['owner:id,name', 'department:id,name', 'skills:id,name'])
             ->withCount(['acceptedRequests as accepted_count'])
             ->where('owner_id', '!=', $request->user()->id)
-            ->when(! $includeClosed, fn ($query) => $query->recruiting())
-            ->when($includeClosed, fn ($query) => $query->where('status', '!=', ProjectStatus::Cancelled->value))
-            ->latest('id')
-            ->paginate(12)
-            ->withQueryString();
+            ->filter($filters);
+
+        if (! $includeClosed) {
+            $query->recruiting();
+        } else {
+            $query->where('status', '!=', ProjectStatus::Cancelled->value);
+        }
+
+        if ($sort === 'deadline') {
+            $query->orderBy('application_deadline', 'asc')->orderBy('id', 'desc');
+        } else {
+            $query->latest('id');
+        }
+
+        $projects = $query->paginate(12)->withQueryString();
+
+        $categories = collect(ProjectCategory::cases())->map(fn ($cat) => [
+            'value' => $cat->value,
+            'label' => $cat->label(),
+        ]);
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
-            'filters' => [
-                'include_closed' => $includeClosed,
-            ],
+            'filters' => $filters,
+            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'skills' => Skill::orderBy('name')->get(['id', 'name']),
+            'categories' => $categories,
         ]);
     }
 
