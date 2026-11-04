@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role',
         'department_id',
         'year_of_study',
         'bio',
@@ -31,6 +32,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'telegram_handle',
         'profile_completed_at',
     ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
