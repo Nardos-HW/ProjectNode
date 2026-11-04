@@ -3,6 +3,7 @@ import TextArea from '@/Components/ui/TextArea';
 import Select from '@/Components/ui/Select';
 import Button from '@/Components/ui/Button';
 import SkillCheckboxGrid from '@/Components/SkillCheckboxGrid';
+import SkillPicker from '@/Components/SkillPicker';
 
 export default function ProjectForm({
     data,
@@ -120,11 +121,19 @@ export default function ProjectForm({
                 />
             </div>
 
-            <SkillCheckboxGrid
+            <SkillPicker
                 skills={skills}
                 selectedIds={data.skill_ids || []}
-                onChange={(ids) => setData('skill_ids', ids)}
-                error={errors.skill_ids}
+                newSkills={data.new_skills || []}
+                onChange={(ids, newOnes) => {
+                    setData((prev) => ({
+                        ...prev,
+                        skill_ids: ids,
+                        new_skills: newOnes,
+                    }));
+                }}
+                max={10}
+                error={errors.skill_ids || errors.new_skills}
             />
 
             <div className="flex justify-end pt-4 border-t border-surface-2">

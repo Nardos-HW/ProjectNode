@@ -2,6 +2,7 @@ import TextField from '@/Components/ui/TextField';
 import TextArea from '@/Components/ui/TextArea';
 import Select from '@/Components/ui/Select';
 import Button from '@/Components/ui/Button';
+import SkillPicker from '@/Components/SkillPicker';
 import SkillCheckboxGrid from '@/Components/SkillCheckboxGrid';
 import { useForm, usePage } from '@inertiajs/react';
 
@@ -22,6 +23,7 @@ export default function UpdateProfileInformationForm({
         interests: user.interests || '',
         telegram_handle: user.telegram_handle || '',
         skill_ids: userSkills || [],
+        new_skills: [],
     });
 
     const submit = (e) => {
@@ -108,11 +110,19 @@ export default function UpdateProfileInformationForm({
                     hint="Without @. Shared with project creators upon request acceptance."
                 />
 
-                <SkillCheckboxGrid
+                <SkillPicker
                     skills={skills}
                     selectedIds={data.skill_ids}
-                    onChange={(ids) => setData('skill_ids', ids)}
-                    error={errors.skill_ids}
+                    newSkills={data.new_skills || []}
+                    onChange={(ids, newOnes) => {
+                        setData((prev) => ({
+                            ...prev,
+                            skill_ids: ids,
+                            new_skills: newOnes,
+                        }));
+                    }}
+                    max={15}
+                    error={errors.skill_ids || errors.new_skills}
                 />
 
                 <div className="flex items-center gap-4 pt-2">

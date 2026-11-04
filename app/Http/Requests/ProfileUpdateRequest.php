@@ -29,8 +29,10 @@ class ProfileUpdateRequest extends FormRequest
             'bio'             => ['required', 'string', 'min:20', 'max:500'],
             'interests'       => ['nullable', 'string', 'max:255'],
             'telegram_handle' => ['required', 'regex:/^[A-Za-z][A-Za-z0-9_]{4,31}$/'],
-            'skill_ids'       => ['required', 'array', 'min:1', 'max:15'],
+            'skill_ids'       => ['nullable', 'array', 'max:15'],
             'skill_ids.*'     => ['integer', 'distinct', 'exists:skills,id'],
+            'new_skills'      => ['nullable', 'array', 'max:3'],
+            'new_skills.*'    => ['string', 'min:2', 'max:40', 'regex:' . \App\Support\SkillResolver::SKILL_NAME_REGEX],
         ];
     }
 }

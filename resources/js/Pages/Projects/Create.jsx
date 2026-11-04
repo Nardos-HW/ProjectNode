@@ -16,6 +16,7 @@ export default function Create({ departments, skills, categories, defaultTelegra
         application_deadline: '',
         telegram_contact: defaultTelegram || '',
         skill_ids: [],
+        new_skills: [],
     });
 
     const submit = (e) => {

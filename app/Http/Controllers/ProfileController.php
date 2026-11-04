@@ -38,13 +38,20 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $user->fill($request->safe()->except('skill_ids'));
+        $finalSkillIds = \App\Support\SkillResolver::resolve(
+            $request->validated('skill_ids', []),
+            $request->validated('new_skills', []),
+            $user,
+            15
+        );
+
+        $user->fill($request->safe()->except(['skill_ids', 'new_skills']));
         $user->profile_completed_at = $user->profile_completed_at ?? now();
         $user->save();
 
-        $user->skills()->sync($request->validated('skill_ids'));
+        $user->skills()->sync($finalSkillIds);
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('success', 'Profile saved.');
     }
 
     /**

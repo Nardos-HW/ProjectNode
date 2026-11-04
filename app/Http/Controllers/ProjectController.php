@@ -92,14 +92,21 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request): RedirectResponse
     {
-        $project = DB::transaction(function () use ($request) {
+        $finalSkillIds = \App\Support\SkillResolver::resolve(
+            $request->validated('skill_ids', []),
+            $request->validated('new_skills', []),
+            $request->user(),
+            10
+        );
+
+        $project = DB::transaction(function () use ($request, $finalSkillIds) {
             $project = Project::forceCreate([
-                ...$request->safe()->except('skill_ids'),
+                ...$request->safe()->except(['skill_ids', 'new_skills']),
                 'owner_id' => $request->user()->id,
                 'status' => 'open',
             ]);
 
-            $project->skills()->sync($request->validated('skill_ids'));
+            $project->skills()->sync($finalSkillIds);
 
             return $project;
         });

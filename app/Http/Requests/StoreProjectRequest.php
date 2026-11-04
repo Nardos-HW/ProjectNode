@@ -25,17 +25,19 @@ class StoreProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'                => ['required', 'string', 'min:5', 'max:120'],
-            'description'          => ['required', 'string', 'min:30', 'max:5000'],
-            'category'             => ['required', Rule::enum(ProjectCategory::class)],
-            'department_id'        => ['nullable', 'exists:departments,id'],
-            'skill_ids'            => ['required', 'array', 'min:1', 'max:10'],
-            'skill_ids.*'          => ['integer', 'distinct', 'exists:skills,id'],
-            'slots_total'          => ['required', 'integer', 'between:1,20'],
-            'hours_per_week'       => ['required', 'integer', 'between:1,40'],
-            'duration_weeks'       => ['required', 'integer', 'between:1,52'],
-            'application_deadline' => ['required', 'date', 'after_or_equal:today', 'before_or_equal:+180 days'],
-            'telegram_contact'     => ['required', 'regex:/^[A-Za-z][A-Za-z0-9_]{4,31}$/'],
+            'title' => ['required', 'string', 'max:120'],
+            'description' => ['required', 'string', 'max:5000'],
+            'category' => ['required', new \Illuminate\Validation\Rules\Enum(\App\Enums\ProjectCategory::class)],
+            'department_id' => ['required', 'exists:departments,id'],
+            'slots_total' => ['required', 'integer', 'between:1,20'],
+            'hours_per_week' => ['required', 'integer', 'between:1,40'],
+            'duration_weeks' => ['required', 'integer', 'between:1,52'],
+            'application_deadline' => ['required', 'date', 'after_or_equal:today'],
+            'telegram_contact' => ['required', 'regex:/^[A-Za-z][A-Za-z0-9_]{4,31}$/'],
+            'skill_ids' => ['nullable', 'array', 'max:10'],
+            'skill_ids.*' => ['integer', 'distinct', 'exists:skills,id'],
+            'new_skills' => ['nullable', 'array', 'max:3'],
+            'new_skills.*' => ['string', 'min:2', 'max:40', 'regex:' . \App\Support\SkillResolver::SKILL_NAME_REGEX],
         ];
     }
 }
