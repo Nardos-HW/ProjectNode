@@ -5,9 +5,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\AuditLogController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -17,6 +21,19 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 })->name('home');
+
+// Dedicated Suspended Notice Page (outside not.suspended gate)
+Route::middleware(['auth'])->get('/suspended', function (Request $request) {
+    if (! $request->user()->isSuspended()) {
+        return redirect()->route('dashboard');
+    }
+
+    return Inertia::render('Auth/Suspended', [
+        'reason' => $request->user()->suspension_reason,
+        'suspended_at' => $request->user()->suspended_at?->toFormattedDateString(),
+    ]);
+})->name('suspended');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -63,5 +80,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Admin Panel Routes
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
+    Route::post('/users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');
+    Route::get('/projects', [AdminProjectController::class, 'index'])->name('projects.index');
+    Route::delete('/projects/{project}', [AdminProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::post('/projects/{project}/restore', [AdminProjectController::class, 'restore'])->name('projects.restore');
+    Route::get('/audit-logs', AuditLogController::class)->name('audit-logs.index');
+});
+
 
 require __DIR__.'/auth.php';

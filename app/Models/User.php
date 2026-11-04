@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role',
         'department_id',
         'year_of_study',
         'bio',
@@ -31,6 +32,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'telegram_handle',
         'profile_completed_at',
     ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -53,6 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'profile_completed_at' => 'datetime',
+            'suspended_at' => 'datetime',
             'year_of_study' => 'integer',
         ];
     }
@@ -79,5 +86,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function joinRequests(): HasMany
     {
         return $this->hasMany(JoinRequest::class, 'applicant_id');
+    }
+    public function moderationActions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ModerationAction::class, 'admin_id');
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
     }
 }

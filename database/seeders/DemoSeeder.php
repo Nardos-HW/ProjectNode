@@ -19,7 +19,22 @@ class DemoSeeder extends Seeder
         $se = Department::firstOrCreate(['name' => 'Software Engineering']);
         $is = Department::firstOrCreate(['name' => 'Information Systems']);
         $ee = Department::firstOrCreate(['name' => 'Electrical Engineering']);
-
+        // Create Admin user
+        \App\Models\User::firstOrCreate(
+            ['email' => 'admin@aau.edu.et'],
+            [
+                'name' => 'Campus Administrator',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'admin',
+                'department_id' => $departments->first()->id,
+                'year_of_study' => 5,
+                'bio' => 'ProjectNode AAU platform administrator and content moderator.',
+                'interests' => 'Administration, Moderation, Academic Integrity',
+                'telegram_handle' => 'aau_admin',
+                'email_verified_at' => now(),
+                'profile_completed_at' => now(),
+            ]
+        );
         $findSkill = function (string $name, string $slug) {
             return Skill::where('name', $name)
                 ->orWhere('slug', $slug)

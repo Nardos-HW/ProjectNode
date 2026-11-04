@@ -70,4 +70,15 @@ class ProjectPolicy
             ->where('status', \App\Enums\JoinRequestStatus::Accepted)
             ->exists();
     }
+
+    public function adminDelete(User $user, Project $project): bool
+    {
+        return $user->isAdmin() && ! $project->trashed();
+    }
+
+    public function adminRestore(User $user, Project $project): bool
+    {
+        return $user->isAdmin() && $project->trashed();
+    }
+    
 }
