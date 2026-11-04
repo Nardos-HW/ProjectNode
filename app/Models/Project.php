@@ -134,4 +134,14 @@ class Project extends Model
                 });
             });
     }
+
+    public function participants(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProjectParticipant::class);
+    }
+
+    public function members(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->participants()->where('role', 'member');
+    }
 }

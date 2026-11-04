@@ -136,6 +136,12 @@ class ProjectController extends Controller
 
             $project->skills()->sync($finalSkillIds);
 
+            // Record owner participant row (BR-14)
+            $project->participants()->create([
+                'user_id' => $request->user()->id,
+                'role' => 'owner',
+            ]);
+
             return $project;
         });
 
