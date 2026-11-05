@@ -109,7 +109,7 @@ export default function Index({
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Search by title, description or keyword..."
                                     maxLength={100}
-                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl bg-surface-2 border border-surface-2 text-text placeholder-muted/60 focus:outline-none focus:ring-2 focus:ring-violet transition-colors"
+                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-lg bg-carbon-950 border border-carbon-800 text-white placeholder-neutral-600 focus:outline-none focus:border-flame-500 focus:ring-1 focus:ring-flame-500 transition-colors font-mono"
                                 />
                             </div>
                             <Button type="submit" variant="secondary" size="sm">
@@ -119,12 +119,12 @@ export default function Index({
 
                         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                             {/* Sort Selector */}
-                            <div className="flex items-center gap-1.5 text-xs text-muted">
+                            <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-mono">
                                 <ArrowUpDown className="w-3.5 h-3.5" />
                                 <select
                                     value={filters.sort || 'newest'}
                                     onChange={(e) => applyFilter({ sort: e.target.value })}
-                                    className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-2.5 py-1.5 focus:ring-violet focus:outline-none"
+                                    className="bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg px-2.5 py-1.5 focus:border-flame-500 focus:outline-none font-mono"
                                 >
                                     <option value="newest">Newest First</option>
                                     <option value="deadline">Closing Soonest</option>
@@ -136,7 +136,7 @@ export default function Index({
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`border ${showFilters ? 'bg-surface-2 text-text border-surface-2' : 'border-surface-2'}`}
+                                className={`border ${showFilters ? 'bg-carbon-850 text-white border-carbon-700' : 'border-carbon-800 text-neutral-400'}`}
                             >
                                 <SlidersHorizontal className="w-3.5 h-3.5 mr-1.5" />
                                 Filters
@@ -146,14 +146,14 @@ export default function Index({
 
                     {/* Filter Panel */}
                     {showFilters && (
-                        <div className="pt-4 border-t border-surface-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                        <div className="pt-4 border-t border-carbon-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
                             {/* Category Filter */}
                             <div className="space-y-1">
-                                <label className="text-muted font-medium">Category</label>
+                                <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Category</label>
                                 <select
                                     value={filters.category || ''}
                                     onChange={(e) => applyFilter({ category: e.target.value })}
-                                    className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                    className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
                                 >
                                     <option value="">All Categories</option>
                                     {categories.map((c) => (
@@ -166,11 +166,11 @@ export default function Index({
 
                             {/* Department Filter */}
                             <div className="space-y-1">
-                                <label className="text-muted font-medium">Department</label>
+                                <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Department</label>
                                 <select
                                     value={filters.department_id || ''}
                                     onChange={(e) => applyFilter({ department_id: e.target.value })}
-                                    className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                    className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
                                 >
                                     <option value="">All Departments</option>
                                     {departments.map((d) => (
@@ -183,11 +183,11 @@ export default function Index({
 
                             {/* Deadline Filter */}
                             <div className="space-y-1">
-                                <label className="text-muted font-medium">Application Deadline</label>
+                                <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Application Deadline</label>
                                 <select
                                     value={filters.deadline_within || ''}
                                     onChange={(e) => applyFilter({ deadline_within: e.target.value })}
-                                    className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                    className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
                                 >
                                     <option value="">Any Deadline</option>
                                     <option value="7">Within 7 days</option>
@@ -199,11 +199,11 @@ export default function Index({
                             {/* Posted Filter & Closed Toggle */}
                             <div className="space-y-2">
                                 <div className="space-y-1">
-                                    <label className="text-muted font-medium">Posted Date</label>
+                                    <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Posted Date</label>
                                     <select
                                         value={filters.posted || ''}
                                         onChange={(e) => applyFilter({ posted: e.target.value })}
-                                        className="w-full bg-surface-2 border border-surface-2 text-text text-xs rounded-xl p-2 focus:ring-violet"
+                                        className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
                                     >
                                         <option value="">Any Time</option>
                                         <option value="7">Last 7 days</option>
@@ -211,12 +211,12 @@ export default function Index({
                                     </select>
                                 </div>
 
-                                <label className="flex items-center gap-2 cursor-pointer pt-1 text-muted select-none">
+                                <label className="flex items-center gap-2 cursor-pointer pt-1 text-neutral-400 select-none">
                                     <input
                                         type="checkbox"
                                         checked={Boolean(filters.include_closed)}
                                         onChange={(e) => applyFilter({ include_closed: e.target.checked ? 1 : '' })}
-                                        className="rounded border-surface-2 text-violet focus:ring-violet bg-ink"
+                                        className="rounded border-carbon-700 text-flame-500 focus:ring-flame-500 bg-carbon-900"
                                     />
                                     <span>Include closed</span>
                                 </label>
@@ -225,72 +225,72 @@ export default function Index({
                     )}
 
                     {/* Active Filter Chips & Result Counter */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs">
-                        <span className="text-muted font-medium">
-                            Showing <span className="text-text font-bold">{projects.total ?? projects.data.length}</span> project{projects.total === 1 ? '' : 's'}
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs font-mono">
+                        <span className="text-neutral-400 font-mono">
+                            Showing <span className="text-white font-bold">{projects.total ?? projects.data.length}</span> project{projects.total === 1 ? '' : 's'}
                         </span>
 
                         {hasActiveFilters && (
                             <div className="flex flex-wrap items-center gap-1.5">
                                 {filters.q && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
                                         Keyword: &ldquo;{filters.q}&rdquo;
                                         <button type="button" onClick={() => { setSearch(''); applyFilter({ q: '' }); }}>
-                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.category && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2 capitalize">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700 capitalize">
                                         {filters.category.replace('_', ' ')}
                                         <button type="button" onClick={() => applyFilter({ category: '' })}>
-                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.department_id && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
                                         {departments.find((d) => d.id === Number(filters.department_id))?.name || 'Department'}
                                         <button type="button" onClick={() => applyFilter({ department_id: '' })}>
-                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 )}
 
                                 {activeSkillsList.map((skill) => (
-                                    <span key={skill.id} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-violet/15 text-violet border border-violet/30">
+                                    <span key={skill.id} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-flame-500/10 text-flame-500 border border-flame-500/30">
                                         {skill.name}
                                         <button type="button" onClick={() => handleRemoveSkill(skill.id)}>
-                                            <X className="w-3 h-3 text-violet hover:text-coral" />
+                                            <X className="w-3 h-3 text-flame-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 ))}
 
                                 {filters.deadline_within && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
                                         Within {filters.deadline_within}d
                                         <button type="button" onClick={() => applyFilter({ deadline_within: '' })}>
-                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.posted && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
                                         Past {filters.posted}d
                                         <button type="button" onClick={() => applyFilter({ posted: '' })}>
-                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.include_closed && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-2 text-text border border-surface-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
                                         Including closed
                                         <button type="button" onClick={() => applyFilter({ include_closed: '' })}>
-                                            <X className="w-3 h-3 text-muted hover:text-coral" />
+                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
                                         </button>
                                     </span>
                                 )}
@@ -298,7 +298,7 @@ export default function Index({
                                 <button
                                     type="button"
                                     onClick={handleClearAll}
-                                    className="text-violet hover:underline ml-1 font-medium"
+                                    className="text-flame-500 hover:underline ml-1 font-mono font-medium"
                                 >
                                     Clear all
                                 </button>
@@ -337,7 +337,7 @@ export default function Index({
                             const deadlinePassed = isDeadlinePassed(project.application_deadline);
 
                             return (
-                                <Card key={project.id} hover className="flex flex-col justify-between p-6">
+                                <Card key={project.id} hover className="flex flex-col justify-between p-6 cad-crosshairs">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between gap-2">
                                             <CategoryBadge category={project.category} />
@@ -350,15 +350,15 @@ export default function Index({
                                         </div>
 
                                         <div>
-                                            <h3 className="text-base font-bold font-display text-text line-clamp-1">
+                                            <h3 className="text-base font-bold font-display text-white line-clamp-1">
                                                 <Link
                                                     href={route('projects.show', project.id)}
-                                                    className="hover:text-violet transition-colors"
+                                                    className="hover:text-flame-500 transition-colors"
                                                 >
                                                     {project.title}
                                                 </Link>
                                             </h3>
-                                            <p className="mt-2 text-xs text-muted line-clamp-3 leading-relaxed">
+                                            <p className="mt-2 text-xs text-neutral-400 line-clamp-3 leading-relaxed">
                                                 {project.description}
                                             </p>
                                         </div>
@@ -368,13 +368,13 @@ export default function Index({
                                                 {project.skills.slice(0, 4).map((skill) => (
                                                     <span
                                                         key={skill.id}
-                                                        className="px-2 py-0.5 rounded-lg bg-surface-2 text-text text-[11px] font-medium"
+                                                        className="px-2 py-0.5 rounded bg-carbon-850 text-neutral-300 text-[11px] font-mono border border-carbon-700"
                                                     >
                                                         {skill.name}
                                                     </span>
                                                 ))}
                                                 {project.skills.length > 4 && (
-                                                    <span className="text-[11px] text-muted self-center">
+                                                    <span className="text-[11px] font-mono text-neutral-500 self-center">
                                                         +{project.skills.length - 4} more
                                                     </span>
                                                 )}
@@ -382,7 +382,7 @@ export default function Index({
                                         )}
                                     </div>
 
-                                    <div className="mt-6 pt-4 border-t border-surface-2 flex items-center justify-between text-xs text-muted">
+                                    <div className="mt-6 pt-4 border-t border-carbon-800 flex items-center justify-between text-xs text-neutral-400 font-mono">
                                         <SlotDots filled={project.accepted_count ?? 0} total={project.slots_total} />
                                         <DeadlineRing deadline={project.application_deadline} />
                                     </div>

@@ -40,7 +40,7 @@ export default function Edit({ project, departments, skills, categories }) {
                     subtitle="Update your project scope, capacity, deadline, or required skills."
                 />
 
-                <Card className="p-6 sm:p-8">
+                <Card className="p-6 sm:p-8 cad-crosshairs">
                     <ProjectForm
                         data={data}
                         setData={setData}

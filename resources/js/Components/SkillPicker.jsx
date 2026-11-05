@@ -117,12 +117,12 @@ export default function SkillPicker({
 
     return (
         <div ref={containerRef} className="space-y-2">
-            <div className="flex justify-between items-center text-sm">
-                <label className="font-medium text-text">
-                    {label} <span className="text-coral">*</span>
+            <div className="flex justify-between items-center text-xs">
+                <label className="font-medium uppercase tracking-wider text-neutral-200 text-[11px]">
+                    {label} <span className="text-flame-500">*</span>
                 </label>
                 <span
-                    className={`text-xs ${totalSelected >= max ? 'text-coral font-medium' : totalSelected >= max * 0.9 ? 'text-amber' : 'text-muted'
+                    className={`text-xs font-mono ${totalSelected >= max ? 'text-red-400 font-medium' : totalSelected >= max * 0.9 ? 'text-amber-400' : 'text-neutral-500'
                         }`}
                     aria-live="polite"
                 >
@@ -131,17 +131,17 @@ export default function SkillPicker({
             </div>
 
             {/* Selected Skill Chips */}
-            <div className="flex flex-wrap gap-1.5 min-h-[32px] p-2 rounded-xl bg-surface border border-surface-2">
+            <div className="flex flex-wrap gap-1.5 min-h-[36px] p-2 rounded-lg bg-carbon-950 border border-carbon-800 focus-within:border-flame-500 transition-colors">
                 {selectedSkillObjects.map((skill) => (
                     <span
                         key={skill.id}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-2 text-text text-xs border border-surface-2/80"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 text-xs font-mono border border-carbon-700"
                     >
                         {skill.name}
                         <button
                             type="button"
                             onClick={() => handleRemoveExisting(skill.id)}
-                            className="text-muted hover:text-coral transition-colors"
+                            className="text-neutral-500 hover:text-red-400 transition-colors"
                             aria-label={`Remove skill ${skill.name}`}
                         >
                             <X className="w-3 h-3" />
@@ -152,16 +152,16 @@ export default function SkillPicker({
                 {newSkills.map((name) => (
                     <span
                         key={name}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-violet/15 text-violet text-xs border border-violet/30"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-flame-500/10 text-flame-500 text-xs font-mono border border-flame-500/30"
                     >
                         {name}
-                        <Badge variant="violet" size="sm" className="px-1 py-0 text-[10px]">
+                        <Badge variant="flame" size="sm" className="px-1 py-0 text-[9px]">
                             New
                         </Badge>
                         <button
                             type="button"
                             onClick={() => handleRemoveNew(name)}
-                            className="text-violet/70 hover:text-coral transition-colors"
+                            className="text-flame-500/70 hover:text-red-400 transition-colors"
                             aria-label={`Remove new skill ${name}`}
                         >
                             <X className="w-3 h-3" />
@@ -188,7 +188,7 @@ export default function SkillPicker({
                         onFocus={() => setIsOpen(true)}
                         onKeyDown={handleKeyDown}
                         placeholder={isAtLimit ? 'Max skills selected' : 'Type to search or add skills...'}
-                        className="w-full bg-transparent border-0 p-1 text-xs text-text placeholder-muted/60 focus:ring-0 focus:outline-none"
+                        className="w-full bg-transparent border-0 p-1 text-xs text-white placeholder-neutral-600 focus:ring-0 focus:outline-none"
                     />
                 </div>
             </div>
@@ -198,7 +198,7 @@ export default function SkillPicker({
                 <div
                     id={listboxId}
                     role="listbox"
-                    className="relative z-30 w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-surface border border-surface-2 shadow-xl shadow-black/40 py-1"
+                    className="relative z-30 w-full mt-1 max-h-48 overflow-y-auto rounded-lg bg-carbon-900 border border-carbon-800 shadow-2xl shadow-black/80 py-1"
                 >
                     {filteredSkills.slice(0, 15).map((skill, index) => {
                         const isHighlighted = index === activeIndex;
@@ -208,7 +208,7 @@ export default function SkillPicker({
                                 role="option"
                                 aria-selected={isHighlighted}
                                 onClick={() => handleSelectExisting(skill.id)}
-                                className={`px-3 py-2 text-xs flex items-center justify-between cursor-pointer transition-colors ${isHighlighted ? 'bg-surface-2 text-text' : 'text-muted hover:text-text hover:bg-surface-2/60'
+                                className={`px-3 py-2 text-xs flex items-center justify-between cursor-pointer font-mono transition-colors ${isHighlighted ? 'bg-carbon-800 text-white' : 'text-neutral-400 hover:text-white hover:bg-carbon-850'
                                     }`}
                             >
                                 <span>{skill.name}</span>
@@ -221,7 +221,7 @@ export default function SkillPicker({
                             role="option"
                             aria-selected={activeIndex === filteredSkills.length}
                             onClick={handleAddNew}
-                            className={`px-3 py-2 text-xs flex items-center gap-2 cursor-pointer border-t border-surface-2/80 text-violet font-medium ${activeIndex === filteredSkills.length ? 'bg-surface-2' : 'hover:bg-surface-2/60'
+                            className={`px-3 py-2 text-xs flex items-center gap-2 cursor-pointer border-t border-carbon-800 text-flame-500 font-mono font-medium ${activeIndex === filteredSkills.length ? 'bg-carbon-800' : 'hover:bg-carbon-850'
                                 }`}
                         >
                             <Plus className="w-3.5 h-3.5" />
@@ -230,15 +230,15 @@ export default function SkillPicker({
                     )}
 
                     {filteredSkills.length === 0 && !canAddNew && (
-                        <div className="px-3 py-2 text-xs text-muted text-center">
+                        <div className="px-3 py-2 text-xs text-neutral-500 text-center font-mono">
                             {query ? 'No matching skills found' : 'Start typing to search skills'}
                         </div>
                     )}
                 </div>
             )}
 
-            {hint && !error && <p className="text-xs text-muted">{hint}</p>}
-            {error && <p className="text-xs text-coral">{error}</p>}
+            {hint && !error && <p className="text-xs text-neutral-500 font-mono">{hint}</p>}
+            {error && <p className="text-xs font-mono text-red-400">{error}</p>}
         </div>
     );
 }

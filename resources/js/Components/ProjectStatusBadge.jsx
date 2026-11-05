@@ -14,7 +14,7 @@ export default function ProjectStatusBadge({ status, isRecruiting = true, isFull
         return <Badge variant="neutral">Deadline Passed</Badge>;
     }
     if (isRecruiting || status === 'open') {
-        return <Badge variant="mint">Recruiting</Badge>;
+        return <Badge variant="flame">Recruiting</Badge>;
     }
     return <Badge variant="neutral">In Progress</Badge>;
 }

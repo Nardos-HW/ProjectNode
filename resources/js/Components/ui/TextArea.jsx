@@ -21,16 +21,16 @@ export default function TextArea({
     const length = typeof value === 'string' ? value.length : 0;
     const ratio = maxLength ? length / maxLength : 0;
 
-    let counterColor = 'text-muted';
-    if (ratio >= 1) counterColor = 'text-coral font-medium';
-    else if (ratio >= 0.9) counterColor = 'text-amber font-medium';
+    let counterColor = 'text-neutral-500 font-mono';
+    if (ratio >= 1) counterColor = 'text-red-400 font-mono font-medium';
+    else if (ratio >= 0.9) counterColor = 'text-amber-400 font-mono font-medium';
 
     return (
         <div className={`space-y-1.5 ${className}`}>
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex justify-between items-center text-xs">
                 {label && (
-                    <label htmlFor={inputId} className="font-medium text-text">
-                        {label} {required && <span className="text-coral">*</span>}
+                    <label htmlFor={inputId} className="font-medium text-neutral-200 uppercase tracking-wider text-[11px]">
+                        {label} {required && <span className="text-flame-500">*</span>}
                     </label>
                 )}
                 {maxLength !== undefined && (
@@ -54,8 +54,9 @@ export default function TextArea({
                 aria-describedby={
                     error ? errorId : hint ? hintId : undefined
                 }
-                className={`w-full rounded-xl bg-surface border px-3.5 py-2.5 text-text placeholder-muted/60 text-sm focus:outline-none focus:ring-2 focus:ring-violet focus:border-transparent transition-colors resize-y ${error ? 'border-coral focus:ring-coral' : 'border-surface-2'
-                    }`}
+                className={`w-full rounded-lg bg-carbon-950 border px-3.5 py-2.5 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-flame-500 focus:ring-1 focus:ring-flame-500 transition-colors resize-y ${
+                    error ? 'border-red-500/80 focus:ring-red-500' : 'border-carbon-800'
+                }`}
                 {...props}
             />
 

@@ -26,14 +26,21 @@ export default function AuthenticatedLayout({ children }) {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className="min-h-screen bg-ink text-text">
-            <nav className="border-b border-surface-2 bg-surface/80 backdrop-blur-md sticky top-0 z-40">
+        <div className="min-h-screen bg-carbon-950 text-neutral-100 cad-grid">
+            <nav className="border-b border-carbon-800 bg-carbon-950/80 backdrop-blur-md sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center gap-8">
                             <div className="shrink-0 flex items-center">
-                                <Link href={route('dashboard')}>
-                                    <ApplicationLogo className="block h-8 w-auto fill-current text-violet" />
+                                <Link href={route('dashboard')} className="flex items-center gap-2.5 group">
+                                    <div className="w-8 h-8 rounded-lg bg-carbon-900 border border-carbon-800 flex items-center justify-center group-hover:border-flame-500/60 transition-colors">
+                                        <ApplicationLogo className="w-5 h-5 text-flame-500" />
+                                    </div>
+                                    <div className="flex items-center tracking-widest text-xs font-bold font-mono text-white">
+                                        <span>PROJECT</span>
+                                        <span className="text-flame-500">NODE</span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-flame-500 ml-1 inline-block"></span>
+                                    </div>
                                 </Link>
                             </div>
 
@@ -54,12 +61,13 @@ export default function AuthenticatedLayout({ children }) {
                                         <Dropdown.Trigger>
                                             <button
                                                 type="button"
-                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${route().current('admin.*')
-                                                        ? 'bg-violet/15 text-violet border-violet/30'
-                                                        : 'bg-surface-2/60 text-muted hover:text-text border-surface-2'
-                                                    }`}
+                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border transition-colors ${
+                                                    route().current('admin.*')
+                                                        ? 'bg-flame-500/10 text-flame-500 border-flame-500/30'
+                                                        : 'bg-carbon-900 text-neutral-400 hover:text-white border-carbon-800'
+                                                }`}
                                             >
-                                                <Shield className="w-3.5 h-3.5 text-violet" />
+                                                <Shield className="w-3.5 h-3.5 text-flame-500" />
                                                 <span>Admin</span>
                                                 <ChevronDown className="w-3 h-3 opacity-60" />
                                             </button>
@@ -84,10 +92,11 @@ export default function AuthenticatedLayout({ children }) {
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-surface-2 text-xs leading-4 font-medium rounded-xl text-text bg-surface hover:bg-surface-2 focus:outline-none transition ease-in-out duration-150"
+                                                className="inline-flex items-center px-3 py-1.5 border border-carbon-800 text-xs font-mono uppercase tracking-wider rounded-lg text-neutral-200 bg-carbon-900 hover:bg-carbon-850 hover:border-neutral-700 focus:outline-none transition ease-in-out duration-150"
                                             >
+                                                <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
                                                 {user.name}
-                                                <ChevronDown className="ms-2 -me-0.5 h-3.5 w-3.5 text-muted" />
+                                                <ChevronDown className="ms-2 -me-0.5 h-3.5 w-3.5 text-neutral-400" />
                                             </button>
                                         </span>
                                     </Dropdown.Trigger>
@@ -111,7 +120,7 @@ export default function AuthenticatedLayout({ children }) {
                         <div className="-me-2 flex items-center sm:hidden">
                             <button
                                 onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-xl text-muted hover:text-text hover:bg-surface-2 focus:outline-none transition duration-150 ease-in-out"
+                                className="inline-flex items-center justify-center p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-carbon-850 border border-carbon-800 focus:outline-none transition duration-150 ease-in-out"
                             >
                                 <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -135,7 +144,7 @@ export default function AuthenticatedLayout({ children }) {
                 </div>
 
                 {/* Mobile Menu */}
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden border-b border-surface-2 bg-surface'}>
+                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden border-b border-carbon-800 bg-carbon-950/95 backdrop-blur-md'}>
                     <div className="pt-2 pb-3 space-y-1">
                         {navLinks.map((link) => (
                             <ResponsiveNavLink
@@ -149,8 +158,8 @@ export default function AuthenticatedLayout({ children }) {
 
                         {/* Admin Mobile Sub-links */}
                         {isAdmin && (
-                            <div className="pt-2 border-t border-surface-2/60">
-                                <div className="px-4 py-1 text-[11px] font-bold text-violet uppercase tracking-wider flex items-center gap-1.5">
+                            <div className="pt-2 border-t border-carbon-800">
+                                <div className="px-4 py-1 text-[11px] font-bold text-flame-500 uppercase tracking-wider flex items-center gap-1.5 font-mono">
                                     <Shield className="w-3 h-3" /> Administration
                                 </div>
                                 {adminLinks.map((item) => (
@@ -162,10 +171,10 @@ export default function AuthenticatedLayout({ children }) {
                         )}
                     </div>
 
-                    <div className="pt-4 pb-1 border-t border-surface-2">
+                    <div className="pt-4 pb-3 border-t border-carbon-800">
                         <div className="px-4">
-                            <div className="font-medium text-base text-text">{user.name}</div>
-                            <div className="font-medium text-xs text-muted">{user.email}</div>
+                            <div className="font-semibold text-sm text-white">{user.name}</div>
+                            <div className="font-mono text-xs text-neutral-500">{user.email}</div>
                         </div>
 
                         <div className="mt-3 space-y-1">

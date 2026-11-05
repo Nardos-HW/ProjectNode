@@ -42,13 +42,13 @@ export default function Complete({ project, members = [] }) {
                 />
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <Card className="p-6 sm:p-8 space-y-6">
+                    <Card className="p-6 sm:p-8 space-y-6 cad-crosshairs">
                         {/* Notice Card */}
-                        <div className="p-4 rounded-xl bg-violet/10 border border-violet/30 flex items-start gap-3">
-                            <ShieldCheck className="w-5 h-5 text-violet shrink-0 mt-0.5" />
-                            <div className="text-xs space-y-1">
-                                <span className="font-semibold text-text">Irreversible Completion Record</span>
-                                <p className="text-muted leading-relaxed">
+                        <div className="p-4 rounded-lg bg-carbon-950 border border-flame-500/40 flex items-start gap-3">
+                            <ShieldCheck className="w-5 h-5 text-flame-500 shrink-0 mt-0.5" />
+                            <div className="text-xs space-y-1 font-mono">
+                                <span className="font-bold text-white uppercase tracking-wider block">Irreversible Completion Record</span>
+                                <p className="text-neutral-400 leading-relaxed">
                                     Once completed, the project description and openings cannot be changed. As the creator, you are automatically confirmed. Credited members will receive a credit confirmation notice.
                                 </p>
                             </div>
@@ -64,7 +64,7 @@ export default function Complete({ project, members = [] }) {
                             onChange={(e) => setData('outcome_summary', e.target.value)}
                             error={errors.outcome_summary}
                             placeholder="Describe what your team built, research findings, competition results, or final deliverable (minimum 20 characters)..."
-                            helper="Provide an authentic, honest summary of what was accomplished."
+                            hint="Provide an authentic, honest summary of what was accomplished."
                         />
 
                         {/* Evidence Link */}
@@ -75,22 +75,22 @@ export default function Complete({ project, members = [] }) {
                             onChange={(e) => setData('outcome_url', e.target.value)}
                             error={errors.outcome_url}
                             placeholder="https://github.com/... or https://demo..."
-                            helper="Optional secure HTTPS link to evidence, source code repository, or demo video."
+                            hint="Optional secure HTTPS link to evidence, source code repository, or demo video."
                         />
 
                         {/* Contributor Selection */}
-                        <div className="space-y-3 pt-4 border-t border-surface-2">
+                        <div className="space-y-3 pt-4 border-t border-carbon-800">
                             <div>
-                                <label className="text-xs font-semibold text-text uppercase tracking-wider block">
+                                <label className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
                                     Certify Contributing Members
                                 </label>
-                                <p className="text-xs text-muted mt-0.5">
+                                <p className="text-xs text-neutral-400 mt-0.5">
                                     Select only collaborators who made meaningful contributions. Unselected members will not receive participation credit.
                                 </p>
                             </div>
 
                             {members.length === 0 ? (
-                                <div className="p-4 rounded-xl bg-surface-2/40 border border-surface-2 text-xs text-muted italic">
+                                <div className="p-4 rounded-lg bg-carbon-950 border border-carbon-800 text-xs text-neutral-500 italic font-mono">
                                     No collaborators were accepted onto this project. You will be recorded as the sole contributor.
                                 </div>
                             ) : (
@@ -100,9 +100,9 @@ export default function Complete({ project, members = [] }) {
                                         return (
                                             <label
                                                 key={member.user_id}
-                                                className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${isChecked
-                                                        ? 'bg-violet/10 border-violet/40 text-text'
-                                                        : 'bg-surface-2/30 border-surface-2 text-muted hover:border-surface-2/80'
+                                                className={`flex items-center justify-between p-3.5 rounded-lg border transition-colors cursor-pointer select-none ${isChecked
+                                                        ? 'bg-carbon-950 border-flame-500/50 text-white'
+                                                        : 'bg-carbon-950/60 border-carbon-800 text-neutral-400 hover:border-neutral-700'
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-3">
@@ -110,18 +110,18 @@ export default function Complete({ project, members = [] }) {
                                                         type="checkbox"
                                                         checked={isChecked}
                                                         onChange={() => handleCheckboxToggle(member.user_id)}
-                                                        className="rounded border-surface-2 text-violet focus:ring-violet bg-ink w-4 h-4"
+                                                        className="rounded border-carbon-700 text-flame-500 focus:ring-flame-500 bg-carbon-900 w-4 h-4"
                                                     />
                                                     <div>
-                                                        <span className="font-semibold text-text text-xs block">
+                                                        <span className="font-semibold text-white text-xs block">
                                                             {member.name}
                                                         </span>
-                                                        <span className="text-[11px] text-muted">
+                                                        <span className="text-[11px] font-mono text-neutral-500">
                                                             {member.department} {member.year_of_study ? `• Year ${member.year_of_study}` : ''}
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <span className="text-[11px] font-medium text-violet">
+                                                <span className={`text-[11px] font-mono font-medium ${isChecked ? 'text-flame-500' : 'text-neutral-600'}`}>
                                                     {isChecked ? 'Will receive credit' : 'No credit'}
                                                 </span>
                                             </label>
@@ -131,12 +131,12 @@ export default function Complete({ project, members = [] }) {
                             )}
 
                             {errors.credited_user_ids && (
-                                <p className="text-xs text-coral">{errors.credited_user_ids}</p>
+                                <p className="text-xs font-mono text-red-400">{errors.credited_user_ids}</p>
                             )}
                         </div>
 
                         {/* Submit Button */}
-                        <div className="pt-4 flex items-center justify-end gap-3">
+                        <div className="pt-4 flex items-center justify-end gap-3 border-t border-carbon-800">
                             <Button
                                 type="button"
                                 variant="secondary"

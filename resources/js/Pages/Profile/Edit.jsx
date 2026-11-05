@@ -30,7 +30,7 @@ export default function Edit({ mustVerifyEmail, status, departments, skills, use
                     }
                 />
 
-                <Card className="p-6 sm:p-8">
+                <Card className="p-6 sm:p-8 cad-crosshairs">
                     <UpdateProfileInformationForm
                         departments={departments}
                         skills={skills}
@@ -40,11 +40,11 @@ export default function Edit({ mustVerifyEmail, status, departments, skills, use
                     />
                 </Card>
 
-                <Card className="p-6 sm:p-8">
+                <Card className="p-6 sm:p-8 cad-crosshairs">
                     <UpdatePasswordForm />
                 </Card>
 
-                <Card className="p-6 sm:p-8">
+                <Card className="p-6 sm:p-8 cad-crosshairs">
                     <DeleteUserForm />
                 </Card>
             </div>

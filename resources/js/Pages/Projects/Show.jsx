@@ -106,8 +106,8 @@ export default function Show({ project, existingRequest, can }) {
                 </div>
 
                 {/* Main Project Card */}
-                <Card className="p-6 sm:p-8 space-y-6">
-                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-surface-2">
+                <Card className="p-6 sm:p-8 space-y-6 cad-crosshairs">
+                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-carbon-800">
                         <div className="flex items-center gap-2">
                             <CategoryBadge category={project.category} />
                             <ProjectStatusBadge
@@ -115,47 +115,47 @@ export default function Show({ project, existingRequest, can }) {
                                 isRecruiting={project.is_recruiting}
                             />
                         </div>
-                        <span className="text-xs text-muted">
+                        <span className="text-xs font-mono text-neutral-400">
                             Posted by{' '}
-                            <Link href={route('students.show', project.owner.id)} className="text-violet hover:underline font-medium">
+                            <Link href={route('students.show', project.owner.id)} className="text-flame-500 hover:underline font-medium">
                                 {project.owner.name}
                             </Link>
                         </span>
                     </div>
 
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold font-display text-text">
+                        <h1 className="text-2xl sm:text-3xl font-bold font-display text-white">
                             {project.title}
                         </h1>
-                        <p className="mt-4 text-sm text-muted whitespace-pre-line leading-relaxed">
+                        <p className="mt-4 text-sm text-neutral-300 whitespace-pre-line leading-relaxed">
                             {project.description}
                         </p>
                     </div>
 
-                    {/* Constraint Stats */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-surface-2/60 border border-surface-2 text-center">
+                    {/* Blueprint Constraint Stats Data Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-lg bg-carbon-950 border border-carbon-800 text-center font-mono">
                         <div className="space-y-1">
-                            <span className="text-xs text-muted block flex items-center justify-center gap-1">
-                                <Users className="w-3.5 h-3.5" /> Openings
+                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block flex items-center justify-center gap-1">
+                                <Users className="w-3.5 h-3.5 text-flame-500" /> Openings
                             </span>
                             <div className="flex justify-center pt-1">
                                 <SlotDots filled={project.accepted_count ?? 0} total={project.slots_total} />
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-xs text-muted block flex items-center justify-center gap-1">
-                                <Clock className="w-3.5 h-3.5" /> Commitment
+                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block flex items-center justify-center gap-1">
+                                <Clock className="w-3.5 h-3.5 text-flame-500" /> Hours / Week
                             </span>
-                            <span className="text-sm font-semibold text-text block">{project.hours_per_week} hrs/wk</span>
+                            <span className="text-sm font-bold text-white block">{project.hours_per_week} hrs/wk</span>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-xs text-muted block flex items-center justify-center gap-1">
-                                <Calendar className="w-3.5 h-3.5" /> Duration
+                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block flex items-center justify-center gap-1">
+                                <Calendar className="w-3.5 h-3.5 text-flame-500" /> Duration
                             </span>
-                            <span className="text-sm font-semibold text-text block">{project.duration_weeks} wks</span>
+                            <span className="text-sm font-bold text-white block">{project.duration_weeks} wks</span>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-xs text-muted block">Deadline</span>
+                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block">Deadline</span>
                             <DeadlineRing deadline={project.application_deadline} className="justify-center" />
                         </div>
                     </div>
@@ -163,12 +163,12 @@ export default function Show({ project, existingRequest, can }) {
                     {/* Skills */}
                     {project.skills && project.skills.length > 0 && (
                         <div className="space-y-2">
-                            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">
-                                Required Skills
+                            <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-neutral-400">
+                                Required Technical Skills
                             </h2>
                             <div className="flex flex-wrap gap-1.5">
                                 {project.skills.map((skill) => (
-                                    <span key={skill.id} className="px-2.5 py-1 rounded-lg bg-surface-2 text-xs font-medium text-text">
+                                    <span key={skill.id} className="px-2.5 py-1 rounded bg-carbon-850 border border-carbon-700 text-xs font-mono text-neutral-200">
                                         {skill.name}
                                     </span>
                                 ))}
@@ -177,22 +177,22 @@ export default function Show({ project, existingRequest, can }) {
                     )}
 
                     {/* Telegram Contact Box */}
-                    <div className="p-5 rounded-xl bg-surface-2/40 border border-surface-2 space-y-2">
-                        <h2 className="text-sm font-semibold text-text">Direct Contact (Telegram)</h2>
+                    <div className="p-5 rounded-lg bg-carbon-950 border border-carbon-800 space-y-2">
+                        <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-white">Direct Technical Contact (Telegram)</h2>
                         {can.viewContact && project.telegram_contact ? (
-                            <p className="text-sm text-text">
+                            <p className="text-sm font-mono text-neutral-200">
                                 Username:{' '}
                                 <a
                                     href={`https://t.me/${project.telegram_contact}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-mint font-semibold hover:underline"
+                                    className="text-emerald-400 font-semibold hover:underline"
                                 >
                                     @{project.telegram_contact}
                                 </a>
                             </p>
                         ) : (
-                            <p className="text-xs text-muted">
+                            <p className="text-xs font-mono text-neutral-500">
                                 Private. Revealed only to accepted collaborators and the project creator.
                             </p>
                         )}
@@ -201,23 +201,23 @@ export default function Show({ project, existingRequest, can }) {
 
                 {/* Existing Application Banner */}
                 {existingRequest && (
-                    <Card className="p-6 border-violet/40 bg-violet/10 space-y-2">
+                    <Card className="p-6 border-flame-500/40 bg-carbon-900 space-y-2 cad-crosshairs">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold font-display text-text">Application Status</h3>
-                            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-2 text-violet border border-violet/30 capitalize">
+                            <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">Application Status</h3>
+                            <span className="px-2.5 py-0.5 rounded text-xs font-mono font-semibold bg-flame-500/10 text-flame-500 border border-flame-500/30 uppercase tracking-wider">
                                 {project.status === 'cancelled' || project.status === 'completed'
                                     ? 'Project closed'
                                     : existingRequest.status_label}
                             </span>
                         </div>
-                        <p className="text-xs text-muted italic">&ldquo;{existingRequest.message}&rdquo;</p>
+                        <p className="text-xs text-neutral-400 italic">&ldquo;{existingRequest.message}&rdquo;</p>
                         {existingRequest.status === 'accepted' && (
-                            <p className="text-xs text-mint font-medium">
+                            <p className="text-xs text-emerald-400 font-mono font-medium">
                                 You are an accepted collaborator! Use the Telegram contact above to coordinate.
                             </p>
                         )}
                         {(project.status === 'cancelled' || project.status === 'completed') && (
-                            <p className="text-xs text-muted">
+                            <p className="text-xs font-mono text-neutral-500">
                                 This project is closed and no longer accepting participants.
                             </p>
                         )}
@@ -226,11 +226,11 @@ export default function Show({ project, existingRequest, can }) {
 
                 {/* Apply Box */}
                 {can.apply && (
-                    <Card className="p-6 sm:p-8 space-y-4">
-                        <h2 className="text-base font-bold font-display text-text">
+                    <Card className="p-6 sm:p-8 space-y-4 cad-crosshairs">
+                        <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-white">
                             Request to Join this Project
                         </h2>
-                        <p className="text-xs text-muted">
+                        <p className="text-xs text-neutral-400">
                             Introduce yourself to {project.owner.name} with relevant skills and your availability.
                         </p>
                         <form onSubmit={handleApply} className="space-y-4">
@@ -252,7 +252,7 @@ export default function Show({ project, existingRequest, can }) {
                                     loading={processing}
                                     disabled={data.message.length < 10}
                                 >
-                                    <Send className="w-4 h-4 mr-1.5" /> Submit Request
+                                    <Send className="w-3.5 h-3.5 mr-1.5" /> Submit Request
                                 </Button>
                             </div>
                         </form>

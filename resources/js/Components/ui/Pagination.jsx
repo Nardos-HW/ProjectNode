@@ -18,7 +18,7 @@ export default function Pagination({ links = [], className = '' }) {
                         <span
                             key={idx}
                             aria-disabled="true"
-                            className="px-3.5 py-2 text-xs rounded-lg text-muted/40 cursor-not-allowed select-none border border-transparent"
+                            className="px-3.5 py-2 text-xs font-mono rounded-lg text-neutral-600 cursor-not-allowed select-none border border-transparent"
                             dangerouslySetInnerHTML={{ __html: isCleanLabel }}
                         />
                     );
@@ -30,9 +30,9 @@ export default function Pagination({ links = [], className = '' }) {
                         href={link.url}
                         preserveScroll
                         aria-current={link.active ? 'page' : undefined}
-                        className={`px-3.5 py-2 text-xs font-medium rounded-lg transition-colors border ${link.active
-                                ? 'bg-violet text-text border-violet shadow-sm shadow-violet/30'
-                                : 'bg-surface text-muted hover:text-text hover:bg-surface-2 border-surface-2'
+                        className={`px-3.5 py-2 text-xs font-mono font-medium rounded-lg transition-colors border ${link.active
+                                ? 'bg-flame-500 text-white border-flame-500 shadow-sm shadow-flame-500/30'
+                                : 'bg-carbon-900 text-neutral-400 hover:text-white hover:bg-carbon-850 border-carbon-800'
                             }`}
                         dangerouslySetInnerHTML={{ __html: isCleanLabel }}
                     />

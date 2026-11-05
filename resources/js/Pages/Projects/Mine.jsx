@@ -44,15 +44,15 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                 />
 
                 {/* Status Filter Tabs */}
-                <div className="flex flex-wrap items-center gap-2 border-b border-surface-2 pb-4">
+                <div className="flex flex-wrap items-center gap-2 border-b border-carbon-800 pb-4 font-mono">
                     {statuses.map((tab) => (
                         <button
                             key={tab.value}
                             type="button"
                             onClick={() => handleFilterStatus(tab.value)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${currentStatus === tab.value
-                                ? 'bg-violet text-text shadow-sm shadow-violet/30'
-                                : 'bg-surface text-muted hover:text-text hover:bg-surface-2 border border-surface-2'
+                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors ${currentStatus === tab.value
+                                ? 'bg-flame-500 text-white shadow-sm shadow-flame-500/30'
+                                : 'bg-carbon-900 text-neutral-400 hover:text-white hover:bg-carbon-850 border border-carbon-800'
                                 }`}
                         >
                             {tab.label}
@@ -77,13 +77,13 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {projects.data.map((project) => (
-                            <Card key={project.id} hover className="flex flex-col justify-between p-6">
+                            <Card key={project.id} hover className="flex flex-col justify-between p-6 cad-crosshairs">
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between gap-2">
                                         <CategoryBadge category={project.category} />
                                         <div className="flex items-center gap-2">
                                             {project.pending_requests_count > 0 && (
-                                                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber/20 text-amber border border-amber/30">
+                                                <span className="px-2 py-0.5 rounded font-mono text-xs font-semibold bg-flame-500/10 text-flame-500 border border-flame-500/30 uppercase">
                                                     {project.pending_requests_count} new
                                                 </span>
                                             )}
@@ -95,15 +95,15 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                                     </div>
 
                                     <div>
-                                        <h3 className="text-base font-bold font-display text-text line-clamp-1">
+                                        <h3 className="text-base font-bold font-display text-white line-clamp-1">
                                             <Link
                                                 href={route('projects.show', project.id)}
-                                                className="hover:text-violet transition-colors"
+                                                className="hover:text-flame-500 transition-colors"
                                             >
                                                 {project.title}
                                             </Link>
                                         </h3>
-                                        <p className="mt-2 text-xs text-muted line-clamp-3 leading-relaxed">
+                                        <p className="mt-2 text-xs text-neutral-400 line-clamp-3 leading-relaxed">
                                             {project.description}
                                         </p>
                                     </div>
@@ -113,13 +113,13 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                                             {project.skills.slice(0, 4).map((skill) => (
                                                 <span
                                                     key={skill.id}
-                                                    className="px-2 py-0.5 rounded-lg bg-surface-2 text-text text-[11px] font-medium"
+                                                    className="px-2 py-0.5 rounded bg-carbon-850 text-neutral-300 text-[11px] font-mono border border-carbon-700"
                                                 >
                                                     {skill.name}
                                                 </span>
                                             ))}
                                             {project.skills.length > 4 && (
-                                                <span className="text-[11px] text-muted self-center">
+                                                <span className="text-[11px] font-mono text-neutral-500 self-center">
                                                     +{project.skills.length - 4} more
                                                 </span>
                                             )}
@@ -127,8 +127,8 @@ export default function Mine({ projects, currentStatus = 'all' }) {
                                     )}
                                 </div>
 
-                                <div className="mt-6 pt-4 border-t border-surface-2 space-y-4">
-                                    <div className="flex items-center justify-between text-xs text-muted">
+                                <div className="mt-6 pt-4 border-t border-carbon-800 space-y-4">
+                                    <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
                                         <SlotDots filled={project.accepted_count ?? 0} total={project.slots_total} />
                                         <DeadlineRing deadline={project.application_deadline} />
                                     </div>

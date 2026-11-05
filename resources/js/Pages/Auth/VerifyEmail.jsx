@@ -14,12 +14,12 @@ export default function VerifyEmail({ status }) {
         <GuestLayout>
             <Head title="Email Verification" />
 
-            <div className="mb-4 text-xs text-muted leading-relaxed">
+            <div className="mb-4 text-xs font-mono text-neutral-400 leading-relaxed">
                 Thanks for signing up! Before getting started, please verify your email address by clicking the link we just sent to your AAU inbox.
             </div>
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 text-xs font-medium text-mint bg-mint/10 border border-mint/20 p-3 rounded-xl">
+                <div className="mb-4 text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
                     A new verification link has been sent to the email address you provided during registration.
                 </div>
             )}

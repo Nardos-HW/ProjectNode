@@ -6,21 +6,22 @@ export default function Badge({
     ...props
 }) {
     const variants = {
-        violet: 'bg-violet/15 text-violet border-violet/30',
-        amber: 'bg-amber/15 text-amber border-amber/30',
-        mint: 'bg-mint/15 text-mint border-mint/30',
-        coral: 'bg-coral/15 text-coral border-coral/30',
-        neutral: 'bg-surface-2 text-muted border-surface-2/80',
+        flame: 'bg-flame-500/10 text-flame-500 border-flame-500/30',
+        violet: 'bg-flame-500/10 text-flame-500 border-flame-500/30',
+        amber: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+        mint: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+        coral: 'bg-red-500/10 text-red-400 border-red-500/30',
+        neutral: 'bg-carbon-800/80 text-neutral-300 border-carbon-700',
     };
 
     const sizes = {
-        sm: 'text-xs px-2 py-0.5',
-        md: 'text-xs font-medium px-2.5 py-1',
+        sm: 'text-[9px] px-2 py-0.5 tracking-wider',
+        md: 'text-[10px] px-2.5 py-0.5 tracking-wider',
     };
 
     return (
         <span
-            className={`inline-flex items-center rounded-full border ${variants[variant] || variants.neutral} ${sizes[size] || sizes.md} ${className}`}
+            className={`inline-flex items-center font-mono uppercase rounded-full border ${variants[variant] || variants.neutral} ${sizes[size] || sizes.md} ${className}`}
             {...props}
         >
             {children}

@@ -23,8 +23,8 @@ export default function Register() {
             <Head title="Register" />
 
             <div className="mb-6">
-                <h1 className="text-xl font-bold font-display text-text">Create account</h1>
-                <p className="text-xs text-muted mt-1">Join the Addis Ababa University project network</p>
+                <h1 className="text-xl font-bold font-display uppercase tracking-wider text-white">Create Account</h1>
+                <p className="text-xs font-mono text-neutral-400 mt-1">Join the Addis Ababa University technical network</p>
             </div>
 
             <form onSubmit={submit} className="space-y-4">
@@ -79,9 +79,9 @@ export default function Register() {
                     </Button>
                 </div>
 
-                <p className="text-center text-xs text-muted pt-2">
+                <p className="text-center text-xs text-neutral-400 pt-2 font-mono">
                     Already registered?{' '}
-                    <Link href={route('login')} className="text-violet hover:underline font-medium">
+                    <Link href={route('login')} className="text-flame-500 hover:underline font-medium">
                         Log in
                     </Link>
                 </p>

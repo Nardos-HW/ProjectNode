@@ -35,8 +35,8 @@ export default function DesignSystem() {
 
             <div className="py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
                 <PageHeader
-                    title="Campus Constellation Design System"
-                    subtitle="Interactive preview of all design tokens and UI components."
+                    title="Industrial Technical Design System"
+                    subtitle="Interactive preview of all Refactory-inspired architectural design tokens and UI components."
                     actions={
                         <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
                             Open Modal
@@ -45,8 +45,8 @@ export default function DesignSystem() {
                 />
 
                 {/* Buttons */}
-                <Card>
-                    <h2 className="text-lg font-bold font-display text-text mb-4">Buttons</h2>
+                <Card className="cad-crosshairs">
+                    <h2 className="text-sm font-bold font-mono uppercase tracking-wider text-white mb-4">Buttons</h2>
                     <div className="flex flex-wrap items-center gap-3">
                         <Button variant="primary">Primary</Button>
                         <Button variant="secondary">Secondary</Button>
@@ -58,20 +58,20 @@ export default function DesignSystem() {
                 </Card>
 
                 {/* Badges */}
-                <Card>
-                    <h2 className="text-lg font-bold font-display text-text mb-4">Badges</h2>
+                <Card className="cad-crosshairs">
+                    <h2 className="text-sm font-bold font-mono uppercase tracking-wider text-white mb-4">Badges</h2>
                     <div className="flex flex-wrap items-center gap-3">
-                        <Badge variant="violet">Violet Badge</Badge>
+                        <Badge variant="flame">Flame Badge</Badge>
                         <Badge variant="amber">Amber Badge</Badge>
-                        <Badge variant="mint">Mint Badge</Badge>
-                        <Badge variant="coral">Coral Badge</Badge>
+                        <Badge variant="mint">Emerald Badge</Badge>
+                        <Badge variant="coral">Crimson Badge</Badge>
                         <Badge variant="neutral">Neutral Badge</Badge>
                     </div>
                 </Card>
 
                 {/* Form Controls & Counters */}
-                <Card>
-                    <h2 className="text-lg font-bold font-display text-text mb-4">Form Inputs & Counters (L9)</h2>
+                <Card className="cad-crosshairs">
+                    <h2 className="text-sm font-bold font-mono uppercase tracking-wider text-white mb-4">Form Inputs & Counters</h2>
                     <FormSection title="Sample Project Form" description="Inputs demonstrate character limits, focus rings, and validation styling.">
                         <TextField
                             label="Project Title"
@@ -109,11 +109,11 @@ export default function DesignSystem() {
                 </Card>
 
                 {/* Custom Indicators */}
-                <Card>
-                    <h2 className="text-lg font-bold font-display text-text mb-4">Capacity & Deadlines</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                <Card className="cad-crosshairs">
+                    <h2 className="text-sm font-bold font-mono uppercase tracking-wider text-white mb-4">Capacity & Deadlines</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center font-mono">
                         <div>
-                            <p className="text-xs text-muted mb-2 font-medium">SlotDots (Interactive):</p>
+                            <p className="text-xs text-neutral-400 mb-2 font-medium">SlotDots (Interactive):</p>
                             <div className="flex items-center gap-4">
                                 <SlotDots filled={slots} total={4} />
                                 <div className="flex gap-2">
@@ -124,7 +124,7 @@ export default function DesignSystem() {
                         </div>
 
                         <div>
-                            <p className="text-xs text-muted mb-2 font-medium">DeadlineRing Variants:</p>
+                            <p className="text-xs text-neutral-400 mb-2 font-medium">DeadlineRing Variants:</p>
                             <div className="flex flex-col gap-2">
                                 <DeadlineRing deadline={new Date(Date.now() + 86400000 * 6).toISOString()} />
                                 <DeadlineRing deadline={new Date(Date.now() + 86400000 * 2).toISOString()} />
@@ -142,8 +142,8 @@ export default function DesignSystem() {
                         action={<Button variant="primary">Explore Projects</Button>}
                     />
 
-                    <Card className="space-y-3">
-                        <p className="text-xs text-muted font-medium">Skeletons:</p>
+                    <Card className="space-y-3 cad-crosshairs">
+                        <p className="text-xs text-neutral-400 font-mono font-medium">Skeletons:</p>
                         <Skeleton className="h-6 w-3/4" />
                         <Skeleton className="h-4 w-full" />
                         <Skeleton className="h-4 w-5/6" />
@@ -152,8 +152,8 @@ export default function DesignSystem() {
                 </div>
 
                 {/* Pagination */}
-                <Card>
-                    <h2 className="text-lg font-bold font-display text-text mb-4">Pagination</h2>
+                <Card className="cad-crosshairs">
+                    <h2 className="text-sm font-bold font-mono uppercase tracking-wider text-white mb-4">Pagination</h2>
                     <Pagination links={dummyLinks} />
                 </Card>
 

@@ -18,8 +18,8 @@ export default function Select({
     return (
         <div className={`space-y-1.5 ${className}`}>
             {label && (
-                <label htmlFor={selectId} className="block text-sm font-medium text-text">
-                    {label} {required && <span className="text-coral">*</span>}
+                <label htmlFor={selectId} className="block text-[11px] font-medium uppercase tracking-wider text-neutral-200">
+                    {label} {required && <span className="text-flame-500">*</span>}
                 </label>
             )}
 
@@ -28,12 +28,13 @@ export default function Select({
                 required={required}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : hint ? hintId : undefined}
-                className={`w-full rounded-xl bg-surface border px-3.5 py-2.5 text-text text-sm focus:outline-none focus:ring-2 focus:ring-violet focus:border-transparent transition-colors ${error ? 'border-coral focus:ring-coral' : 'border-surface-2'
-                    }`}
+                className={`w-full rounded-lg bg-carbon-950 border px-3.5 py-2.5 text-neutral-100 text-sm focus:outline-none focus:border-flame-500 focus:ring-1 focus:ring-flame-500 transition-colors ${
+                    error ? 'border-red-500/80 focus:ring-red-500' : 'border-carbon-800'
+                }`}
                 {...props}
             >
                 {options.map((opt) => (
-                    <option key={opt.value} value={opt.value} className="bg-surface text-text">
+                    <option key={opt.value} value={opt.value} className="bg-carbon-900 text-neutral-100">
                         {opt.label}
                     </option>
                 ))}

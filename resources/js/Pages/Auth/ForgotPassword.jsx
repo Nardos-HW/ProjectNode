@@ -17,12 +17,12 @@ export default function ForgotPassword({ status }) {
         <GuestLayout>
             <Head title="Forgot Password" />
 
-            <div className="mb-4 text-xs text-muted leading-relaxed">
-                Forgot your password? Enter your university email address and we will email you a password reset link.
+            <div className="mb-4 text-xs font-mono text-neutral-400 leading-relaxed">
+                Forgot your password? Enter your university email address and we will dispatch a password reset link.
             </div>
 
             {status && (
-                <div className="mb-4 text-xs font-medium text-mint bg-mint/10 border border-mint/20 p-3 rounded-xl">
+                <div className="mb-4 text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
                     {status}
                 </div>
             )}

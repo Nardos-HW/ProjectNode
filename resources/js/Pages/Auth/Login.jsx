@@ -23,12 +23,12 @@ export default function Login({ status, canResetPassword }) {
             <Head title="Log in" />
 
             <div className="mb-6">
-                <h1 className="text-xl font-bold font-display text-text">Welcome back</h1>
-                <p className="text-xs text-muted mt-1">Sign in with your university account</p>
+                <h1 className="text-xl font-bold font-display uppercase tracking-wider text-white">Welcome Back</h1>
+                <p className="text-xs font-mono text-neutral-400 mt-1">Sign in with your university credentials</p>
             </div>
 
             {status && (
-                <div className="mb-4 text-xs font-medium text-mint bg-mint/10 border border-mint/20 p-3 rounded-xl">
+                <div className="mb-4 text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
                     {status}
                 </div>
             )}
@@ -57,13 +57,12 @@ export default function Login({ status, canResetPassword }) {
                     error={errors.password}
                 />
 
-                <div className="flex items-center justify-between text-xs">
-                    <label className="flex items-center gap-2 cursor-pointer text-muted select-none">
+                <div className="flex items-center justify-between text-xs font-mono">
+                    <label className="flex items-center gap-2 cursor-pointer text-neutral-400 select-none">
                         <Checkbox
                             name="remember"
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
-                            className="rounded border-surface-2 text-violet focus:ring-violet bg-ink"
                         />
                         <span>Remember me</span>
                     </label>
@@ -71,7 +70,7 @@ export default function Login({ status, canResetPassword }) {
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="text-muted hover:text-text hover:underline"
+                            className="text-neutral-400 hover:text-white hover:underline"
                         >
                             Forgot password?
                         </Link>
@@ -84,9 +83,9 @@ export default function Login({ status, canResetPassword }) {
                     </Button>
                 </div>
 
-                <p className="text-center text-xs text-muted pt-2">
+                <p className="text-center text-xs text-neutral-400 pt-2 font-mono">
                     Don't have an account?{' '}
-                    <Link href={route('register')} className="text-violet hover:underline font-medium">
+                    <Link href={route('register')} className="text-flame-500 hover:underline font-medium">
                         Register here
                     </Link>
                 </p>

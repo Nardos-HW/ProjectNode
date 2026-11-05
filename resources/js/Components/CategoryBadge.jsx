@@ -4,10 +4,10 @@ export default function CategoryBadge({ category }) {
     const formatted = typeof category === 'string' ? category.replace('_', ' ') : '';
 
     const variantMap = {
-        personal: 'violet',
+        personal: 'flame',
         hackathon: 'amber',
-        academic: 'mint',
-        student_initiative: 'coral',
+        academic: 'neutral',
+        student_initiative: 'flame',
     };
 
     return (

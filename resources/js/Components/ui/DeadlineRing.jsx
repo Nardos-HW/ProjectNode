@@ -30,16 +30,16 @@ export default function DeadlineRing({ deadline, className = '' }) {
     }
 
     const strokeColor = isPassed
-        ? 'stroke-muted/40'
+        ? 'stroke-neutral-600'
         : isUrgent
-            ? 'stroke-coral'
-            : 'stroke-amber';
+            ? 'stroke-flame-500'
+            : 'stroke-amber-400';
 
     const textColor = isPassed
-        ? 'text-muted'
+        ? 'text-neutral-500 font-mono'
         : isUrgent
-            ? 'text-coral font-medium'
-            : 'text-amber';
+            ? 'text-flame-500 font-mono font-medium'
+            : 'text-amber-400 font-mono';
 
     return (
         <div className={`inline-flex items-center gap-2 text-xs ${className}`}>
@@ -48,7 +48,7 @@ export default function DeadlineRing({ deadline, className = '' }) {
                     cx="12"
                     cy="12"
                     r="9"
-                    className="stroke-surface-2"
+                    className="stroke-carbon-800"
                     strokeWidth="2.5"
                     fill="none"
                 />

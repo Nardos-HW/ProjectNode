@@ -45,9 +45,9 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                 />
 
                 {/* Filters */}
-                <Card className="p-4 flex flex-wrap gap-3 items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs text-muted font-medium">
-                        <Filter className="w-3.5 h-3.5" />
+                <Card className="p-4 flex flex-wrap gap-3 items-center justify-between cad-crosshairs font-mono">
+                    <div className="flex items-center gap-2 text-xs text-neutral-400 font-medium">
+                        <Filter className="w-3.5 h-3.5 text-flame-500" />
                         <span>Filter Log:</span>
                     </div>
 
@@ -55,7 +55,7 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         <select
                             value={filters.action || 'all'}
                             onChange={(e) => applyFilter({ action: e.target.value })}
-                            className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-3 py-2 focus:ring-violet focus:outline-none"
+                            className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
                         >
                             <option value="all">All Action Types</option>
                             <option value="user_suspended">User Suspended</option>
@@ -67,7 +67,7 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         <select
                             value={filters.target_type || 'all'}
                             onChange={(e) => applyFilter({ target_type: e.target.value })}
-                            className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-3 py-2 focus:ring-violet focus:outline-none"
+                            className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
                         >
                             <option value="all">All Targets</option>
                             <option value="user">Users Only</option>
@@ -77,7 +77,7 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         <select
                             value={filters.admin_id || ''}
                             onChange={(e) => applyFilter({ admin_id: e.target.value })}
-                            className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-3 py-2 focus:ring-violet focus:outline-none"
+                            className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
                         >
                             <option value="">All Administrators</option>
                             {admins.map((admin) => (
@@ -96,10 +96,10 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         description="Administrative interventions will appear here as an append-only audit trail."
                     />
                 ) : (
-                    <Card className="overflow-hidden border border-surface-2">
+                    <Card className="overflow-hidden border border-carbon-800 p-0 cad-crosshairs">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left text-xs">
-                                <thead className="bg-surface-2/60 text-muted uppercase text-[10px] tracking-wider border-b border-surface-2">
+                            <table className="w-full text-left text-xs font-mono">
+                                <thead className="bg-carbon-950 text-neutral-400 uppercase text-[10px] tracking-wider border-b border-carbon-800">
                                     <tr>
                                         <th className="py-3 px-4">Timestamp</th>
                                         <th className="py-3 px-4">Action</th>
@@ -108,16 +108,16 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                                         <th className="py-3 px-4">Justification / Reason</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-surface-2/60 text-text">
+                                <tbody className="divide-y divide-carbon-800 text-neutral-200">
                                     {actions.data.map((log) => (
-                                        <tr key={log.id} className="hover:bg-surface-2/30 transition-colors">
-                                            <td className="py-3 px-4 text-muted font-mono whitespace-nowrap text-[11px]">
+                                        <tr key={log.id} className="hover:bg-carbon-850/60 transition-colors">
+                                            <td className="py-3 px-4 text-neutral-500 font-mono whitespace-nowrap text-[11px]">
                                                 {log.created_at}
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap">
                                                 {actionBadge(log.action)}
                                             </td>
-                                            <td className="py-3 px-4 font-medium text-text">
+                                            <td className="py-3 px-4 font-medium text-white">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="capitalize text-muted text-[11px] font-semibold">
                                                         [{log.target_type}]

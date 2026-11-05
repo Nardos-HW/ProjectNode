@@ -26,9 +26,9 @@ export default function Toast() {
     if (!toast) return null;
 
     const icons = {
-        success: <CheckCircle2 className="w-5 h-5 text-mint flex-shrink-0" />,
-        error: <AlertTriangle className="w-5 h-5 text-coral flex-shrink-0" />,
-        info: <Info className="w-5 h-5 text-violet flex-shrink-0" />,
+        success: <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />,
+        error: <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0" />,
+        info: <Info className="w-5 h-5 text-flame-500 flex-shrink-0" />,
     };
 
     return (
@@ -41,7 +41,7 @@ export default function Toast() {
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                         role="status"
-                        className="pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-surface-2 border border-surface-2 shadow-xl shadow-black/40 text-text"
+                        className="pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-carbon-900 border border-carbon-800 shadow-2xl shadow-black/80 text-white"
                     >
                         {icons[toast.type]}
                         <p className="text-sm flex-1 leading-snug">{toast.message}</p>

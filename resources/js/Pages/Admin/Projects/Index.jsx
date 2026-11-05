@@ -93,17 +93,17 @@ export default function Index({ projects, filters = {}, departments = [] }) {
                 />
 
                 {/* Search & Filters */}
-                <Card className="p-4 space-y-4">
+                <Card className="p-4 space-y-4 cad-crosshairs">
                     <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
                         <form onSubmit={handleSearch} className="flex-1 w-full flex items-center gap-2">
                             <div className="relative flex-1">
-                                <Search className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                                 <input
                                     type="text"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Search by title or description..."
-                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl bg-surface-2 border border-surface-2 text-text placeholder-muted/60 focus:outline-none focus:ring-2 focus:ring-violet"
+                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-lg bg-carbon-950 border border-carbon-800 text-white placeholder-neutral-600 focus:outline-none focus:border-flame-500 font-mono"
                                 />
                             </div>
                             <Button type="submit" variant="secondary" size="sm">
@@ -111,11 +111,11 @@ export default function Index({ projects, filters = {}, departments = [] }) {
                             </Button>
                         </form>
 
-                        <div className="flex items-center gap-3 w-full md:w-auto">
+                        <div className="flex items-center gap-3 w-full md:w-auto font-mono">
                             <select
                                 value={filters.status || 'all'}
                                 onChange={(e) => applyFilter({ status: e.target.value })}
-                                className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-3 py-2 focus:ring-violet focus:outline-none"
+                                className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
                             >
                                 <option value="all">All Statuses</option>
                                 <option value="active">Active Only</option>
@@ -125,7 +125,7 @@ export default function Index({ projects, filters = {}, departments = [] }) {
                             <select
                                 value={filters.department_id || ''}
                                 onChange={(e) => applyFilter({ department_id: e.target.value })}
-                                className="bg-surface-2 border border-surface-2 text-text text-xs rounded-xl px-3 py-2 focus:ring-violet focus:outline-none"
+                                className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
                             >
                                 <option value="">All Departments</option>
                                 {departments.map((d) => (
@@ -145,10 +145,10 @@ export default function Index({ projects, filters = {}, departments = [] }) {
                         description="Try adjusting your search criteria or filters."
                     />
                 ) : (
-                    <Card className="overflow-hidden border border-surface-2">
+                    <Card className="overflow-hidden border border-carbon-800 p-0 cad-crosshairs">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left text-xs">
-                                <thead className="bg-surface-2/60 text-muted uppercase text-[10px] tracking-wider border-b border-surface-2">
+                            <table className="w-full text-left text-xs font-mono">
+                                <thead className="bg-carbon-950 text-neutral-400 uppercase text-[10px] tracking-wider border-b border-carbon-800">
                                     <tr>
                                         <th className="py-3 px-4">Project</th>
                                         <th className="py-3 px-4">Owner</th>
@@ -158,29 +158,29 @@ export default function Index({ projects, filters = {}, departments = [] }) {
                                         <th className="py-3 px-4 text-right">Moderation Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-surface-2/60 text-text">
+                                <tbody className="divide-y divide-carbon-800 text-neutral-200">
                                     {projects.data.map((project) => (
-                                        <tr key={project.id} className="hover:bg-surface-2/30 transition-colors">
+                                        <tr key={project.id} className="hover:bg-carbon-850/60 transition-colors">
                                             <td className="py-3 px-4 max-w-xs space-y-1">
-                                                <div className="font-semibold text-text truncate">
+                                                <div className="font-semibold text-white truncate">
                                                     {project.deleted_at ? (
-                                                        <span className="line-through text-muted">{project.title}</span>
+                                                        <span className="line-through text-neutral-500">{project.title}</span>
                                                     ) : (
-                                                        <Link href={route('projects.show', project.id)} className="hover:text-violet">
+                                                        <Link href={route('projects.show', project.id)} className="hover:text-flame-500 transition-colors">
                                                             {project.title}
                                                         </Link>
                                                     )}
                                                 </div>
-                                                <div className="text-[11px] text-muted line-clamp-1">{project.description}</div>
+                                                <div className="text-[11px] text-neutral-400 font-sans line-clamp-1">{project.description}</div>
                                             </td>
                                             <td className="py-3 px-4">
-                                                <div className="font-medium text-text">{project.owner?.name}</div>
-                                                <div className="text-muted text-[11px] font-mono">{project.owner?.email}</div>
+                                                <div className="font-medium text-white">{project.owner?.name}</div>
+                                                <div className="text-neutral-500 text-[11px] font-mono">{project.owner?.email}</div>
                                             </td>
                                             <td className="py-3 px-4">
                                                 <CategoryBadge category={project.category} />
                                             </td>
-                                            <td className="py-3 px-4 text-muted">
+                                            <td className="py-3 px-4 text-neutral-400">
                                                 {project.accepted_count} / {project.slots_total} slots
                                             </td>
                                             <td className="py-3 px-4">

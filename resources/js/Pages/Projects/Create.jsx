@@ -34,7 +34,7 @@ export default function Create({ departments, skills, categories, defaultTelegra
                     subtitle="Publish an initiative to find fellow student collaborators."
                 />
 
-                <Card className="p-6 sm:p-8">
+                <Card className="p-6 sm:p-8 cad-crosshairs">
                     <ProjectForm
                         data={data}
                         setData={setData}
