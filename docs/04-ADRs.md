@@ -70,7 +70,9 @@
 
 **Consequences.** Users manage a password (the reset flow is included). The product depends on reliable email delivery, which is the main operational risk (test on Day 2). Identity assurance is limited to "controls an aau.edu.et mailbox" (0.2 #3 in file 00). Adding OAuth later needs a `social_accounts` table and a linking policy but no redesign of sessions or authorization.
 
-## ADR-5: Defer chat to Telegram
+## ADR-5: Defer chat to Telegram (Partially superseded by ADR-10)
+
+*Note: Partially superseded by ADR-10. Telegram contact reveal is retained as an asynchronous fallback and external channel, but primary collaboration happens via in-app 1-on-1 chat.*
 
 **Context.** Students already coordinate on Telegram. In-app chat requires real-time infrastructure (WebSockets or polling), message storage, notification handling, abuse reporting, moderation, and a retention policy. It is a product in itself.
 
@@ -128,7 +130,7 @@
 | Queues and workers | 0.5 day plus operations | Two emails do not need them | When email volume grows |
 | Student reports | 0.5 day | Admins can browse at campus scale | Stretch or Phase 2 |
 | Recommendations and digest emails | 3 or more days | No data yet; needs preferences | Phase 2 |
-| In-app chat | 5 or more days | Telegram already used | Probably never |
+| In-app chat | 5 or more days | Telegram already used | Implemented in ADR-10 via polling |
 | Organization and lecturer accounts | 3 or more days | Verification process undefined | Phase 2 |
 | Endorsements table | 1 day | Two-party credit suffices | Phase 2 |
 | Role-specific openings | 1.5 days | Adds a table and capacity per role | Phase 2 |
@@ -140,3 +142,36 @@
 **Never cut:** domain rule, email verification, policies, capacity transaction, suspension, deployment, tests for the authorization and capacity rules.
 
 **Consequences.** The MVP is less impressive on a feature list but is secure, complete in its core loop (post, discover, apply, accept, contact, complete), and extensible.
+
+## ADR-10: In-app chat for accepted participants, delivered by polling
+
+**Status.** Accepted.
+**Date.** 2026-11-05.
+
+**Context.** While ADR-5 deferred real-time communication to Telegram handles, students and faculty testing ProjectNode identified a clear need for direct communication inside the application:
+1. Contact sharing (Telegram username) frequently fails when usernames are misspelled, changed, or private.
+2. Students prefer an immediate, low-friction channel to discuss project kick-off without context switching to external mobile messaging.
+3. However, constraint C1 and C3 remain non-negotiable: no long-running WebSocket daemon (e.g. Laravel Reverb), no Redis pub/sub broker, no worker processes, and no external paid messaging SaaS.
+
+**Decision.** Implement a lightweight, 1-on-1 in-app messaging feature scoped strictly between the project owner and each accepted member:
+- **Creation:** A `conversations` record is automatically created atomically when a `join_request` is accepted (in the same database transaction).
+- **Delivery mechanism:** Short HTTP polling from the client React application.
+  - Active conversation window polls `GET /conversations/{id}/messages?after={id}` every 3 seconds.
+  - An exponential backoff (up to 30 seconds) engages when the window/tab is hidden via `document.hidden` or the user is idle.
+  - A 30-second background poll updates the global unread count badge in the navigation bar.
+- **Scope & Constraints:** Plain text messages only (1 to 2,000 characters). No file uploads, media, reactions, read receipts (per message), or message editing/deletion.
+- **Closed States:**
+  - Soft-deleted projects return HTTP 404 for all conversation routes.
+  - Cancelled projects remain readable for audit and historical record, but sending is disabled (returns HTTP 422 with `"This project was cancelled. Messaging is closed."`).
+- **Privacy:** NFR-PRIV-01 is strictly enforced: conversation payloads never include user email addresses or Telegram handles.
+
+**Consequences.**
+- *Positive:* Delivers in-app collaboration without any infrastructure footprint beyond standard PHP-FPM and PostgreSQL. Respects existing security, policy, and transaction conventions. Zero cost and zero maintenance overhead for external services.
+- *Negative:* Polling introduces a 0–3 second message arrival latency compared to sub-100ms WebSockets. Server receives periodic polling requests, mitigated by named rate limiters (`chat-poll: 120/min`, `chat-send: 30/min`), in-flight request deduplication, and indexed delta queries (`WHERE id > :after`).
+
+**Alternatives considered.**
+- *Laravel Reverb / WebSockets:* Requires a persistent Node or PHP daemon, reverse proxy configuration, and WebSocket state management; violates constraint C3.
+- *Redis Pub/Sub & Server-Sent Events (SSE):* Requires a Redis server and long-lived HTTP streaming connections, requiring dedicated web server process capacity.
+- *Third-party chat SDKs (Stream, Pusher, Sendbird):* Violates privacy, zero-cost constraint C2, and introduces external SaaS dependencies.
+- *Telegram only (original ADR-5):* Insufficient for platform engagement and plagued by stale/invalid usernames.
+

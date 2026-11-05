@@ -108,6 +108,8 @@ Conventions: `id` is `bigint` auto-increment primary key (Laravel `id()`); `time
 | `project_skill` | Many-to-many: projects to required skills | Yes |
 | `join_requests` | The **application workflow** (message, status). A request is a conversation between applicant and owner; it ends. | Yes |
 | `project_participants` | The **membership fact**: who is on a project, in what role, and whether they were credited and confirmed. Outlives the application. | Yes |
+| `conversations` | 1-on-1 chat thread between project owner and accepted member | Yes |
+| `messages` | Individual chat messages within a conversation | Yes |
 | `moderation_actions` | Audit log of admin actions | Yes (small) |
 | `sessions`, `password_reset_tokens` | Laravel framework tables created by default migrations | Yes (framework) |
 | `endorsements` | **Not created.** See 2.7. | No |
@@ -218,16 +220,49 @@ Constraints: **UNIQUE (project_id, user_id)**; index on `user_id` (profile histo
 
 Index on `(target_type, target_id)`. Two plain columns are used instead of Laravel's polymorphic `morphs()` helper because there are only two target types, and plain columns are easier for a beginner to read and query. There is no foreign key on `target_id` because it points at two tables; that is the accepted trade-off.
 
+### `conversations`
+
+| Column | Type | Constraints and notes |
+|---|---|---|
+| id | bigint | PK |
+| join_request_id | bigint | NOT NULL, UNIQUE, FK join_requests(id) ON DELETE CASCADE |
+| project_id | bigint | NOT NULL, FK projects(id) ON DELETE CASCADE |
+| owner_id | bigint | NOT NULL, FK users(id) ON DELETE RESTRICT |
+| member_id | bigint | NOT NULL, FK users(id) ON DELETE RESTRICT |
+| created_at, updated_at | timestamp | NOT NULL |
+
+Constraints: **UNIQUE (join_request_id)**; **CHECK (owner_id <> member_id)**; indexes on `owner_id`, `member_id`, and `project_id`.
+
+**Deliberate denormalization on `conversations`:** Notice that `owner_id`, `member_id`, and `project_id` could theoretically be derived through `join_request -> project -> owner` and `join_request -> applicant`. They are explicitly stored directly on the `conversations` table as an intentional denormalization to:
+1. Enable cheap indexing (`(owner_id)`, `(member_id)`, `(project_id)`) so the user's inbox query (`WHERE owner_id = :id OR member_id = :id`) runs instantly without multi-table joins.
+2. Allow authorization checks (`ConversationPolicy`) to evaluate access with a single in-memory comparison (`$user->id === $conversation->owner_id || $user->id === $conversation->member_id`) without performing extra database queries.
+3. Permit clean cascade and soft-delete handling.
+
+### `messages`
+
+| Column | Type | Constraints and notes |
+|---|---|---|
+| id | bigint | PK |
+| conversation_id | bigint | NOT NULL, FK conversations(id) ON DELETE CASCADE |
+| sender_id | bigint | NOT NULL, FK users(id) ON DELETE RESTRICT |
+| body | text | NOT NULL, CHECK (char_length(body) BETWEEN 1 AND 2000) |
+| read_at | timestamp | NULL (set when recipient opens or polls the thread) |
+| created_at, updated_at | timestamp | NOT NULL |
+
+Constraints: **CHECK (char_length(body) BETWEEN 1 AND 2000)**; compound indexes on `(conversation_id, id)` (delta polling query `WHERE conversation_id = :cid AND id > :after`) and `(conversation_id, sender_id, read_at)` (fast unread message count and batch read marking).
+
 ## 2.5 Eloquent relationships
 
 | Model | Relationships |
 |---|---|
-| `User` | `belongsTo(Department)`; `belongsToMany(Skill)`; `hasMany(Project, 'owner_id')` as `ownedProjects`; `hasMany(JoinRequest, 'applicant_id')`; `hasMany(ProjectParticipant)` as `participations` |
+| `User` | `belongsTo(Department)`; `belongsToMany(Skill)`; `hasMany(Project, 'owner_id')` as `ownedProjects`; `hasMany(JoinRequest, 'applicant_id')`; `hasMany(ProjectParticipant)` as `participations`; `hasMany(Conversation, 'owner_id')` as `ownedConversations`; `hasMany(Conversation, 'member_id')` as `memberConversations`; `conversations()` via scope; `hasMany(Message, 'sender_id')` |
 | `Department` | `hasMany(User)`; `hasMany(Project)` |
 | `Skill` | `belongsToMany(User)`; `belongsToMany(Project)` |
-| `Project` | `belongsTo(User, 'owner_id')` as `owner`; `belongsTo(Department)`; `belongsToMany(Skill)`; `hasMany(JoinRequest)`; `hasMany(ProjectParticipant)` as `participants`; `members()` = participants where role is 'member'; uses `SoftDeletes` |
-| `JoinRequest` | `belongsTo(Project)`; `belongsTo(User, 'applicant_id')` as `applicant`; `hasOne(ProjectParticipant)` |
+| `Project` | `belongsTo(User, 'owner_id')` as `owner`; `belongsTo(Department)`; `belongsToMany(Skill)`; `hasMany(JoinRequest)`; `hasMany(ProjectParticipant)` as `participants`; `members()` = participants where role is 'member'; `hasMany(Conversation)`; uses `SoftDeletes` |
+| `JoinRequest` | `belongsTo(Project)`; `belongsTo(User, 'applicant_id')` as `applicant`; `hasOne(ProjectParticipant)`; `hasOne(Conversation)` |
 | `ProjectParticipant` | `belongsTo(Project)`; `belongsTo(User)`; `belongsTo(JoinRequest)` |
+| `Conversation` | `belongsTo(JoinRequest)`; `belongsTo(Project)`; `belongsTo(User, 'owner_id')` as `owner`; `belongsTo(User, 'member_id')` as `member`; `hasMany(Message)`; `hasOne(Message)->latestOfMany()` as `lastMessage` |
+| `Message` | `belongsTo(Conversation)`; `belongsTo(User, 'sender_id')` as `sender` |
 | `ModerationAction` | `belongsTo(User, 'admin_id')` as `admin` |
 
 Cast statuses to enums: `protected $casts = ['status' => ProjectStatus::class];`. Always eager load (`with('owner','skills')`) on list pages to avoid the N+1 query problem, where Laravel runs one extra query per row.

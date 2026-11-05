@@ -178,6 +178,19 @@ The lowercasing step matters on PostgreSQL, where `A@x.com` and `a@x.com` are di
 
 **Tests (feature tests):** valid AAU email registers; `gmail.com`, `evilaau.edu.et`, `aau.edu.et.attacker.com` all fail; case-variant duplicate fails; unverified user redirected from `/projects`; a signed verification URL generated with `URL::temporarySignedRoute(...)` verifies; a tampered one returns 403.
 
+### Real email verification delivery, mailer configuration, and diagnostics
+
+- **Synchronous Delivery:** In alignment with constraint C3 (no background workers in MVP), `RegisteredUserController` dispatches `event(new Registered($user))` synchronously. The notification listener sends email over SMTP within the HTTP request lifecycle. Any network or mail server exception is caught via `try/catch`, logged with `report($e)`, and does not fail registration—the user lands safely on `/verify-email` where resending can be triggered.
+- **Branded Notification:** Configured via `VerifyEmail::toMailUsing(...)` in `AppServiceProvider`. Uses standard ProjectNode branding, clean copy explaining the 60-minute link expiration, and points to the cryptographic signed verification route.
+- **Post-Verification Redirect:** Upon clicking the signed link, `VerifyEmailController` checks `$user->isProfileComplete()`. Incomplete profiles redirect to `/profile?verified=1` so the student can complete their name, department, bio, and skills; complete profiles redirect to `/projects?verified=1`.
+- **Environment & SMTP Configuration:**
+  - Standard `.env.example` provides placeholders for `MAIL_MAILER=smtp`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, and `MAIL_FROM_NAME="ProjectNode"`.
+  - For development and testing with Gmail SMTP: `MAIL_HOST=smtp.gmail.com`, `MAIL_PORT=587`, `MAIL_ENCRYPTION=tls`, using a 16-character Google App Password (not account password).
+  - Production deployments use dedicated transactional SMTP (Resend, SendGrid, Postmark, AWS SES).
+  - **Critical `APP_URL` synchronization:** Laravel signed URLs compute an HMAC signature incorporating the request scheme, host, and port. `APP_URL` in `.env` must strictly match the scheme and domain students browse (e.g. `http://localhost:8000` or `https://projectnode.aau.edu.et`), otherwise verification attempts return HTTP 403 (Invalid Signature).
+- **Diagnostic Testing Command:** Run `php artisan projectnode:mail-test {email}` to send a test verification email and verify SMTP connectivity. The command explicitly blocks execution in `production` to prevent unauthorized diagnostic probes.
+
+
 ---
 
 ## 3.2 Google OAuth (not built in the MVP; explained for Phase 2)
@@ -859,3 +872,87 @@ public function test_a_stranger_cannot_accept_a_request(): void
 ```
 
 Finish with one manual end-to-end walkthrough on Day 14 using two real browsers (owner and applicant) and one real `aau.edu.et` inbox.
+
+---
+
+## 3.11 In-app 1-on-1 chat for accepted participants (FR-CHAT-01 to FR-CHAT-08)
+
+**Components:**
+- `ConversationController`: Handles inbox list (`index`), conversation detail view (`show`), delta messages polling endpoint (`poll`), and mark-as-read action (`markRead`).
+- `MessageController`: Handles message dispatch (`store`).
+- `StoreMessageRequest`: Validates message payload, verifies authorization via policy, checks for soft-deleted projects (404), and checks for project cancellation (422).
+- `ConversationPolicy`: Authorization checks (`view`, `send`) ensuring only the conversation's owner and accepted member can access or send messages.
+- `Conversation` & `Message` models: Scopes (`forUser`), helpers (`canSend`, `isMine`, `counterpartFor`), and relationships.
+- `ConversationResource` & `MessageResource`: Strict whitelist transformation guaranteeing zero exposure of user emails or Telegram handles (NFR-PRIV-01).
+- `useChatPolling.js`: Client React hook managing 3-second polling interval, exponential backoff (up to 30s) during background/idle, in-flight request deduplication, and termination on 403/404.
+- `Messages/Index.jsx` & `Messages/Show.jsx`: Responsive, accessible chat views maintaining the existing UI theme down to 360px viewport.
+- `BackfillConversationsCommand` (`projectnode:backfill-conversations`): Idempotent Artisan command backfilling conversation records for pre-existing accepted join requests.
+
+**Sequence (sending a message):**
+1. User enters plain text in `MessageComposer` and presses Enter or clicks Send.
+2. Client sends `POST /conversations/{conversation}/messages` with payload `{ body: string }`.
+3. `auth`, `verified`, `not.suspended`, and `throttle:chat-send` middleware execute.
+4. `StoreMessageRequest` validates that body is 1 to 2000 characters.
+5. `StoreMessageRequest::authorize()` verifies:
+   - If the underlying project is soft-deleted, aborts with HTTP 404.
+   - User passes `ConversationPolicy::send`.
+   - If the project is cancelled, aborts with HTTP 422: `"This project was cancelled. Messaging is closed."`.
+6. `MessageController@store` writes the message with `sender_id = $request->user()->id`.
+7. Returns HTTP 201 with `MessageResource`. Client optimistically displays or appends the returned message.
+
+**Sequence (polling messages):**
+1. When viewing a conversation, `useChatPolling` tracks `lastMessageId`.
+2. Every 3 seconds (when tab is active), sends `GET /conversations/{conversation}/messages?after={lastMessageId}`.
+3. Controller executes indexed query `WHERE conversation_id = :id AND id > :after ORDER BY id ASC`.
+4. Updates recipient's unread messages (`WHERE conversation_id = :id AND sender_id != :user_id AND read_at IS NULL`) with `read_at = now()`.
+5. Returns JSON array of new `MessageResource` items. Client appends them to message stream and scrolls to bottom.
+
+**Validation:**
+- `body`: `required|string|min:1|max:2000`. Monospace character counter in UI warns users as they approach limit.
+- Database CHECK constraint: `char_length(body) BETWEEN 1 AND 2000`.
+
+**Authorization:**
+- Handled strictly on server in `ConversationPolicy`:
+  - `view(User $user, Conversation $conversation)`: `$user->id === $conversation->owner_id || $user->id === $conversation->member_id`.
+  - `send(User $user, Conversation $conversation)`: Same participants check, plus `$conversation->canSend()` verifying the project is not cancelled.
+- Third parties receive HTTP 403 Forbidden.
+
+**Database operations:**
+- Atomically inside `JoinRequestController@accept`:
+  ```php
+  Conversation::firstOrCreate([
+      'join_request_id' => $joinRequest->id,
+  ], [
+      'project_id' => $project->id,
+      'owner_id' => $project->owner_id,
+      'member_id' => $joinRequest->applicant_id,
+  ]);
+  ```
+- Store message:
+  ```php
+  $conversation->messages()->create([
+      'sender_id' => $request->user()->id,
+      'body' => $request->validated('body'),
+  ]);
+  ```
+- Fast unread marking:
+  ```php
+  $conversation->messages()
+      ->where('sender_id', '!=', $user->id)
+      ->whereNull('read_at')
+      ->update(['read_at' => now()]);
+  ```
+
+**Edge cases:**
+- *Cancelled project:* History remains readable for accountability, but sending is rejected with 422 and a banner in the UI.
+- *Soft-deleted project:* All conversation routes return HTTP 404.
+- *Multiple tabs open:* In-flight request deduplication and `after={id}` query parameters prevent duplicate messages.
+- *Tab hidden / inactive:* Polling frequency backs off smoothly to 30 seconds to conserve battery and server bandwidth.
+- *Rate limits:* Named limiters `chat-send` (30/minute) and `chat-poll` (120/minute) protect server resources.
+
+**Errors:**
+- 403 Forbidden when accessing another user's conversation.
+- 404 Not Found when project is soft-deleted or conversation does not exist.
+- 422 Unprocessable Content when project is cancelled or message body exceeds length.
+- 429 Too Many Requests when rate limit exceeded.
+

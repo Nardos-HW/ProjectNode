@@ -109,6 +109,19 @@ Priority: **M** = Must, **S** = Should, **C** = Could.
 | FR-COMP-04 | Each credited member sees a pending credit and can **confirm** it. Only confirmed credits appear on that member's profile. | S |
 | FR-COMP-05 | A profile's project history shows project title, category, owner-written outcome, role, and the label "Owner-reported, confirmed by participant". | S |
 
+### Chat (accepted-members-only)
+
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-CHAT-01 | When a join request is accepted, exactly one 1-on-1 conversation between the owner and the accepted applicant is automatically created in the same transaction. | M |
+| FR-CHAT-02 | Conversations are accessible only by the conversation's owner and member. All routes require `auth`, `verified`, and pass `ConversationPolicy`. | M |
+| FR-CHAT-03 | Messages are plain text only (1 to 2,000 characters). HTML tags and scripts are escaped; no file attachments, reactions, or edits. | M |
+| FR-CHAT-04 | Delivery operates via short HTTP polling with tab visibility detection, exponential backoff (up to 30s) during background/idle, and in-flight deduplication. | M |
+| FR-CHAT-05 | Reading a conversation automatically marks received messages as read (`read_at` timestamp). An unread message count badge is shown in the navigation bar. | M |
+| FR-CHAT-06 | If a project is cancelled, the conversation remains readable for historical reference, but sending new messages is blocked with HTTP 422 and a banner: "This project was cancelled. Messaging is closed." | M |
+| FR-CHAT-07 | If a project is soft-deleted, all associated conversation routes return HTTP 404. | M |
+| FR-CHAT-08 | Under no circumstances are student email addresses or Telegram handles leaked in conversation Inertia props or polling JSON responses (NFR-PRIV-01). | M |
+
 ### Notifications
 
 | ID | Requirement | Pri |
@@ -167,6 +180,9 @@ Priority: **M** = Must, **S** = Should, **C** = Could.
 | BR-12 | Admins may remove projects and suspend accounts but may not edit profile or project text. Each such action requires a reason and is logged. |
 | BR-13 | Suspended accounts keep their data but lose access. Their projects are hidden from the feed while suspended. |
 | BR-14 | The owner counts as a participant on their own project but does not occupy a slot and does not apply. |
+| BR-15 | A conversation exists if and only if an accepted join request exists (1-to-1 relationship between `join_requests` and `conversations`). Pending, rejected, and withdrawn requests never have conversations. |
+| BR-16 | A project owner has a distinct 1-on-1 conversation with each accepted member under that project. Members cannot message each other directly unless they independently share an accepted project relationship. |
+| BR-17 | Soft-deleted projects hide all associated conversations (HTTP 404). Cancelled projects freeze messaging permanently (read-only history, sending returns HTTP 422). |
 
 ## 1.6 Assumptions and constraints
 
@@ -187,7 +203,7 @@ Priority: **M** = Must, **S** = Should, **C** = Could.
 
 ## 1.7 Explicit MVP exclusions
 
-Google OAuth and any social login; project images and file uploads; in-app chat and messaging; lecturer, department and organization accounts; recommendations and machine-learning matching; email digests and opportunity alerts; notification preferences; peer endorsements and reputation scores; certificates and experience sections; role-specific openings; re-applying after rejection; reassigning project ownership; project edit history; analytics dashboards; queues, caching layers, search engines (Elasticsearch, Meilisearch), Redis, Docker orchestration, microservices.
+Google OAuth and any social login; project images and file uploads; lecturer, department and organization accounts; recommendations and machine-learning matching; email digests and opportunity alerts; notification preferences; peer endorsements and reputation scores; certificates and experience sections; role-specific openings; re-applying after rejection; reassigning project ownership; project edit history; analytics dashboards; queues, caching layers, search engines (Elasticsearch, Meilisearch), Redis, Docker orchestration, microservices.
 
 ## 1.8 Acceptance criteria for main workflows
 
@@ -239,3 +255,13 @@ Google OAuth and any social login; project images and file uploads; in-app chat 
 - Given an admin removes a project with a reason, then it disappears from the feed and a moderation log entry exists.
 - Given an admin suspends a user, then that user's next request shows the suspension notice even if already logged in.
 - Given a non-admin requests any `/admin` URL, then they receive 403.
+
+**AC-9 In-app chat for accepted members**
+
+- Given a pending join request, when the owner accepts it, then exactly one conversation record is created between owner and applicant in the same transaction.
+- Given an accepted member and project owner, both can view their conversation, send messages up to 2000 characters, and receive messages via polling.
+- Given a third-party student, when they attempt to view, send, or poll a conversation, then they receive HTTP 403.
+- Given a cancelled project, when a participant attempts to send a message, then they receive HTTP 422 with a banner stating "This project was cancelled. Messaging is closed." while prior message history remains readable.
+- Given a soft-deleted project, when a participant attempts to access the conversation or messages endpoint, then they receive HTTP 404.
+- Given any chat response or Inertia prop, neither user's email address nor Telegram handle is exposed.
+
