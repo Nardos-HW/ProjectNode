@@ -1,20 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { Shield, ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 export default function AuthenticatedLayout({ children }) {
-    const user = usePage().props.auth.user;
+    const { auth, chat } = usePage().props;
+    const user = auth.user;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(chat?.unread ?? 0);
+
+    useEffect(() => {
+        if (typeof chat?.unread === 'number') {
+            setUnreadCount(chat.unread);
+        }
+    }, [chat?.unread]);
+
+    useEffect(() => {
+        const fetchUnread = () => {
+            if (document.visibilityState !== 'visible') return;
+            axios.get(route('messages.unread_count'))
+                .then((res) => {
+                    if (typeof res.data?.count === 'number') {
+                        setUnreadCount(res.data.count);
+                    }
+                })
+                .catch(() => {});
+        };
+
+        const interval = setInterval(fetchUnread, 30000);
+        document.addEventListener('visibilitychange', fetchUnread);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', fetchUnread);
+        };
+    }, []);
 
     const navLinks = [
         { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
         { name: 'Discover', href: route('projects.index'), active: route().current('projects.index') || route().current('projects.show') },
         { name: 'My Projects', href: route('projects.mine'), active: route().current('projects.mine') },
         { name: 'Applications', href: route('applications.index'), active: route().current('applications.index') },
+        { name: 'Messages', href: route('messages.index'), active: route().current('messages.*'), badge: unreadCount },
     ];
 
     const adminLinks = [
@@ -50,8 +81,17 @@ export default function AuthenticatedLayout({ children }) {
                                         key={link.name}
                                         href={link.href}
                                         active={link.active}
+                                        className="inline-flex items-center gap-1.5"
                                     >
-                                        {link.name}
+                                        <span>{link.name}</span>
+                                        {link.badge > 0 && (
+                                            <span
+                                                className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-mono font-bold leading-none text-white bg-flame-500 rounded-full"
+                                                aria-label={`${link.badge} unread messages`}
+                                            >
+                                                {link.badge}
+                                            </span>
+                                        )}
                                     </NavLink>
                                 ))}
 
@@ -151,8 +191,17 @@ export default function AuthenticatedLayout({ children }) {
                                 key={link.name}
                                 href={link.href}
                                 active={link.active}
+                                className="flex items-center justify-between"
                             >
-                                {link.name}
+                                <span>{link.name}</span>
+                                {link.badge > 0 && (
+                                    <span
+                                        className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-mono font-bold text-white bg-flame-500 rounded-full"
+                                        aria-label={`${link.badge} unread messages`}
+                                    >
+                                        {link.badge}
+                                    </span>
+                                )}
                             </ResponsiveNavLink>
                         ))}
 

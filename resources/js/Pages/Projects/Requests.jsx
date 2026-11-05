@@ -133,6 +133,18 @@ export default function Requests({ project, requests }) {
                                         </Button>
                                     </div>
                                 )}
+
+                                {req.status === 'accepted' && req.conversation_id && (
+                                    <div className="pt-3 border-t border-carbon-800 flex items-center justify-end">
+                                        <Button
+                                            href={route('messages.show', req.conversation_id)}
+                                            variant="secondary"
+                                            size="sm"
+                                        >
+                                            Message {req.applicant.name}
+                                        </Button>
+                                    </div>
+                                )}
                             </Card>
                         ))}
                     </div>

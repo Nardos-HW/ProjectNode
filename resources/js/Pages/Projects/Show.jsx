@@ -11,7 +11,7 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Clock, Calendar, Users, Send, Edit3, PauseCircle, PlayCircle, Ban, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Show({ project, existingRequest, can }) {
+export default function Show({ project, existingRequest, can, my_conversation_id }) {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [confirmCancel, setConfirmCancel] = useState(false);
     const [statusLoading, setStatusLoading] = useState(false);
@@ -195,6 +195,18 @@ export default function Show({ project, existingRequest, can }) {
                             <p className="text-xs font-mono text-neutral-500">
                                 Private. Revealed only to accepted collaborators and the project creator.
                             </p>
+                        )}
+
+                        {my_conversation_id && (
+                            <div className="pt-2 border-t border-carbon-800">
+                                <Button
+                                    href={route('messages.show', my_conversation_id)}
+                                    variant="secondary"
+                                    size="sm"
+                                >
+                                    Message project owner
+                                </Button>
+                            </div>
                         )}
                     </div>
                 </Card>

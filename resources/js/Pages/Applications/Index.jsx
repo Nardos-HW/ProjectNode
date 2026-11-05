@@ -66,6 +66,18 @@ export default function Index({ applications }) {
                                         </p>
                                     </div>
                                 )}
+
+                                {app.status === 'accepted' && app.conversation_id && (
+                                    <div className="pt-2 flex items-center justify-end">
+                                        <Button
+                                            href={route('messages.show', app.conversation_id)}
+                                            variant="secondary"
+                                            size="sm"
+                                        >
+                                            Message
+                                        </Button>
+                                    </div>
+                                )}
                             </Card>
                         ))}
                     </div>
