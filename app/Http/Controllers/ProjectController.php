@@ -160,8 +160,13 @@ class ProjectController extends Controller
 
         $user = $request->user();
         $existingRequest = $user
-            ? $project->joinRequests()->where('applicant_id', $user->id)->first()
+            ? $project->joinRequests()->with('conversation:id,join_request_id')->where('applicant_id', $user->id)->first()
             : null;
+
+        $myConversationId = null;
+        if ($existingRequest && $existingRequest->status === JoinRequestStatus::Accepted) {
+            $myConversationId = $existingRequest->conversation?->id;
+        }
 
         $statusValue = $project->status instanceof ProjectStatus ? $project->status->value : $project->status;
 
@@ -194,6 +199,7 @@ class ProjectController extends Controller
 
         return Inertia::render('Projects/Show', [
             'project' => $projectData,
+            'my_conversation_id' => $myConversationId,
             'existingRequest' => $existingRequest ? [
                 'id' => $existingRequest->id,
                 'status' => $existingRequest->status->value,

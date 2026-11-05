@@ -12,6 +12,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectCompletionController;
 use App\Http\Controllers\ParticipationConfirmationController;
 
@@ -48,6 +50,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects/{project}/complete', [ProjectCompletionController::class, 'create'])->name('projects.complete');
     Route::post('/projects/{project}/complete', [ProjectCompletionController::class, 'store'])->name('projects.complete.store');
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    // In-app chat routes
+    Route::get('/messages', [ConversationController::class, 'index'])->name('messages.index');
+    Route::get('/messages/unread-count', [ConversationController::class, 'unreadCount'])
+        ->middleware('throttle:chat-poll')
+        ->name('messages.unread_count');
+    Route::get('/messages/{conversation}', [ConversationController::class, 'show'])->name('messages.show');
+    Route::get('/messages/{conversation}/poll', [ConversationController::class, 'poll'])
+        ->middleware('throttle:chat-poll')
+        ->name('messages.poll');
+    Route::get('/messages/{conversation}/history', [ConversationController::class, 'history'])
+        ->middleware('throttle:chat-poll')
+        ->name('messages.history');
+    Route::post('/messages/{conversation}', [MessageController::class, 'store'])
+        ->middleware('throttle:chat-send')
+        ->name('messages.store');
 
     // Projects (browsing open to verified students)
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');

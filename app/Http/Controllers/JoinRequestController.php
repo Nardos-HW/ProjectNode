@@ -58,11 +58,16 @@ class JoinRequestController extends Controller
 
         $requests = $project->joinRequests()
             ->with([
+                'conversation:id,join_request_id',
                 'applicant' => fn ($query) => $query->select('id', 'name', 'department_id', 'year_of_study', 'bio', 'telegram_handle')
                     ->with('department:id,name', 'skills:id,name'),
             ])
             ->latest()
             ->get();
+
+        $requests->each(function ($req) {
+            $req->conversation_id = $req->conversation?->id;
+        });
 
         return Inertia::render('Projects/Requests', [
             'project' => [
@@ -125,6 +130,16 @@ class JoinRequestController extends Controller
                     'join_request_id' => $requestModel->id,
                 ]
             );
+
+            // Record conversation
+            \App\Models\Conversation::firstOrCreate(
+                ['join_request_id' => $requestModel->id],
+                [
+                    'project_id' => $project->id,
+                    'owner_id' => $project->owner_id,
+                    'member_id' => $requestModel->applicant_id,
+                ]
+            );
         });
 
         if ($errorMessage) {
@@ -161,7 +176,10 @@ class JoinRequestController extends Controller
     public function mine(Request $request): Response
     {
         $applications = $request->user()->joinRequests()
-            ->with(['project' => fn ($q) => $q->select('id', 'title', 'owner_id', 'telegram_contact')->with('owner:id,name')])
+            ->with([
+                'conversation:id,join_request_id',
+                'project' => fn ($q) => $q->select('id', 'title', 'owner_id', 'telegram_contact')->with('owner:id,name'),
+            ])
             ->latest()
             ->get()
             ->map(function ($app) {
@@ -171,6 +189,7 @@ class JoinRequestController extends Controller
                     'status' => $app->status->value,
                     'status_label' => $app->status->label(),
                     'created_at' => $app->created_at->toFormattedDateString(),
+                    'conversation_id' => $app->status === JoinRequestStatus::Accepted ? $app->conversation?->id : null,
                     'project' => [
                         'id' => $app->project->id,
                         'title' => $app->project->title,

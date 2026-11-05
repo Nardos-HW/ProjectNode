@@ -67,6 +67,11 @@ class Project extends Model
         return $this->hasMany(JoinRequest::class)->where('status', \App\Enums\JoinRequestStatus::Accepted);
     }
 
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
+    }
+
     public function scopeRecruiting(Builder $query): Builder
     {
         return $query->where('status', ProjectStatus::Open->value)

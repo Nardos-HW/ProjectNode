@@ -100,4 +100,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(ProjectParticipant::class);
     }
+
+    public function conversations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Conversation::class, 'owner_id');
+    }
 }

@@ -56,6 +56,13 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'info' => fn () => $request->session()->get('info'),
             ],
+            'chat' => [
+                'unread' => fn () => $request->user() ? \App\Models\Message::whereHas('conversation', function ($q) use ($request) {
+                    $q->forUser($request->user())->whereHas('project');
+                })->where('sender_id', '!=', $request->user()->id)
+                  ->whereNull('read_at')
+                  ->count() : 0,
+            ],
         ];
     }
 }
