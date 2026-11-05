@@ -7,20 +7,18 @@ export default function ApplicationLogo({ className = 'h-8 w-auto', ...props }) 
             className={className}
             {...props}
         >
-            {/* Industrial Structural Truss / Node Glyph */}
+            {/* Clean, Modern Geometric Node Logo */}
+            <circle cx="12" cy="12" r="5" fill="#0F172A" />
+            <circle cx="28" cy="12" r="5" fill="#2563EB" />
+            <circle cx="20" cy="28" r="6" fill="#0F172A" />
             <path
-                d="M8 32L20 8L32 32M13 22H27M20 8V32"
-                stroke="currentColor"
-                strokeWidth="3.2"
+                d="M12 12L28 12M12 12L20 28M28 12L20 28"
+                stroke="#0F172A"
+                strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
-            {/* Center Node Core Accent */}
-            <circle cx="20" cy="22" r="2.5" fill="#FF4D00" />
-            <circle cx="20" cy="8" r="1.8" fill="#FF4D00" />
-            <circle cx="8" cy="32" r="1.8" fill="#FF4D00" />
-            <circle cx="32" cy="32" r="1.8" fill="#FF4D00" />
+            <circle cx="20" cy="28" r="2.5" fill="#FFFFFF" />
         </svg>
     );
 }
-

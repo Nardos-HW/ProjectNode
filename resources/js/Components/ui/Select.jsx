@@ -18,8 +18,8 @@ export default function Select({
     return (
         <div className={`space-y-1.5 ${className}`}>
             {label && (
-                <label htmlFor={selectId} className="block text-[11px] font-medium uppercase tracking-wider text-neutral-200">
-                    {label} {required && <span className="text-flame-500">*</span>}
+                <label htmlFor={selectId} className="block text-xs sm:text-sm font-semibold text-neutral-800">
+                    {label} {required && <span className="text-rose-500">*</span>}
                 </label>
             )}
 
@@ -28,26 +28,26 @@ export default function Select({
                 required={required}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : hint ? hintId : undefined}
-                className={`w-full rounded-lg bg-carbon-950 border px-3.5 py-2.5 text-neutral-100 text-sm focus:outline-none focus:border-flame-500 focus:ring-1 focus:ring-flame-500 transition-colors ${
-                    error ? 'border-red-500/80 focus:ring-red-500' : 'border-carbon-800'
+                className={`w-full rounded-xl bg-white border px-3.5 py-2.5 text-neutral-900 text-sm shadow-xs focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-colors ${
+                    error ? 'border-rose-400 focus:ring-rose-500' : 'border-neutral-200'
                 }`}
                 {...props}
             >
                 {options.map((opt) => (
-                    <option key={opt.value} value={opt.value} className="bg-carbon-900 text-neutral-100">
+                    <option key={opt.value} value={opt.value} className="bg-white text-neutral-900">
                         {opt.label}
                     </option>
                 ))}
             </select>
 
             {hint && !error && (
-                <p id={hintId} className="text-xs text-muted">
+                <p id={hintId} className="text-xs text-neutral-500">
                     {hint}
                 </p>
             )}
 
             {error && (
-                <p id={errorId} className="text-xs text-coral">
+                <p id={errorId} className="text-xs text-rose-600 font-medium">
                     {error}
                 </p>
             )}

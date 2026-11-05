@@ -20,15 +20,15 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title="Log in - ProjectNode" />
 
-            <div className="mb-6">
-                <h1 className="text-xl font-bold font-display uppercase tracking-wider text-white">Welcome Back</h1>
-                <p className="text-xs font-mono text-neutral-400 mt-1">Sign in with your university credentials</p>
+            <div className="mb-6 text-center">
+                <h1 className="text-2xl font-bold font-display text-neutral-900 tracking-tight">Welcome back</h1>
+                <p className="text-sm text-neutral-500 mt-1">Sign in to collaborate on AAU projects</p>
             </div>
 
             {status && (
-                <div className="mb-4 text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
+                <div className="mb-4 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 p-3.5 rounded-xl">
                     {status}
                 </div>
             )}
@@ -57,8 +57,8 @@ export default function Login({ status, canResetPassword }) {
                     error={errors.password}
                 />
 
-                <div className="flex items-center justify-between text-xs font-mono">
-                    <label className="flex items-center gap-2 cursor-pointer text-neutral-400 select-none">
+                <div className="flex items-center justify-between text-xs pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer text-neutral-600 select-none">
                         <Checkbox
                             name="remember"
                             checked={data.remember}
@@ -70,7 +70,7 @@ export default function Login({ status, canResetPassword }) {
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="text-neutral-400 hover:text-white hover:underline"
+                            className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium"
                         >
                             Forgot password?
                         </Link>
@@ -78,15 +78,15 @@ export default function Login({ status, canResetPassword }) {
                 </div>
 
                 <div className="pt-2">
-                    <Button type="submit" variant="primary" className="w-full" loading={processing}>
-                        Log in
+                    <Button type="submit" variant="primary" size="lg" className="w-full" loading={processing}>
+                        Sign In
                     </Button>
                 </div>
 
-                <p className="text-center text-xs text-neutral-400 pt-2 font-mono">
-                    Don't have an account?{' '}
-                    <Link href={route('register')} className="text-flame-500 hover:underline font-medium">
-                        Register here
+                <p className="text-center text-xs text-neutral-500 pt-3">
+                    Don't have an account yet?{' '}
+                    <Link href={route('register')} className="text-blue-600 hover:underline font-semibold">
+                        Register with AAU email
                     </Link>
                 </p>
             </form>

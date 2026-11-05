@@ -5,7 +5,7 @@ import Button from '@/Components/ui/Button';
 import PageHeader from '@/Components/ui/PageHeader';
 import TextArea from '@/Components/ui/TextArea';
 import TextField from '@/Components/ui/TextField';
-import { Award, ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Award, ArrowLeft, ShieldCheck } from 'lucide-react';
 
 export default function Complete({ project, members = [] }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -42,13 +42,13 @@ export default function Complete({ project, members = [] }) {
                 />
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <Card className="p-6 sm:p-8 space-y-6 cad-crosshairs">
+                    <Card className="p-6 sm:p-8 space-y-6 bg-white border border-neutral-200/80 shadow-card">
                         {/* Notice Card */}
-                        <div className="p-4 rounded-lg bg-carbon-950 border border-flame-500/40 flex items-start gap-3">
-                            <ShieldCheck className="w-5 h-5 text-flame-500 shrink-0 mt-0.5" />
+                        <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-start gap-3">
+                            <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                             <div className="text-xs space-y-1 font-mono">
-                                <span className="font-bold text-white uppercase tracking-wider block">Irreversible Completion Record</span>
-                                <p className="text-neutral-400 leading-relaxed">
+                                <span className="font-bold text-neutral-900 uppercase tracking-wider block">Irreversible Completion Record</span>
+                                <p className="text-neutral-600 leading-relaxed font-sans">
                                     Once completed, the project description and openings cannot be changed. As the creator, you are automatically confirmed. Credited members will receive a credit confirmation notice.
                                 </p>
                             </div>
@@ -79,18 +79,18 @@ export default function Complete({ project, members = [] }) {
                         />
 
                         {/* Contributor Selection */}
-                        <div className="space-y-3 pt-4 border-t border-carbon-800">
+                        <div className="space-y-3 pt-4 border-t border-neutral-100">
                             <div>
-                                <label className="text-xs font-mono font-bold text-white uppercase tracking-wider block">
+                                <label className="text-xs font-mono font-bold text-neutral-900 uppercase tracking-wider block">
                                     Certify Contributing Members
                                 </label>
-                                <p className="text-xs text-neutral-400 mt-0.5">
+                                <p className="text-xs text-neutral-500 mt-0.5">
                                     Select only collaborators who made meaningful contributions. Unselected members will not receive participation credit.
                                 </p>
                             </div>
 
                             {members.length === 0 ? (
-                                <div className="p-4 rounded-lg bg-carbon-950 border border-carbon-800 text-xs text-neutral-500 italic font-mono">
+                                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-500 italic font-mono">
                                     No collaborators were accepted onto this project. You will be recorded as the sole contributor.
                                 </div>
                             ) : (
@@ -100,20 +100,21 @@ export default function Complete({ project, members = [] }) {
                                         return (
                                             <label
                                                 key={member.user_id}
-                                                className={`flex items-center justify-between p-3.5 rounded-lg border transition-colors cursor-pointer select-none ${isChecked
-                                                        ? 'bg-carbon-950 border-flame-500/50 text-white'
-                                                        : 'bg-carbon-950/60 border-carbon-800 text-neutral-400 hover:border-neutral-700'
-                                                    }`}
+                                                className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${
+                                                    isChecked
+                                                        ? 'bg-blue-50/60 border-blue-200 text-neutral-900'
+                                                        : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'
+                                                }`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <input
                                                         type="checkbox"
                                                         checked={isChecked}
                                                         onChange={() => handleCheckboxToggle(member.user_id)}
-                                                        className="rounded border-carbon-700 text-flame-500 focus:ring-flame-500 bg-carbon-900 w-4 h-4"
+                                                        className="rounded border-neutral-300 text-blue-600 focus:ring-blue-500 bg-white w-4 h-4"
                                                     />
                                                     <div>
-                                                        <span className="font-semibold text-white text-xs block">
+                                                        <span className="font-semibold text-neutral-950 text-xs block">
                                                             {member.name}
                                                         </span>
                                                         <span className="text-[11px] font-mono text-neutral-500">
@@ -121,7 +122,7 @@ export default function Complete({ project, members = [] }) {
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <span className={`text-[11px] font-mono font-medium ${isChecked ? 'text-flame-500' : 'text-neutral-600'}`}>
+                                                <span className={`text-[11px] font-mono font-medium ${isChecked ? 'text-blue-600' : 'text-neutral-400'}`}>
                                                     {isChecked ? 'Will receive credit' : 'No credit'}
                                                 </span>
                                             </label>
@@ -131,12 +132,12 @@ export default function Complete({ project, members = [] }) {
                             )}
 
                             {errors.credited_user_ids && (
-                                <p className="text-xs font-mono text-red-400">{errors.credited_user_ids}</p>
+                                <p className="text-xs font-mono text-red-500">{errors.credited_user_ids}</p>
                             )}
                         </div>
 
                         {/* Submit Button */}
-                        <div className="pt-4 flex items-center justify-end gap-3 border-t border-carbon-800">
+                        <div className="pt-4 flex items-center justify-end gap-3 border-t border-neutral-100">
                             <Button
                                 type="button"
                                 variant="secondary"

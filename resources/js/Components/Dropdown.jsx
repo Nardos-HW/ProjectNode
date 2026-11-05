@@ -38,7 +38,7 @@ const Trigger = ({ children }) => {
 const Content = ({
     align = 'right',
     width = '48',
-    contentClasses = 'py-1 bg-carbon-900 border border-carbon-800 shadow-2xl',
+    contentClasses = 'py-1.5 bg-white border border-neutral-200/90 rounded-2xl shadow-float',
     children,
 }) => {
     const { open, setOpen } = useContext(DropDownContext);
@@ -61,7 +61,7 @@ const Content = ({
         <>
             <Transition
                 show={open}
-                enter="transition ease-out duration-200"
+                enter="transition ease-out duration-150"
                 enterFrom="opacity-0 scale-95"
                 enterTo="opacity-100 scale-100"
                 leave="transition ease-in duration-75"
@@ -69,12 +69,12 @@ const Content = ({
                 leaveTo="opacity-0 scale-95"
             >
                 <div
-                    className={`absolute z-50 mt-2 rounded-md shadow-lg ${alignmentClasses} ${widthClasses}`}
+                    className={`absolute z-50 mt-2 rounded-2xl shadow-lg ${alignmentClasses} ${widthClasses}`}
                     onClick={() => setOpen(false)}
                 >
                     <div
                         className={
-                            `rounded-md ring-1 ring-black ring-opacity-5 ` +
+                            `rounded-2xl ` +
                             contentClasses
                         }
                     >
@@ -91,7 +91,7 @@ const DropdownLink = ({ className = '', children, ...props }) => {
         <Link
             {...props}
             className={
-                'block w-full px-4 py-2 text-start text-xs font-medium uppercase tracking-wider text-neutral-300 transition duration-150 ease-in-out hover:bg-carbon-850 hover:text-white focus:bg-carbon-850 focus:text-white focus:outline-none ' +
+                'block w-full px-4 py-2 text-start text-xs sm:text-sm font-medium text-neutral-700 transition duration-150 ease-in-out hover:bg-neutral-50 hover:text-neutral-900 focus:bg-neutral-50 focus:outline-none ' +
                 className
             }
         >

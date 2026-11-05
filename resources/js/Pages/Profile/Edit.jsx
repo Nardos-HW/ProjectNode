@@ -30,7 +30,7 @@ export default function Edit({ mustVerifyEmail, status, departments, skills, use
                     }
                 />
 
-                <Card className="p-6 sm:p-8 cad-crosshairs">
+                <Card className="p-6 sm:p-8 bg-white border border-neutral-200/80 shadow-card">
                     <UpdateProfileInformationForm
                         departments={departments}
                         skills={skills}
@@ -40,11 +40,11 @@ export default function Edit({ mustVerifyEmail, status, departments, skills, use
                     />
                 </Card>
 
-                <Card className="p-6 sm:p-8 cad-crosshairs">
+                <Card className="p-6 sm:p-8 bg-white border border-neutral-200/80 shadow-card">
                     <UpdatePasswordForm />
                 </Card>
 
-                <Card className="p-6 sm:p-8 cad-crosshairs">
+                <Card className="p-6 sm:p-8 bg-white border border-neutral-200/80 shadow-card">
                     <DeleteUserForm />
                 </Card>
             </div>

@@ -23,7 +23,7 @@ export default function ResetPassword({ token, email }) {
             <Head title="Reset Password" />
 
             <div className="mb-6">
-                <h1 className="text-xl font-bold font-display uppercase tracking-wider text-white">Reset Password</h1>
+                <h1 className="text-xl font-bold font-display uppercase tracking-wider text-neutral-950">Reset Password</h1>
             </div>
 
             <form onSubmit={submit} className="space-y-4">

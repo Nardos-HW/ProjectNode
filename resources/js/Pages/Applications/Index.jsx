@@ -29,37 +29,37 @@ export default function Index({ applications }) {
                 ) : (
                     <div className="space-y-4">
                         {applications.map((app) => (
-                            <Card key={app.id} className="p-6 space-y-3 cad-crosshairs">
-                                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-carbon-800">
+                            <Card key={app.id} className="p-6 space-y-3 bg-white border border-neutral-200/80 shadow-card">
+                                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-neutral-100">
                                     <div>
-                                        <h3 className="text-base font-bold font-display text-white">
-                                            <Link href={route('projects.show', app.project.id)} className="hover:text-flame-500 transition-colors">
+                                        <h3 className="text-base font-bold font-display text-neutral-950">
+                                            <Link href={route('projects.show', app.project.id)} className="hover:text-blue-600 transition-colors">
                                                 {app.project.title}
                                             </Link>
                                         </h3>
-                                        <p className="text-xs font-mono text-neutral-400 mt-0.5">
+                                        <p className="text-xs font-mono text-neutral-500 mt-0.5">
                                             Led by {app.project.owner_name} &bull; Applied on {app.created_at}
                                         </p>
                                     </div>
-                                    <span className="px-2.5 py-0.5 rounded text-xs font-mono font-medium bg-carbon-850 text-neutral-300 border border-carbon-700 capitalize">
+                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-neutral-100 text-neutral-700 border border-neutral-200 capitalize">
                                         {app.status_label}
                                     </span>
                                 </div>
 
-                                <div className="text-xs text-neutral-400 italic">
+                                <div className="text-xs text-neutral-600 italic">
                                     &ldquo;{app.message}&rdquo;
                                 </div>
 
                                 {app.status === 'accepted' && app.project.telegram_contact && (
-                                    <div className="p-3.5 rounded-lg bg-carbon-950 border border-emerald-500/30 text-xs text-neutral-200 space-y-1 font-mono">
-                                        <p className="font-semibold text-emerald-400">Accepted Collaborator Access</p>
+                                    <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-neutral-800 space-y-1 font-mono">
+                                        <p className="font-semibold text-emerald-800">Accepted Collaborator Access</p>
                                         <p>
                                             Connect directly with the creator on Telegram:{' '}
                                             <a
                                                 href={`https://t.me/${app.project.telegram_contact}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="font-bold underline text-emerald-400 hover:text-emerald-300"
+                                                className="font-bold underline text-emerald-700 hover:text-emerald-900"
                                             >
                                                 @{app.project.telegram_contact}
                                             </a>

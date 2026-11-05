@@ -57,25 +57,25 @@ export default function AuthenticatedLayout({ children }) {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className="min-h-screen bg-carbon-950 text-neutral-100 cad-grid">
-            <nav className="border-b border-carbon-800 bg-carbon-950/80 backdrop-blur-md sticky top-0 z-40">
+        <div className="min-h-screen bg-canvas text-neutral-900 font-sans antialiased">
+            <nav className="border-b border-neutral-200/80 bg-white/90 backdrop-blur-md sticky top-0 z-40 transition-shadow">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center gap-8">
                             <div className="shrink-0 flex items-center">
                                 <Link href={route('dashboard')} className="flex items-center gap-2.5 group">
-                                    <div className="w-8 h-8 rounded-lg bg-carbon-900 border border-carbon-800 flex items-center justify-center group-hover:border-flame-500/60 transition-colors">
-                                        <ApplicationLogo className="w-5 h-5 text-flame-500" />
+                                    <div className="w-8 h-8 rounded-xl bg-neutral-900 flex items-center justify-center text-white transition-transform group-hover:scale-105">
+                                        <ApplicationLogo className="w-5 h-5 text-white" />
                                     </div>
-                                    <div className="flex items-center tracking-widest text-xs font-bold font-mono text-white">
-                                        <span>PROJECT</span>
-                                        <span className="text-flame-500">NODE</span>
-                                        <span className="w-1.5 h-1.5 rounded-full bg-flame-500 ml-1 inline-block"></span>
+                                    <div className="flex items-center text-sm font-bold font-display tracking-tight text-neutral-900">
+                                        <span>Project</span>
+                                        <span className="text-blue-600">Node</span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 ml-1 inline-block"></span>
                                     </div>
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-6 sm:-my-px sm:flex items-center">
+                            <div className="hidden space-x-1 sm:-my-px sm:flex items-center">
                                 {navLinks.map((link) => (
                                     <NavLink
                                         key={link.name}
@@ -86,7 +86,7 @@ export default function AuthenticatedLayout({ children }) {
                                         <span>{link.name}</span>
                                         {link.badge > 0 && (
                                             <span
-                                                className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-mono font-bold leading-none text-white bg-flame-500 rounded-full"
+                                                className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-mono font-bold leading-none text-white bg-blue-600 rounded-full"
                                                 aria-label={`${link.badge} unread messages`}
                                             >
                                                 {link.badge}
@@ -101,13 +101,13 @@ export default function AuthenticatedLayout({ children }) {
                                         <Dropdown.Trigger>
                                             <button
                                                 type="button"
-                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border transition-colors ${
+                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                                                     route().current('admin.*')
-                                                        ? 'bg-flame-500/10 text-flame-500 border-flame-500/30'
-                                                        : 'bg-carbon-900 text-neutral-400 hover:text-white border-carbon-800'
+                                                        ? 'bg-blue-50 text-blue-700 border-blue-300'
+                                                        : 'bg-neutral-50 text-neutral-600 hover:text-neutral-900 border-neutral-200'
                                                 }`}
                                             >
-                                                <Shield className="w-3.5 h-3.5 text-flame-500" />
+                                                <Shield className="w-3.5 h-3.5 text-blue-600" />
                                                 <span>Admin</span>
                                                 <ChevronDown className="w-3 h-3 opacity-60" />
                                             </button>
@@ -129,10 +129,10 @@ export default function AuthenticatedLayout({ children }) {
                             <div className="ms-3 relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
+                                        <span className="inline-flex rounded-full">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center px-3 py-1.5 border border-carbon-800 text-xs font-mono uppercase tracking-wider rounded-lg text-neutral-200 bg-carbon-900 hover:bg-carbon-850 hover:border-neutral-700 focus:outline-none transition ease-in-out duration-150"
+                                                className="inline-flex items-center px-3.5 py-1.5 border border-neutral-200 text-xs font-medium rounded-full text-neutral-800 bg-white hover:bg-neutral-50 focus:outline-none shadow-xs transition duration-150"
                                             >
                                                 <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
                                                 {user.name}
@@ -160,7 +160,7 @@ export default function AuthenticatedLayout({ children }) {
                         <div className="-me-2 flex items-center sm:hidden">
                             <button
                                 onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-carbon-850 border border-carbon-800 focus:outline-none transition duration-150 ease-in-out"
+                                className="inline-flex items-center justify-center p-2 rounded-xl text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 border border-neutral-200 focus:outline-none transition duration-150"
                             >
                                 <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -184,8 +184,8 @@ export default function AuthenticatedLayout({ children }) {
                 </div>
 
                 {/* Mobile Menu */}
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden border-b border-carbon-800 bg-carbon-950/95 backdrop-blur-md'}>
-                    <div className="pt-2 pb-3 space-y-1">
+                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden border-b border-neutral-200 bg-white/98 backdrop-blur-md'}>
+                    <div className="pt-2 pb-3 space-y-1 px-4">
                         {navLinks.map((link) => (
                             <ResponsiveNavLink
                                 key={link.name}
@@ -196,7 +196,7 @@ export default function AuthenticatedLayout({ children }) {
                                 <span>{link.name}</span>
                                 {link.badge > 0 && (
                                     <span
-                                        className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-mono font-bold text-white bg-flame-500 rounded-full"
+                                        className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-mono font-bold text-white bg-blue-600 rounded-full"
                                         aria-label={`${link.badge} unread messages`}
                                     >
                                         {link.badge}
@@ -207,9 +207,9 @@ export default function AuthenticatedLayout({ children }) {
 
                         {/* Admin Mobile Sub-links */}
                         {isAdmin && (
-                            <div className="pt-2 border-t border-carbon-800">
-                                <div className="px-4 py-1 text-[11px] font-bold text-flame-500 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                                    <Shield className="w-3 h-3" /> Administration
+                            <div className="pt-2 border-t border-neutral-200">
+                                <div className="px-3 py-1 text-xs font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1.5">
+                                    <Shield className="w-3.5 h-3.5" /> Administration
                                 </div>
                                 {adminLinks.map((item) => (
                                     <ResponsiveNavLink key={item.name} href={item.href} active={item.active}>
@@ -220,10 +220,10 @@ export default function AuthenticatedLayout({ children }) {
                         )}
                     </div>
 
-                    <div className="pt-4 pb-3 border-t border-carbon-800">
-                        <div className="px-4">
-                            <div className="font-semibold text-sm text-white">{user.name}</div>
-                            <div className="font-mono text-xs text-neutral-500">{user.email}</div>
+                    <div className="pt-4 pb-3 border-t border-neutral-200 px-4">
+                        <div>
+                            <div className="font-semibold text-sm text-neutral-900">{user.name}</div>
+                            <div className="text-xs text-neutral-500">{user.email}</div>
                         </div>
 
                         <div className="mt-3 space-y-1">

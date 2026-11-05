@@ -26,9 +26,9 @@ export default function Toast() {
     if (!toast) return null;
 
     const icons = {
-        success: <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />,
-        error: <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0" />,
-        info: <Info className="w-5 h-5 text-flame-500 flex-shrink-0" />,
+        success: <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />,
+        error: <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />,
+        info: <Info className="w-5 h-5 text-blue-600 flex-shrink-0" />,
     };
 
     return (
@@ -41,14 +41,14 @@ export default function Toast() {
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                         role="status"
-                        className="pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-carbon-900 border border-carbon-800 shadow-2xl shadow-black/80 text-white"
+                        className="pointer-events-auto flex items-start gap-3 p-4 rounded-2xl bg-white border border-neutral-200/90 shadow-xl text-neutral-900"
                     >
                         {icons[toast.type]}
                         <p className="text-sm flex-1 leading-snug">{toast.message}</p>
                         <button
                             type="button"
                             onClick={() => setToast(null)}
-                            className="text-muted hover:text-text transition-colors"
+                            className="text-neutral-400 hover:text-neutral-900 transition-colors"
                             aria-label="Dismiss notification"
                         >
                             <X className="w-4 h-4" />

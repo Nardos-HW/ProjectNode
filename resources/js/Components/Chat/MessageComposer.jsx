@@ -21,7 +21,7 @@ export default function MessageComposer({
 
     if (!canSend) {
         return (
-            <div className="p-3.5 rounded-xl bg-carbon-900 border border-carbon-800 text-center font-mono text-xs text-neutral-400">
+            <div className="p-3.5 rounded-xl bg-neutral-100 border border-neutral-200 text-center font-mono text-xs text-neutral-500">
                 This project was cancelled. Messaging is closed.
             </div>
         );
@@ -67,7 +67,7 @@ export default function MessageComposer({
                 Type your message
             </label>
 
-            <div className="rounded-xl border border-carbon-800 bg-carbon-900/90 focus-within:border-flame-500 focus-within:ring-1 focus-within:ring-flame-500 transition-all overflow-hidden shadow-inner">
+            <div className="rounded-xl border border-neutral-200 bg-white focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all overflow-hidden shadow-xs">
                 <textarea
                     ref={textareaRef}
                     id="message-body"
@@ -81,23 +81,23 @@ export default function MessageComposer({
                     placeholder="Type a message... (Press Enter to send, Shift+Enter for newline)"
                     maxLength={2000}
                     disabled={sending || disabled}
-                    className="w-full bg-transparent border-0 px-3.5 py-2.5 text-xs sm:text-sm text-neutral-100 placeholder-neutral-500 focus:ring-0 focus:outline-none resize-none disabled:opacity-50"
+                    className="w-full bg-transparent border-0 px-3.5 py-2.5 text-xs sm:text-sm text-neutral-900 placeholder-neutral-400 focus:ring-0 focus:outline-none resize-none disabled:opacity-50"
                 />
 
-                <div className="flex items-center justify-between gap-3 px-3 py-1.5 bg-carbon-950/60 border-t border-carbon-800/60">
+                <div className="flex items-center justify-between gap-3 px-3.5 py-2 bg-neutral-50/80 border-t border-neutral-100">
                     <div className="flex-1 min-w-0">
                         {error && <InputError message={error} className="text-xs" />}
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0">
-                        <span className="font-mono text-[11px] text-neutral-500">
+                        <span className="font-mono text-[11px] text-neutral-400">
                             {body.length} / 2000
                         </span>
 
                         <PrimaryButton
                             type="submit"
                             disabled={!canSubmit}
-                            className="gap-1.5 text-xs py-1.5 px-3.5 bg-flame-500 hover:bg-flame-600 border-flame-500"
+                            className="gap-1.5 text-xs py-1.5 px-4 bg-neutral-900 hover:bg-neutral-800 text-white rounded-full"
                         >
                             <Send className="w-3.5 h-3.5" />
                             <span>{sending ? 'Sending...' : 'Send'}</span>

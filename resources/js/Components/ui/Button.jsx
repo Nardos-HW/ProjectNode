@@ -13,19 +13,20 @@ export default function Button({
     ...props
 }) {
     const baseClasses =
-        'inline-flex items-center justify-center font-semibold uppercase tracking-wider transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-flame-500 focus:ring-offset-2 focus:ring-offset-carbon-950 disabled:opacity-40 disabled:cursor-not-allowed select-none rounded-lg';
+        'inline-flex items-center justify-center font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed select-none rounded-full';
 
     const variants = {
-        primary: 'bg-flame-500 hover:bg-flame-600 active:bg-flame-700 text-white border border-flame-500/60 shadow-sm shadow-flame-500/20',
-        secondary: 'bg-carbon-850 hover:bg-carbon-800 active:bg-carbon-900 text-neutral-200 border border-carbon-700 hover:border-neutral-600',
-        ghost: 'bg-transparent text-neutral-400 hover:text-white hover:bg-carbon-850/60 border border-transparent',
-        danger: 'bg-red-950/80 hover:bg-red-900 active:bg-red-950 text-red-300 border border-red-800/80 shadow-sm shadow-red-950/40',
+        primary: 'bg-neutral-900 hover:bg-neutral-800 active:scale-[0.98] text-white shadow-sm',
+        secondary: 'bg-white hover:bg-neutral-50 active:scale-[0.98] text-neutral-800 border border-neutral-200 shadow-xs',
+        brand: 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white shadow-sm',
+        ghost: 'bg-transparent text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100',
+        danger: 'bg-rose-50 hover:bg-rose-100 active:scale-[0.98] text-rose-700 border border-rose-200',
     };
 
     const sizes = {
-        sm: 'text-[11px] px-3 py-1.5 gap-1.5 tracking-wider',
-        md: 'text-xs px-4 py-2 gap-2 tracking-wider',
-        lg: 'text-sm px-5 py-2.5 gap-2.5 tracking-wider',
+        sm: 'text-xs px-3.5 py-1.5 gap-1.5',
+        md: 'text-xs sm:text-sm px-4.5 py-2 gap-2',
+        lg: 'text-sm sm:text-base px-6 py-2.5 gap-2.5',
     };
 
     const combinedClasses = `${baseClasses} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`;

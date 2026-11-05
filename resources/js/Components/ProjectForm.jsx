@@ -136,7 +136,7 @@ export default function ProjectForm({
                 error={errors.skill_ids || errors.new_skills}
             />
 
-            <div className="flex justify-end pt-4 border-t border-carbon-800">
+            <div className="flex justify-end pt-4 border-t border-neutral-100">
                 <Button type="submit" variant="primary" loading={processing}>
                     {submitLabel}
                 </Button>

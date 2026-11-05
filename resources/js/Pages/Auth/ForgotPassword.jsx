@@ -15,14 +15,17 @@ export default function ForgotPassword({ status }) {
 
     return (
         <GuestLayout>
-            <Head title="Forgot Password" />
+            <Head title="Forgot Password - ProjectNode" />
 
-            <div className="mb-4 text-xs font-mono text-neutral-400 leading-relaxed">
-                Forgot your password? Enter your university email address and we will dispatch a password reset link.
+            <div className="mb-6 text-center">
+                <h1 className="text-2xl font-bold font-display text-neutral-900 tracking-tight">Reset password</h1>
+                <p className="text-sm text-neutral-500 mt-1">
+                    Enter your AAU email address and we'll send you a secure link to reset your password.
+                </p>
             </div>
 
             {status && (
-                <div className="mb-4 text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
+                <div className="mb-4 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 p-3.5 rounded-xl">
                     {status}
                 </div>
             )}
@@ -34,13 +37,14 @@ export default function ForgotPassword({ status }) {
                     type="email"
                     required
                     autoFocus
+                    placeholder="student@aau.edu.et"
                     value={data.email}
                     onChange={(e) => setData('email', e.target.value)}
                     error={errors.email}
                 />
 
-                <Button type="submit" variant="primary" className="w-full" loading={processing}>
-                    Email Password Reset Link
+                <Button type="submit" variant="primary" size="lg" className="w-full" loading={processing}>
+                    Send Reset Link
                 </Button>
             </form>
         </GuestLayout>

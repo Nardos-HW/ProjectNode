@@ -20,10 +20,11 @@ export default function SlotDots({ filled = 0, total = 1, className = '' }) {
                             scale: isFilled ? [1, 1.25, 1] : 1,
                         }}
                         transition={{ duration: 0.25 }}
-                        className={`inline-block w-2.5 h-2.5 rounded-full border transition-colors ${isFilled
-                                ? 'bg-flame-500 border-flame-500 shadow-sm shadow-flame-500/50'
-                                : 'bg-transparent border-carbon-700'
-                            }`}
+                        className={`inline-block w-2.5 h-2.5 rounded-full border transition-colors ${
+                            isFilled
+                                ? 'bg-blue-600 border-blue-600 shadow-xs'
+                                : 'bg-transparent border-neutral-300'
+                        }`}
                     />
                 );
             })}

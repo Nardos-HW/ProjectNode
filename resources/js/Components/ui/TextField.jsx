@@ -21,16 +21,16 @@ export default function TextField({
     const length = typeof value === 'string' ? value.length : 0;
     const ratio = maxLength ? length / maxLength : 0;
 
-    let counterColor = 'text-neutral-500 font-mono';
-    if (ratio >= 1) counterColor = 'text-red-400 font-mono font-medium';
-    else if (ratio >= 0.9) counterColor = 'text-amber-400 font-mono font-medium';
+    let counterColor = 'text-neutral-400 font-mono';
+    if (ratio >= 1) counterColor = 'text-rose-500 font-mono font-medium';
+    else if (ratio >= 0.9) counterColor = 'text-amber-600 font-mono font-medium';
 
     return (
         <div className={`space-y-1.5 ${className}`}>
             <div className="flex justify-between items-center text-xs">
                 {label && (
-                    <label htmlFor={inputId} className="font-medium text-neutral-200 uppercase tracking-wider text-[11px]">
-                        {label} {required && <span className="text-flame-500">*</span>}
+                    <label htmlFor={inputId} className="font-semibold text-neutral-800 text-xs sm:text-sm">
+                        {label} {required && <span className="text-rose-500">*</span>}
                     </label>
                 )}
                 {maxLength !== undefined && (
@@ -54,20 +54,20 @@ export default function TextField({
                 aria-describedby={
                     error ? errorId : hint ? hintId : undefined
                 }
-                className={`w-full rounded-lg bg-carbon-950 border px-3.5 py-2.5 text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-flame-500 focus:ring-1 focus:ring-flame-500 transition-colors ${
-                    error ? 'border-red-500/80 focus:ring-red-500' : 'border-carbon-800'
+                className={`w-full rounded-xl bg-white border px-3.5 py-2.5 text-neutral-900 placeholder-neutral-400 text-sm shadow-xs focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-colors ${
+                    error ? 'border-rose-400 focus:ring-rose-500' : 'border-neutral-200'
                 }`}
                 {...props}
             />
 
             {hint && !error && (
-                <p id={hintId} className="text-xs text-muted">
+                <p id={hintId} className="text-xs text-neutral-500">
                     {hint}
                 </p>
             )}
 
             {error && (
-                <p id={errorId} className="text-xs text-coral">
+                <p id={errorId} className="text-xs text-rose-600 font-medium">
                     {error}
                 </p>
             )}

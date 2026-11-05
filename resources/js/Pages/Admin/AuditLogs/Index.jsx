@@ -45,9 +45,9 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                 />
 
                 {/* Filters */}
-                <Card className="p-4 flex flex-wrap gap-3 items-center justify-between cad-crosshairs font-mono">
-                    <div className="flex items-center gap-2 text-xs text-neutral-400 font-medium">
-                        <Filter className="w-3.5 h-3.5 text-flame-500" />
+                <Card className="p-4 flex flex-wrap gap-3 items-center justify-between font-mono bg-white border border-neutral-200/80 shadow-xs">
+                    <div className="flex items-center gap-2 text-xs text-neutral-500 font-medium">
+                        <Filter className="w-3.5 h-3.5 text-blue-600" />
                         <span>Filter Log:</span>
                     </div>
 
@@ -55,7 +55,7 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         <select
                             value={filters.action || 'all'}
                             onChange={(e) => applyFilter({ action: e.target.value })}
-                            className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
+                            className="bg-white border border-neutral-200 text-neutral-700 text-xs rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"
                         >
                             <option value="all">All Action Types</option>
                             <option value="user_suspended">User Suspended</option>
@@ -67,7 +67,7 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         <select
                             value={filters.target_type || 'all'}
                             onChange={(e) => applyFilter({ target_type: e.target.value })}
-                            className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
+                            className="bg-white border border-neutral-200 text-neutral-700 text-xs rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"
                         >
                             <option value="all">All Targets</option>
                             <option value="user">Users Only</option>
@@ -77,7 +77,7 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         <select
                             value={filters.admin_id || ''}
                             onChange={(e) => applyFilter({ admin_id: e.target.value })}
-                            className="bg-carbon-950 border border-carbon-800 text-neutral-300 text-xs rounded-lg px-3 py-2 focus:border-flame-500 focus:outline-none"
+                            className="bg-white border border-neutral-200 text-neutral-700 text-xs rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none"
                         >
                             <option value="">All Administrators</option>
                             {admins.map((admin) => (
@@ -96,10 +96,10 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                         description="Administrative interventions will appear here as an append-only audit trail."
                     />
                 ) : (
-                    <Card className="overflow-hidden border border-carbon-800 p-0 cad-crosshairs">
+                    <Card className="overflow-hidden border border-neutral-200/80 shadow-card p-0 bg-white">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-xs font-mono">
-                                <thead className="bg-carbon-950 text-neutral-400 uppercase text-[10px] tracking-wider border-b border-carbon-800">
+                                <thead className="bg-neutral-50 text-neutral-500 uppercase text-[10px] tracking-wider border-b border-neutral-200/80">
                                     <tr>
                                         <th className="py-3 px-4">Timestamp</th>
                                         <th className="py-3 px-4">Action</th>
@@ -108,28 +108,28 @@ export default function Index({ actions, filters = {}, admins = [] }) {
                                         <th className="py-3 px-4">Justification / Reason</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-carbon-800 text-neutral-200">
+                                <tbody className="divide-y divide-neutral-100 text-neutral-800">
                                     {actions.data.map((log) => (
-                                        <tr key={log.id} className="hover:bg-carbon-850/60 transition-colors">
-                                            <td className="py-3 px-4 text-neutral-500 font-mono whitespace-nowrap text-[11px]">
+                                        <tr key={log.id} className="hover:bg-neutral-50/70 transition-colors">
+                                            <td className="py-3 px-4 text-neutral-400 font-mono whitespace-nowrap text-[11px]">
                                                 {log.created_at}
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap">
                                                 {actionBadge(log.action)}
                                             </td>
-                                            <td className="py-3 px-4 font-medium text-white">
+                                            <td className="py-3 px-4 font-medium text-neutral-950">
                                                 <div className="flex items-center gap-1.5">
-                                                    <span className="capitalize text-muted text-[11px] font-semibold">
+                                                    <span className="capitalize text-neutral-400 text-[11px] font-semibold">
                                                         [{log.target_type}]
                                                     </span>
                                                     <span className="truncate max-w-xs">{log.target_label}</span>
                                                 </div>
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap">
-                                                <div className="font-semibold text-text">{log.admin.name}</div>
-                                                <div className="text-[10px] text-muted font-mono">{log.admin.email}</div>
+                                                <div className="font-semibold text-neutral-900">{log.admin.name}</div>
+                                                <div className="text-[10px] text-neutral-400 font-mono">{log.admin.email}</div>
                                             </td>
-                                            <td className="py-3 px-4 text-muted leading-relaxed max-w-sm">
+                                            <td className="py-3 px-4 text-neutral-600 leading-relaxed max-w-sm">
                                                 &ldquo;{log.reason}&rdquo;
                                             </td>
                                         </tr>

@@ -14,12 +14,12 @@ export default function VerifyEmail({ status }) {
         <GuestLayout>
             <Head title="Email Verification" />
 
-            <div className="mb-4 text-xs font-mono text-neutral-400 leading-relaxed">
+            <div className="mb-4 text-xs font-mono text-neutral-600 leading-relaxed">
                 Thanks for signing up! Before getting started, please verify your email address by clicking the link we just sent to your AAU inbox.
             </div>
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
+                <div className="mb-4 text-xs font-mono font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
                     A new verification link has been sent to the email address you provided during registration.
                 </div>
             )}
@@ -34,7 +34,7 @@ export default function VerifyEmail({ status }) {
                         href={route('logout')}
                         method="post"
                         as="button"
-                        className="text-xs text-muted hover:text-text hover:underline"
+                        className="text-xs text-neutral-500 hover:text-neutral-900 hover:underline"
                     >
                         Log Out
                     </Link>

@@ -1,6 +1,3 @@
-import { motion } from 'motion/react';
-import { hoverLift } from '@/lib/motion';
-
 export default function Card({
     as = 'div',
     hover = false,
@@ -8,17 +5,14 @@ export default function Card({
     children,
     ...props
 }) {
-    const Component = hover ? motion.div : as;
-    const hoverProps = hover ? { variants: hoverLift, initial: 'rest', whileHover: 'hover' } : {};
-
+    const Component = as;
     const hoverClasses = hover
-        ? 'transition-all duration-300 hover:border-neutral-700 hover:shadow-[0_-1px_15px_rgba(255,77,0,0.12)]'
-        : '';
+        ? 'transition-all duration-200 hover:-translate-y-0.5 hover:shadow-float hover:border-neutral-300'
+        : 'transition-shadow duration-200';
 
     return (
         <Component
-            className={`bg-carbon-900 border border-carbon-800 rounded-xl p-6 text-neutral-100 shadow-md shadow-black/40 ${hoverClasses} ${className}`}
-            {...hoverProps}
+            className={`bg-white border border-neutral-200/80 rounded-2xl p-6 text-neutral-900 shadow-card ${hoverClasses} ${className}`}
             {...props}
         >
             {children}

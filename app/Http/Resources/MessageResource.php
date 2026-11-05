@@ -14,13 +14,13 @@ class MessageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currentUser = $request->user();
+        $currentUser = $request->user() ?? auth()->user();
 
         return [
             'id' => $this->id,
             'body' => $this->body,
             'sender_id' => $this->sender_id,
-            'is_mine' => $currentUser ? $this->sender_id === $currentUser->id : false,
+            'is_mine' => $currentUser ? ((int) $this->sender_id === (int) $currentUser->id) : false,
             'created_at' => $this->created_at?->toISOString(),
             'read_at' => $this->read_at !== null,
         ];

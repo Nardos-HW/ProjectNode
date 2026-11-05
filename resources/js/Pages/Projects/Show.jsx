@@ -91,7 +91,7 @@ export default function Show({ project, existingRequest, can, my_conversation_id
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setConfirmCancel(true)}
-                                className="text-coral hover:text-coral hover:bg-coral/10"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             >
                                 <Ban className="w-3.5 h-3.5 mr-1" /> Cancel Project
                             </Button>
@@ -106,8 +106,8 @@ export default function Show({ project, existingRequest, can, my_conversation_id
                 </div>
 
                 {/* Main Project Card */}
-                <Card className="p-6 sm:p-8 space-y-6 cad-crosshairs">
-                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-carbon-800">
+                <Card className="p-6 sm:p-8 space-y-6 bg-white border border-neutral-200/80 shadow-card">
+                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-neutral-100">
                         <div className="flex items-center gap-2">
                             <CategoryBadge category={project.category} />
                             <ProjectStatusBadge
@@ -115,47 +115,47 @@ export default function Show({ project, existingRequest, can, my_conversation_id
                                 isRecruiting={project.is_recruiting}
                             />
                         </div>
-                        <span className="text-xs font-mono text-neutral-400">
+                        <span className="text-xs font-mono text-neutral-500">
                             Posted by{' '}
-                            <Link href={route('students.show', project.owner.id)} className="text-flame-500 hover:underline font-medium">
+                            <Link href={route('students.show', project.owner.id)} className="text-blue-600 hover:underline font-semibold">
                                 {project.owner.name}
                             </Link>
                         </span>
                     </div>
 
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold font-display text-white">
+                        <h1 className="text-2xl sm:text-3xl font-bold font-display text-neutral-950">
                             {project.title}
                         </h1>
-                        <p className="mt-4 text-sm text-neutral-300 whitespace-pre-line leading-relaxed">
+                        <p className="mt-4 text-sm text-neutral-600 whitespace-pre-line leading-relaxed">
                             {project.description}
                         </p>
                     </div>
 
                     {/* Blueprint Constraint Stats Data Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-lg bg-carbon-950 border border-carbon-800 text-center font-mono">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 text-center font-mono">
                         <div className="space-y-1">
-                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block flex items-center justify-center gap-1">
-                                <Users className="w-3.5 h-3.5 text-flame-500" /> Openings
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-widest block flex items-center justify-center gap-1 font-semibold">
+                                <Users className="w-3.5 h-3.5 text-blue-600" /> Openings
                             </span>
                             <div className="flex justify-center pt-1">
                                 <SlotDots filled={project.accepted_count ?? 0} total={project.slots_total} />
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block flex items-center justify-center gap-1">
-                                <Clock className="w-3.5 h-3.5 text-flame-500" /> Hours / Week
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-widest block flex items-center justify-center gap-1 font-semibold">
+                                <Clock className="w-3.5 h-3.5 text-blue-600" /> Hours / Week
                             </span>
-                            <span className="text-sm font-bold text-white block">{project.hours_per_week} hrs/wk</span>
+                            <span className="text-sm font-bold text-neutral-900 block">{project.hours_per_week} hrs/wk</span>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block flex items-center justify-center gap-1">
-                                <Calendar className="w-3.5 h-3.5 text-flame-500" /> Duration
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-widest block flex items-center justify-center gap-1 font-semibold">
+                                <Calendar className="w-3.5 h-3.5 text-blue-600" /> Duration
                             </span>
-                            <span className="text-sm font-bold text-white block">{project.duration_weeks} wks</span>
+                            <span className="text-sm font-bold text-neutral-900 block">{project.duration_weeks} wks</span>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-[10px] text-neutral-500 uppercase tracking-widest block">Deadline</span>
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-widest block font-semibold">Deadline</span>
                             <DeadlineRing deadline={project.application_deadline} className="justify-center" />
                         </div>
                     </div>
@@ -163,12 +163,12 @@ export default function Show({ project, existingRequest, can, my_conversation_id
                     {/* Skills */}
                     {project.skills && project.skills.length > 0 && (
                         <div className="space-y-2">
-                            <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-neutral-400">
+                            <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-neutral-500">
                                 Required Technical Skills
                             </h2>
                             <div className="flex flex-wrap gap-1.5">
                                 {project.skills.map((skill) => (
-                                    <span key={skill.id} className="px-2.5 py-1 rounded bg-carbon-850 border border-carbon-700 text-xs font-mono text-neutral-200">
+                                    <span key={skill.id} className="px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 text-xs font-mono text-neutral-700">
                                         {skill.name}
                                     </span>
                                 ))}
@@ -177,16 +177,16 @@ export default function Show({ project, existingRequest, can, my_conversation_id
                     )}
 
                     {/* Telegram Contact Box */}
-                    <div className="p-5 rounded-lg bg-carbon-950 border border-carbon-800 space-y-2">
-                        <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-white">Direct Technical Contact (Telegram)</h2>
+                    <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-2">
+                        <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-900">Direct Technical Contact (Telegram)</h2>
                         {can.viewContact && project.telegram_contact ? (
-                            <p className="text-sm font-mono text-neutral-200">
+                            <p className="text-sm font-mono text-neutral-800">
                                 Username:{' '}
                                 <a
                                     href={`https://t.me/${project.telegram_contact}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-emerald-400 font-semibold hover:underline"
+                                    className="text-blue-600 font-semibold hover:underline"
                                 >
                                     @{project.telegram_contact}
                                 </a>
@@ -198,7 +198,7 @@ export default function Show({ project, existingRequest, can, my_conversation_id
                         )}
 
                         {my_conversation_id && (
-                            <div className="pt-2 border-t border-carbon-800">
+                            <div className="pt-2 border-t border-neutral-200">
                                 <Button
                                     href={route('messages.show', my_conversation_id)}
                                     variant="secondary"
@@ -213,18 +213,18 @@ export default function Show({ project, existingRequest, can, my_conversation_id
 
                 {/* Existing Application Banner */}
                 {existingRequest && (
-                    <Card className="p-6 border-flame-500/40 bg-carbon-900 space-y-2 cad-crosshairs">
+                    <Card className="p-6 border-blue-200 bg-blue-50/50 space-y-2 shadow-xs">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">Application Status</h3>
-                            <span className="px-2.5 py-0.5 rounded text-xs font-mono font-semibold bg-flame-500/10 text-flame-500 border border-flame-500/30 uppercase tracking-wider">
+                            <h3 className="text-sm font-mono font-bold text-neutral-900 uppercase tracking-wider">Application Status</h3>
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-blue-100 text-blue-700 border border-blue-200 uppercase tracking-wider">
                                 {project.status === 'cancelled' || project.status === 'completed'
                                     ? 'Project closed'
                                     : existingRequest.status_label}
                             </span>
                         </div>
-                        <p className="text-xs text-neutral-400 italic">&ldquo;{existingRequest.message}&rdquo;</p>
+                        <p className="text-xs text-neutral-600 italic">&ldquo;{existingRequest.message}&rdquo;</p>
                         {existingRequest.status === 'accepted' && (
-                            <p className="text-xs text-emerald-400 font-mono font-medium">
+                            <p className="text-xs text-emerald-600 font-mono font-medium">
                                 You are an accepted collaborator! Use the Telegram contact above to coordinate.
                             </p>
                         )}
@@ -238,11 +238,11 @@ export default function Show({ project, existingRequest, can, my_conversation_id
 
                 {/* Apply Box */}
                 {can.apply && (
-                    <Card className="p-6 sm:p-8 space-y-4 cad-crosshairs">
-                        <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-white">
+                    <Card className="p-6 sm:p-8 space-y-4 bg-white border border-neutral-200/80 shadow-card">
+                        <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-neutral-900">
                             Request to Join this Project
                         </h2>
-                        <p className="text-xs text-neutral-400">
+                        <p className="text-xs text-neutral-500">
                             Introduce yourself to {project.owner.name} with relevant skills and your availability.
                         </p>
                         <form onSubmit={handleApply} className="space-y-4">

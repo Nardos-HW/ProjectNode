@@ -8,7 +8,7 @@ export default function PrimaryButton({
         <button
             {...props}
             className={
-                `inline-flex items-center justify-center rounded-lg border border-flame-500/60 bg-flame-500 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-sm shadow-flame-500/20 transition duration-150 ease-in-out hover:bg-flame-600 focus:bg-flame-600 focus:outline-none focus:ring-2 focus:ring-flame-500 focus:ring-offset-2 focus:ring-offset-carbon-950 active:bg-flame-700 disabled:opacity-40 disabled:cursor-not-allowed ${className}`
+                `inline-flex items-center justify-center rounded-full bg-neutral-900 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-neutral-800 focus:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed ${className}`
             }
             disabled={disabled}
         >
@@ -16,4 +16,3 @@ export default function PrimaryButton({
         </button>
     );
 }
-

@@ -4,14 +4,14 @@ export default function CategoryBadge({ category }) {
     const formatted = typeof category === 'string' ? category.replace('_', ' ') : '';
 
     const variantMap = {
-        personal: 'flame',
+        personal: 'terracotta',
         hackathon: 'amber',
-        academic: 'neutral',
-        student_initiative: 'flame',
+        academic: 'brand',
+        student_initiative: 'mint',
     };
 
     return (
-        <Badge variant={variantMap[category] || 'neutral'} className="capitalize">
+        <Badge variant={variantMap[category] || 'neutral'} className="capitalize font-medium">
             {formatted}
         </Badge>
     );

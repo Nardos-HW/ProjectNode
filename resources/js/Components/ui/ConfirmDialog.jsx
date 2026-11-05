@@ -14,14 +14,14 @@ export default function ConfirmDialog({
 }) {
     return (
         <Modal show={show} onClose={onClose} maxWidth="md">
-            <div className="bg-carbon-900 border border-carbon-800 p-6 rounded-xl">
-                <h3 className="text-lg font-bold font-display text-white mb-2">
+            <div className="bg-white p-6 sm:p-7 space-y-4">
+                <h3 className="text-lg font-bold font-display text-neutral-950">
                     {title}
                 </h3>
-                <div className="text-sm text-neutral-400 mb-6 leading-relaxed">
+                <div className="text-sm text-neutral-600 leading-relaxed">
                     {content}
                 </div>
-                <div className="flex items-center justify-end gap-3">
+                <div className="flex items-center justify-end gap-3 pt-2">
                     <Button
                         variant="ghost"
                         onClick={onClose}

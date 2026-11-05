@@ -34,8 +34,8 @@ export default function UpdateProfileInformationForm({
     return (
         <section className={className}>
             <header className="mb-6">
-                <h2 className="text-lg font-bold font-display text-white">Academic Profile</h2>
-                <p className="text-xs font-mono text-neutral-400 mt-1">
+                <h2 className="text-lg font-bold font-display text-neutral-950">Academic Profile</h2>
+                <p className="text-xs font-mono text-neutral-500 mt-1">
                     Your department, year, skills, and Telegram handle for student collaboration.
                 </p>
             </header>
@@ -131,7 +131,7 @@ export default function UpdateProfileInformationForm({
                     </Button>
 
                     {recentlySuccessful && (
-                        <p className="text-xs text-mint font-medium">Saved.</p>
+                        <p className="text-xs text-emerald-600 font-medium">Saved.</p>
                     )}
                 </div>
             </form>

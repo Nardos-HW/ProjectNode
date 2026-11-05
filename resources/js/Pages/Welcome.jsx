@@ -4,104 +4,41 @@ import { fadeUp, stagger } from '@/lib/motion';
 import Button from '@/Components/ui/Button';
 import Card from '@/Components/ui/Card';
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import { Sparkles, Users, Award, ArrowRight, ArrowUpRight, Cpu, Layers, Compass, ChevronDown, Terminal, CheckCircle2 } from 'lucide-react';
-
-function ArchitecturalBlueprintWireframe({ className = '' }) {
-    return (
-        <svg
-            className={className}
-            viewBox="0 0 800 600"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <circle cx="400" cy="300" r="280" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-            <circle cx="400" cy="300" r="210" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="4 4" />
-            <circle cx="400" cy="300" r="140" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-            <circle cx="400" cy="300" r="70" stroke="rgba(255,77,0,0.22)" strokeWidth="1" />
-            <circle cx="260" cy="300" r="140" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-            <circle cx="540" cy="300" r="140" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-            <line x1="50" y1="300" x2="750" y2="300" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="2 6" />
-            <line x1="400" y1="20" x2="400" y2="580" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="2 6" />
-            <line x1="190" y1="90" x2="610" y2="510" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-            <line x1="190" y1="510" x2="610" y2="90" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-            <circle cx="400" cy="300" r="3" fill="#FF4D00" />
-            <circle cx="400" cy="90" r="2" fill="rgba(255,255,255,0.3)" />
-            <circle cx="400" cy="510" r="2" fill="rgba(255,255,255,0.3)" />
-            <circle cx="190" cy="300" r="2" fill="rgba(255,255,255,0.3)" />
-            <circle cx="610" cy="300" r="2" fill="rgba(255,255,255,0.3)" />
-        </svg>
-    );
-}
-
-function TechnicalTrussWireframe({ className = '' }) {
-    return (
-        <svg className={className} viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="20" y1="110" x2="220" y2="110" stroke="#FF4D00" strokeWidth="1.5" strokeOpacity="0.8" />
-            <line x1="40" y1="35" x2="200" y2="35" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
-            <line x1="40" y1="35" x2="20" y2="110" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
-            <line x1="200" y1="35" x2="220" y2="110" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
-            <line x1="40" y1="35" x2="80" y2="110" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-            <line x1="80" y1="110" x2="120" y2="35" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-            <line x1="120" y1="35" x2="160" y2="110" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-            <line x1="160" y1="110" x2="200" y2="35" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-            <circle cx="40" cy="35" r="2.5" fill="#FF4D00" />
-            <circle cx="120" cy="35" r="2.5" fill="#FF4D00" />
-            <circle cx="200" cy="35" r="2.5" fill="#FF4D00" />
-            <circle cx="20" cy="110" r="2.5" fill="#FFFFFF" />
-            <circle cx="80" cy="110" r="2.5" fill="#FFFFFF" />
-            <circle cx="160" cy="110" r="2.5" fill="#FFFFFF" />
-            <circle cx="220" cy="110" r="2.5" fill="#FFFFFF" />
-        </svg>
-    );
-}
-
-function TechnicalDomeWireframe({ className = '' }) {
-    return (
-        <svg className={className} viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="120" cy="110" rx="90" ry="20" stroke="rgba(255,255,255,0.4)" strokeWidth="1" strokeDasharray="3 3" />
-            <path d="M 30 110 C 30 50, 210 50, 210 110" stroke="#FF4D00" strokeWidth="1.5" strokeOpacity="0.8" fill="none" />
-            <path d="M 50 110 C 50 65, 190 65, 190 110" stroke="rgba(255,255,255,0.3)" strokeWidth="1" fill="none" />
-            <line x1="120" y1="50" x2="120" y2="110" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-            <line x1="75" y1="72" x2="120" y2="110" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
-            <line x1="165" y1="72" x2="120" y2="110" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
-            <circle cx="120" cy="50" r="3" fill="#FF4D00" />
-        </svg>
-    );
-}
-
-function TechnicalGridWireframe({ className = '' }) {
-    return (
-        <svg className={className} viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 30 40 L 120 20 L 210 40 L 120 60 Z" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
-            <path d="M 30 40 L 30 100 L 120 120 L 120 60 Z" stroke="#FF4D00" strokeWidth="1.2" strokeOpacity="0.8" />
-            <path d="M 210 40 L 210 100 L 120 120 L 120 60 Z" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-            <line x1="30" y1="70" x2="120" y2="90" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="2 2" />
-            <line x1="120" y1="90" x2="210" y2="70" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="2 2" />
-            <circle cx="120" cy="20" r="2.5" fill="#FF4D00" />
-            <circle cx="120" cy="120" r="2.5" fill="#FF4D00" />
-        </svg>
-    );
-}
+import {
+    Sparkles,
+    Users,
+    Award,
+    ArrowRight,
+    ArrowUpRight,
+    Cpu,
+    Layers,
+    Compass,
+    CheckCircle2,
+    Star,
+    ShieldCheck,
+    MessageSquare,
+    ChevronRight,
+} from 'lucide-react';
 
 export default function Welcome({ auth }) {
     const steps = [
         {
             num: '01',
-            icon: <Cpu className="w-5 h-5 text-flame-500" />,
+            icon: <Cpu className="w-5 h-5 text-blue-600" />,
             title: 'Post or Discover',
             description:
                 'Publish your project drafts, hackathon initiatives, or architectural designs. Browse recruiting teams filtered by AAU department and verified required skills.',
         },
         {
             num: '02',
-            icon: <Layers className="w-5 h-5 text-flame-500" />,
+            icon: <Layers className="w-5 h-5 text-blue-600" />,
             title: 'Apply & Connect',
             description:
                 'Apply to projects that fit your capacity with a structured note. Creators inspect verified profiles, approve collaborators, and initiate direct coordination via Telegram.',
         },
         {
             num: '03',
-            icon: <Compass className="w-5 h-5 text-flame-500" />,
+            icon: <Compass className="w-5 h-5 text-blue-600" />,
             title: 'Certify & Record',
             description:
                 'Upon project completion, creators certify contributing members. Confirmed credits establish an immutable, verifiable technical record on student profiles.',
@@ -109,32 +46,30 @@ export default function Welcome({ auth }) {
     ];
 
     return (
-        <div className="min-h-screen bg-carbon-950 text-neutral-100 flex flex-col selection:bg-flame-500 selection:text-white relative overflow-hidden cad-grid">
-            <Head title="ProjectNode - AAU Technical Project Network" />
-
-            {/* Subtle Ambient Flame Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-flame-500/5 rounded-full blur-[140px] pointer-events-none" />
+        <div className="min-h-screen bg-[#FAF9F5] text-neutral-900 flex flex-col selection:bg-neutral-900 selection:text-white">
+            <Head title="ProjectNode - AAU Student Project Network" />
 
             {/* Top Navigation Bar */}
-            <header className="sticky top-0 z-40 bg-carbon-950/80 backdrop-blur-md border-b border-carbon-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                    {/* Minimalist Logo */}
+            <header className="sticky top-0 z-40 bg-[#FAF9F5]/85 backdrop-blur-md border-b border-neutral-200/80">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+                    {/* Logo */}
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-carbon-900 border border-carbon-800 flex items-center justify-center">
-                            <ApplicationLogo className="w-5 h-5 text-flame-500" />
+                        <div className="w-9 h-9 rounded-xl bg-neutral-900 flex items-center justify-center shadow-xs">
+                            <ApplicationLogo className="w-5 h-5 text-white" />
                         </div>
-                        <span className="font-mono font-bold text-xs tracking-widest text-white uppercase flex items-center">
-                            PROJECT<span className="text-flame-500">NODE</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-flame-500 ml-1 inline-block"></span>
+                        <span className="font-display font-bold text-base tracking-tight text-neutral-950 flex items-center">
+                            PROJECT<span className="text-blue-600">NODE</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 ml-1 inline-block"></span>
                         </span>
                     </div>
 
                     {/* Nav Items */}
-                    <nav className="hidden md:flex items-center space-x-8 text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                        <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
-                        <a href="#about" className="hover:text-white transition-colors">Architecture</a>
-                        <span className="text-neutral-700">/</span>
-                        <span className="text-neutral-500 font-mono">AAU CAMPUS NODE</span>
+                    <nav className="hidden md:flex items-center space-x-8 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                        <a href="#scale" className="hover:text-neutral-900 transition-colors">Features</a>
+                        <a href="#community" className="hover:text-neutral-900 transition-colors">Community</a>
+                        <a href="#how-it-works" className="hover:text-neutral-900 transition-colors">How It Works</a>
+                        <span className="text-neutral-300">/</span>
+                        <span className="text-neutral-400 font-mono text-[11px]">AAU CAMPUS NODE</span>
                     </nav>
 
                     {/* Action CTA */}
@@ -149,7 +84,7 @@ export default function Welcome({ auth }) {
                                     Log In
                                 </Button>
                                 <Button href={route('register')} variant="primary" size="sm">
-                                    Get Started <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                                    Start Now <ArrowRight className="w-3.5 h-3.5 ml-1" />
                                 </Button>
                             </>
                         )}
@@ -158,174 +93,359 @@ export default function Welcome({ auth }) {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-24">
-                {/* Hero Section */}
-                <section className="relative flex flex-col items-center text-center justify-center min-h-[520px] py-12">
-                    {/* Architectural Wireframe Circles in Hero Background */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80">
-                        <ArchitecturalBlueprintWireframe className="w-full max-w-4xl h-full" />
+            <main className="flex-1 space-y-24 sm:space-y-32">
+                {/* 1. HERO SECTION: Human, Editorial, Photographic */}
+                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                        {/* Left: Headline & Actions */}
+                        <motion.div
+                            className="lg:col-span-6 space-y-6 text-left"
+                            initial="hidden"
+                            animate="show"
+                            variants={fadeUp}
+                        >
+                            {/* Pill Banner */}
+                            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200/90 shadow-xs text-xs font-medium text-neutral-700">
+                                <span className="w-2 h-2 rounded-full bg-blue-600 inline-block animate-pulse" />
+                                <span className="font-semibold text-neutral-900">Addis Ababa University</span>
+                                <span className="text-neutral-300">|</span>
+                                <span className="text-blue-600 font-medium">Student Project Network</span>
+                            </div>
+
+                            {/* Headline */}
+                            <h1 className="text-4xl sm:text-6xl font-bold font-display text-neutral-950 tracking-tight leading-[1.08]">
+                                Where ambitious students build the future together.
+                            </h1>
+
+                            {/* Subtitle */}
+                            <p className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-xl">
+                                ProjectNode connects AAU creators, engineers, and researchers to build real initiatives, form multidisciplinary teams, and earn tamper-proof completion credits.
+                            </p>
+
+                            {/* CTAs */}
+                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                                {auth?.user ? (
+                                    <Button href={route('dashboard')} size="lg" variant="primary">
+                                        Open Dashboard <ArrowRight className="w-4 h-4 ml-1.5" />
+                                    </Button>
+                                ) : (
+                                    <>
+                                        <Button href={route('register')} size="lg" variant="primary">
+                                            Join with AAU Email <ArrowRight className="w-4 h-4 ml-1.5" />
+                                        </Button>
+                                        <Button href={route('projects.index')} size="lg" variant="secondary">
+                                            Explore Projects
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Social Proof Avatars */}
+                            <div className="pt-6 flex items-center gap-4 text-xs text-neutral-500">
+                                <div className="flex -space-x-2">
+                                    <img
+                                        src="/images/hero-portrait.jpg"
+                                        alt="AAU Student"
+                                        className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs"
+                                    />
+                                    <img
+                                        src="/images/hero-circle.jpg"
+                                        alt="AAU Student"
+                                        className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs"
+                                    />
+                                    <img
+                                        src="/images/student-coding.jpg"
+                                        alt="AAU Student"
+                                        className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-xs"
+                                    />
+                                </div>
+                                <span className="font-medium text-neutral-700">
+                                    Over <strong className="font-semibold text-neutral-900">500+</strong> AAU students collaborating across campus
+                                </span>
+                            </div>
+                        </motion.div>
+
+                        {/* Right: Asymmetrical Photo Composition */}
+                        <motion.div
+                            className="lg:col-span-6 relative"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                            <div className="relative mx-auto max-w-lg lg:max-w-none">
+                                {/* Large Hero Photograph */}
+                                <div className="rounded-3xl overflow-hidden shadow-2xl border border-neutral-200/80 bg-neutral-100 aspect-[4/3] relative">
+                                    <img
+                                        src="/images/hero-collaborate.jpg"
+                                        alt="AAU students collaborating around a laptop"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                                    <div className="absolute bottom-4 left-4 right-4 text-white p-3 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-between">
+                                        <div>
+                                            <div className="text-xs font-semibold">Autonomous Drone Mapping</div>
+                                            <div className="text-[11px] text-neutral-200">Electrical & Software Engineering &bull; 2 slots left</div>
+                                        </div>
+                                        <span className="px-2.5 py-1 rounded-full bg-blue-600 text-white font-mono text-[10px] uppercase font-bold tracking-wider">
+                                            Recruiting
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Floating Asymmetric Circular Cutout Photo */}
+                                <div className="absolute -bottom-8 -left-6 sm:-left-10 w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-[#FAF9F5] shadow-xl">
+                                    <img
+                                        src="/images/hero-circle.jpg"
+                                        alt="Students talking on campus"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+
+                                {/* Floating Editorial Badge */}
+                                <div className="absolute -top-6 -right-4 sm:-right-6 bg-white rounded-2xl p-4 shadow-xl border border-neutral-200/80 flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                                        <Award className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <div className="text-xs font-bold text-neutral-900">Verified Credit Sealed</div>
+                                        <div className="text-[11px] text-neutral-500 font-mono">Immutable technical proof</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
-
-                    <motion.div
-                        className="relative z-10 space-y-8 max-w-3xl flex flex-col items-center"
-                        initial="hidden"
-                        animate="show"
-                        variants={fadeUp}
-                    >
-                        {/* Mini Pill Banner */}
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-carbon-900 border border-carbon-800 text-xs font-mono uppercase tracking-wider text-neutral-300 shadow-sm">
-                            <span className="w-2 h-2 rounded-full bg-flame-500 inline-block animate-pulse" />
-                            <span>AAU Student Network</span>
-                            <span className="text-neutral-600 font-mono">/</span>
-                            <span className="text-flame-500 font-semibold flex items-center gap-1">
-                                GET STARTED <ArrowRight className="w-3 h-3" />
-                            </span>
-                        </div>
-
-                        {/* Stark High-Impact Headline */}
-                        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold font-display tracking-tight text-white leading-[1.05]">
-                            Nothing new to see here.
-                            <span className="block text-xl sm:text-3xl lg:text-4xl font-normal text-neutral-400 mt-3 font-sans tracking-normal">
-                                Until student architects start building.
-                            </span>
-                        </h1>
-
-                        {/* Refactory Subtitle */}
-                        <p className="text-sm sm:text-base text-neutral-400 max-w-2xl leading-relaxed font-sans">
-                            ProjectNode transforms student ambition into verified real-world projects, objects, and installations across Addis Ababa University. Find collaborators, coordinate directly on Telegram, and build an authentic record of work.
-                        </p>
-
-                        {/* Call To Action Buttons */}
-                        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                            {auth?.user ? (
-                                <Button href={route('dashboard')} size="lg" variant="primary">
-                                    Open Dashboard <ArrowRight className="w-4 h-4 ml-1.5" />
-                                </Button>
-                            ) : (
-                                <>
-                                    <Button href={route('register')} size="lg" variant="primary">
-                                        Register with AAU Email <ArrowRight className="w-4 h-4 ml-1.5" />
-                                    </Button>
-                                    <Button href={route('login')} size="lg" variant="secondary">
-                                        Log In
-                                    </Button>
-                                </>
-                            )}
-                        </div>
-
-                        {/* Technical Coordinate Meta */}
-                        <div className="pt-8 text-[11px] font-mono text-neutral-600 uppercase tracking-widest flex items-center gap-4">
-                            <span>LAT 9.0401° N</span>
-                            <span>&bull;</span>
-                            <span>LON 38.7618° E</span>
-                            <span>&bull;</span>
-                            <span>AAU CAMPUS NODE-01</span>
-                        </div>
-
-                        {/* Refactory Scroll To Begin Indicator */}
-                        <a href="#featured" className="pt-6 flex flex-col items-center gap-2 group text-neutral-500 hover:text-white transition-colors cursor-pointer">
-                            <span className="font-mono text-[10px] uppercase tracking-[0.25em]">SCROLL TO BEGIN</span>
-                            <ChevronDown className="w-3.5 h-3.5 text-flame-500 animate-bounce" />
-                        </a>
-                    </motion.div>
                 </section>
 
-                {/* Featured Projects Blueprint Showcase (Refactory "Our Featured Projects" Section) */}
-                <section id="featured" className="space-y-8">
-                    <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-carbon-800 pb-4 gap-4">
+                {/* 2. FROM START TO SCALE: 3-Card Feature Section Inspired by Screenshot 1 */}
+                <section id="scale" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                    {/* Section Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200/80 pb-6">
                         <div>
-                            <span className="text-xs font-mono uppercase tracking-widest text-flame-500 block mb-1">
-                                // Selected Blueprints
+                            <span className="text-xs font-mono font-semibold uppercase tracking-widest text-blue-600 block mb-2">
+                                Collaborative Platform
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
-                                Our Featured Projects
+                            <h2 className="text-3xl sm:text-5xl font-bold font-display text-neutral-950 tracking-tight">
+                                from start to scale
                             </h2>
                         </div>
-                        <p className="text-xs font-mono text-neutral-500 uppercase tracking-wider">
-                            Active Campus Node Drafts &bull; AAU 2026/27
-                        </p>
+                        <Button href={route('register')} variant="primary" size="md">
+                            Start Now <ArrowRight className="w-4 h-4 ml-1.5" />
+                        </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Card hover className="p-6 space-y-4 cad-crosshairs flex flex-col justify-between group">
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500">
-                                    <span className="text-flame-500 font-semibold">[AAU-SE-04]</span>
-                                    <span className="px-2 py-0.5 rounded bg-flame-500/10 text-flame-500 border border-flame-500/30">2 SLOTS LEFT</span>
+                    {/* 3 Editorial Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                        {/* Card 1: Warm Terracotta */}
+                        <div className="space-y-4">
+                            <div className="bg-[#B8573D] text-white rounded-3xl p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between min-h-[340px] shadow-sm">
+                                {/* Inner Card Mockup */}
+                                <div className="bg-white/95 text-neutral-900 rounded-2xl p-4 shadow-lg space-y-3 relative z-10 backdrop-blur-xs">
+                                    <div className="flex items-center justify-between text-xs">
+                                        <span className="font-semibold text-neutral-900">Multidisciplinary Team</span>
+                                        <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-mono font-bold">
+                                            ACTIVE
+                                        </span>
+                                    </div>
+                                    <div className="rounded-xl overflow-hidden aspect-[16/9]">
+                                        <img
+                                            src="/images/team-brainstorm.jpg"
+                                            alt="Team brainstorming"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <div className="flex flex-wrap gap-1 pt-1">
+                                        <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-[10px] font-mono text-neutral-700">UI/UX</span>
+                                        <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-[10px] font-mono text-neutral-700">Embedded C</span>
+                                        <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-[10px] font-mono text-neutral-700">AI Model</span>
+                                    </div>
                                 </div>
-                                <div className="h-36 rounded-lg bg-carbon-950 border border-carbon-800/80 flex items-center justify-center relative overflow-hidden group-hover:border-neutral-700 transition-colors">
-                                    <div className="absolute inset-0 cad-grid opacity-30" />
-                                    <TechnicalGridWireframe className="w-36 h-28 relative z-10" />
+                                <div className="pt-4 text-white/90 text-xs font-mono tracking-wider uppercase">
+                                    Step 01 &bull; Team Assembly
                                 </div>
-                                <h3 className="text-lg font-bold font-display text-white group-hover:text-flame-500 transition-colors">
-                                    Distributed Mesh Node
+                            </div>
+                            <div className="space-y-2 px-1">
+                                <h3 className="text-xl font-bold font-display text-neutral-900">
+                                    Find your dream team
                                 </h3>
-                                <p className="text-xs text-neutral-400 leading-relaxed">
-                                    Decentralized peer-to-peer campus transmission nodes for resilient offline AAU academic material distribution.
+                                <p className="text-sm text-neutral-600 leading-relaxed">
+                                    Connect with fellow AAU students across departments with complementary skills. Apply with a single click and coordinate directly on Telegram.
                                 </p>
+                                <div className="pt-1">
+                                    <Link
+                                        href={route('projects.index')}
+                                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 hover:text-blue-600 transition-colors"
+                                    >
+                                        <span>Explore Projects</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="pt-4 border-t border-carbon-800 flex items-center justify-between text-[10px] font-mono text-neutral-500 uppercase">
-                                <span>EiABC &bull; Electrical Eng</span>
-                                <span className="text-neutral-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">VIEW SPEC &rarr;</span>
-                            </div>
-                        </Card>
+                        </div>
 
-                        <Card hover className="p-6 space-y-4 cad-crosshairs flex flex-col justify-between group">
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500">
-                                    <span className="text-flame-500 font-semibold">[AAU-ARC-12]</span>
-                                    <span className="px-2 py-0.5 rounded bg-flame-500/10 text-flame-500 border border-flame-500/30">1 SLOT LEFT</span>
+                        {/* Card 2: Soft Periwinkle Blue */}
+                        <div className="space-y-4">
+                            <div className="bg-[#6C88EC] text-white rounded-3xl p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between min-h-[340px] shadow-sm">
+                                {/* Inner Card Mockup */}
+                                <div className="bg-white/95 text-neutral-900 rounded-2xl p-4 shadow-lg space-y-3 relative z-10 backdrop-blur-xs">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-100 text-xs font-mono text-neutral-700">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <span>projectnode.aau/mesh-nodes</span>
+                                    </div>
+                                    <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-100 text-neutral-800 space-y-2">
+                                        <div className="text-xs font-bold font-display">Campus Mesh Node Architecture</div>
+                                        <div className="flex items-center justify-between text-[11px] font-mono text-neutral-600">
+                                            <span>Duration: 6 weeks</span>
+                                            <span className="text-blue-700 font-semibold">10 hrs/week</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs pt-1">
+                                        <span className="text-neutral-500 font-mono text-[11px]">3 of 4 slots filled</span>
+                                        <span className="font-semibold text-emerald-600 text-[11px]">Recruiting Open</span>
+                                    </div>
                                 </div>
-                                <div className="h-36 rounded-lg bg-carbon-950 border border-carbon-800/80 flex items-center justify-center relative overflow-hidden group-hover:border-neutral-700 transition-colors">
-                                    <div className="absolute inset-0 cad-grid opacity-30" />
-                                    <TechnicalTrussWireframe className="w-36 h-28 relative z-10" />
+                                <div className="pt-4 text-white/90 text-xs font-mono tracking-wider uppercase">
+                                    Step 02 &bull; Project Blueprint
                                 </div>
-                                <h3 className="text-lg font-bold font-display text-white group-hover:text-flame-500 transition-colors">
-                                    Cantilever Bamboo Pavilion
+                            </div>
+                            <div className="space-y-2 px-1">
+                                <h3 className="text-xl font-bold font-display text-neutral-900">
+                                    Launch with confidence
                                 </h3>
-                                <p className="text-xs text-neutral-400 leading-relaxed">
-                                    Parametric architectural canopy study utilizing Ethiopian highland bamboo composites and tensegrity joints.
+                                <p className="text-sm text-neutral-600 leading-relaxed">
+                                    Create structured project blueprints with clear roles, deadlines, and weekly commitments. Review applicant profiles and build momentum fast.
                                 </p>
+                                <div className="pt-1">
+                                    <Link
+                                        href={route('projects.create')}
+                                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 hover:text-blue-600 transition-colors"
+                                    >
+                                        <span>Create a Project</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="pt-4 border-t border-carbon-800 flex items-center justify-between text-[10px] font-mono text-neutral-500 uppercase">
-                                <span>Architecture &bull; Structural</span>
-                                <span className="text-neutral-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">VIEW SPEC &rarr;</span>
-                            </div>
-                        </Card>
+                        </div>
 
-                        <Card hover className="p-6 space-y-4 cad-crosshairs flex flex-col justify-between group">
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500">
-                                    <span className="text-flame-500 font-semibold">[AAU-ROB-07]</span>
-                                    <span className="px-2 py-0.5 rounded bg-flame-500/10 text-flame-500 border border-flame-500/30">RECRUITING</span>
+                        {/* Card 3: Deep Forest Green */}
+                        <div className="space-y-4">
+                            <div className="bg-[#0D3B2E] text-white rounded-3xl p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between min-h-[340px] shadow-sm">
+                                {/* Inner Card Mockup */}
+                                <div className="bg-white/95 text-neutral-900 rounded-2xl p-4 shadow-lg space-y-3 relative z-10 backdrop-blur-xs">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-xs font-bold text-neutral-900">Verified Project Credential</div>
+                                        <div className="flex text-amber-500">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="rounded-xl overflow-hidden aspect-[16/9]">
+                                        <img
+                                            src="/images/student-coding.jpg"
+                                            alt="Student coding and building"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs font-mono text-neutral-600 pt-1">
+                                        <span>Signed by Creator</span>
+                                        <span className="text-emerald-700 font-bold flex items-center gap-1">
+                                            <ShieldCheck className="w-3.5 h-3.5" /> Immutable
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="h-36 rounded-lg bg-carbon-950 border border-carbon-800/80 flex items-center justify-center relative overflow-hidden group-hover:border-neutral-700 transition-colors">
-                                    <div className="absolute inset-0 cad-grid opacity-30" />
-                                    <TechnicalDomeWireframe className="w-36 h-28 relative z-10" />
+                                <div className="pt-4 text-white/90 text-xs font-mono tracking-wider uppercase">
+                                    Step 03 &bull; Verified Portfolio
                                 </div>
-                                <h3 className="text-lg font-bold font-display text-white group-hover:text-flame-500 transition-colors">
-                                    Acoustic Biomass Dome
+                            </div>
+                            <div className="space-y-2 px-1">
+                                <h3 className="text-xl font-bold font-display text-neutral-900">
+                                    Grow your presence
                                 </h3>
-                                <p className="text-xs text-neutral-400 leading-relaxed">
-                                    Geodesic micro-climate greenhouse dome equipped with sensor telemetry and closed-loop watering arrays.
+                                <p className="text-sm text-neutral-600 leading-relaxed">
+                                    Earn certified completion credits signed by project leads. Turn your campus contributions into an undeniable record of real engineering work.
                                 </p>
+                                <div className="pt-1">
+                                    <Link
+                                        href={route('register')}
+                                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 hover:text-blue-600 transition-colors"
+                                    >
+                                        <span>Start Building</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="pt-4 border-t border-carbon-800 flex items-center justify-between text-[10px] font-mono text-neutral-500 uppercase">
-                                <span>Biomedical &bull; Mechanical</span>
-                                <span className="text-neutral-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">VIEW SPEC &rarr;</span>
-                            </div>
-                        </Card>
+                        </div>
                     </div>
                 </section>
 
-                {/* How It Works Section */}
-                <section id="how-it-works" className="space-y-10">
-                    <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-carbon-800 pb-4 gap-4">
+                {/* 3. COMMUNITY STORYTELLING SECTION Inspired by Screenshot 2 ("Take the leap like millions before you") */}
+                <section id="community" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="rounded-3xl bg-white border border-neutral-200/80 p-8 sm:p-14 shadow-card space-y-12 relative overflow-hidden">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            {/* Left: Asymmetric Photo Pill */}
+                            <div className="lg:col-span-4 space-y-4">
+                                <div className="rounded-2xl overflow-hidden shadow-md aspect-[4/5] relative">
+                                    <img
+                                        src="/images/lab-discussion.jpg"
+                                        alt="Students in laboratory discussion"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-mono font-medium text-neutral-800 shadow-xs flex items-center gap-1.5">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <span>aau.eiabc.arch</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Center: Bold Headline and Link */}
+                            <div className="lg:col-span-4 text-center space-y-6">
+                                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden mx-auto shadow-xl border-4 border-white">
+                                    <img
+                                        src="/images/hero-circle.jpg"
+                                        alt="AAU community circle"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <h2 className="text-3xl sm:text-4xl font-bold font-display text-blue-900 tracking-tight leading-tight">
+                                    Take the leap like AAU innovators before you
+                                </h2>
+                                <div>
+                                    <Link
+                                        href={route('register')}
+                                        className="inline-flex items-center gap-1.5 text-base font-bold text-neutral-900 hover:text-blue-600 border-b-2 border-neutral-900 hover:border-blue-600 pb-0.5 transition-colors"
+                                    >
+                                        <span>Start Now</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* Right: Portrait of Student Creator */}
+                            <div className="lg:col-span-4">
+                                <div className="rounded-2xl overflow-hidden shadow-md aspect-[4/5] relative">
+                                    <img
+                                        src="/images/hero-portrait.jpg"
+                                        alt="Student builder portrait"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-xs text-xs">
+                                        <div className="font-bold text-neutral-900">&ldquo;ProjectNode helped me find 3 teammates in 48 hours.&rdquo;</div>
+                                        <div className="text-[11px] text-neutral-500 font-mono mt-0.5">Software Engineering &bull; 4th Year</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 4. HOW IT WORKS 3-PHASE BREAKDOWN */}
+                <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-neutral-200/80 pb-6 gap-4">
                         <div>
-                            <span className="text-xs font-mono uppercase tracking-widest text-flame-500 block mb-1">
-                                // Operational Workflow
+                            <span className="text-xs font-mono font-semibold uppercase tracking-widest text-blue-600 block mb-1">
+                                Operational Architecture
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
+                            <h2 className="text-3xl sm:text-4xl font-bold font-display text-neutral-950 tracking-tight">
                                 How It Works
                             </h2>
                         </div>
@@ -334,117 +454,102 @@ export default function Welcome({ auth }) {
                         </p>
                     </div>
 
-                    <motion.div
-                        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true }}
-                        variants={stagger(0.12)}
-                    >
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {steps.map((step, idx) => (
-                            <motion.div key={idx} variants={fadeUp}>
-                                <Card hover className="h-full flex flex-col p-6 space-y-4 cad-crosshairs">
-                                    <div className="flex items-center justify-between">
-                                        <div className="w-10 h-10 rounded-lg bg-carbon-850 flex items-center justify-center border border-carbon-700">
-                                            {step.icon}
-                                        </div>
-                                        <span className="font-mono text-xs font-bold text-neutral-600">
-                                            {step.num}
-                                        </span>
+                            <Card key={idx} hover className="h-full flex flex-col p-7 space-y-4 bg-white border border-neutral-200/80 shadow-card">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100">
+                                        {step.icon}
                                     </div>
-                                    <h3 className="text-base font-bold font-display text-white uppercase tracking-wide">
-                                        {step.title}
-                                    </h3>
-                                    <p className="text-xs text-neutral-400 leading-relaxed flex-1">
-                                        {step.description}
-                                    </p>
-                                </Card>
-                            </motion.div>
+                                    <span className="font-mono text-xs font-bold text-neutral-400">
+                                        {step.num}
+                                    </span>
+                                </div>
+                                <h3 className="text-lg font-bold font-display text-neutral-950">
+                                    {step.title}
+                                </h3>
+                                <p className="text-sm text-neutral-600 leading-relaxed flex-1">
+                                    {step.description}
+                                </p>
+                            </Card>
                         ))}
-                    </motion.div>
-                </section>
-
-                {/* About / Architecture Section */}
-                <section id="about" className="p-8 sm:p-12 rounded-xl bg-carbon-900 border border-carbon-800 space-y-6 cad-crosshairs">
-                    <div className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-full bg-flame-500"></span>
-                        <h2 className="text-lg sm:text-xl font-bold font-display uppercase tracking-wider text-white">
-                            About ProjectNode
-                        </h2>
-                    </div>
-                    <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-3xl">
-                        ProjectNode is an industrial-grade project discovery and collaborator network designed exclusively for verified Addis Ababa University students. Rather than relying on unstructured messaging boards or transient chat groups, ProjectNode establishes a centralized drafting room for campus initiatives, engineering projects, and research collaborations.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-carbon-800 text-xs font-mono text-neutral-400">
-                        <div>
-                            <span className="text-white font-bold block text-sm">AAU Verified</span>
-                            <span>Restricted exclusively to validated aau.edu.et student identities.</span>
-                        </div>
-                        <div>
-                            <span className="text-white font-bold block text-sm">Telegram Native</span>
-                            <span>Direct communication coordinates on Telegram upon mutual request acceptance.</span>
-                        </div>
-                        <div>
-                            <span className="text-white font-bold block text-sm">Verified Credentials</span>
-                            <span>Immutable completion records build authentic technical portfolios.</span>
-                        </div>
                     </div>
                 </section>
 
-                {/* Industrial Callout Banner (Refactory "Built from what turned up" Section) */}
-                <section className="relative p-10 sm:p-16 rounded-2xl bg-carbon-900 border border-carbon-800 text-center flex flex-col items-center justify-center overflow-hidden cad-grid cad-crosshairs">
-                    <div className="relative z-10 max-w-2xl space-y-6">
-                        <span className="text-xs font-mono uppercase tracking-widest text-flame-500">
-                            // High-Durability Academic Records
-                        </span>
-                        <h2 className="text-3xl sm:text-5xl font-bold font-display text-white tracking-tight leading-tight">
-                            Built from student ambition.
-                            <span className="block text-neutral-400">Built to last.</span>
-                        </h2>
-                        <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
-                            Every accepted application, approved milestone, and confirmed project credit is sealed into a tamper-proof technical profile that endures well beyond graduation.
-                        </p>
-                        <div className="pt-2">
-                            <Button href={route('projects.index')} variant="primary" size="md">
-                                Explore Project Feed <ArrowRight className="w-4 h-4 ml-1.5" />
-                            </Button>
+                {/* 5. CALLOUT SECTION Inspired by Screenshot 3 ("It's more than a website. It's your future.") */}
+                <section className="bg-gradient-to-b from-[#EAEFFD] via-[#F0F4FE] to-[#FAF9F5] py-20 px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-2xl mx-auto">
+                        <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-blue-100/80 text-center space-y-6">
+                            <span className="text-xs font-mono font-bold tracking-widest uppercase text-blue-600 block">
+                                PROJECTNODE
+                            </span>
+
+                            <h2 className="text-3xl sm:text-5xl font-bold font-display text-neutral-950 tracking-tight leading-tight">
+                                It&apos;s more than a project. <br />
+                                It&apos;s your future.
+                            </h2>
+
+                            <p className="text-sm text-neutral-600 max-w-md mx-auto leading-relaxed">
+                                Join the official AAU student network. Build real products, publish initiatives, and connect with ambitious peers today.
+                            </p>
+
+                            {/* Email Action Bar */}
+                            <div className="pt-2">
+                                {auth?.user ? (
+                                    <Button href={route('dashboard')} size="lg" variant="primary">
+                                        Go to Your Dashboard <ArrowRight className="w-4 h-4 ml-1.5" />
+                                    </Button>
+                                ) : (
+                                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+                                        <input
+                                            type="text"
+                                            readOnly
+                                            value="student@aau.edu.et"
+                                            className="w-full sm:w-auto flex-1 px-4 py-3 rounded-full bg-neutral-50 border border-neutral-200 text-neutral-400 text-xs font-mono select-none"
+                                        />
+                                        <Button href={route('register')} size="lg" variant="primary" className="w-full sm:w-auto shrink-0">
+                                            Start Now <ArrowRight className="w-4 h-4 ml-1.5" />
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <p className="text-xs font-mono text-neutral-400">
+                                Exclusively for Addis Ababa University students. Free forever.
+                            </p>
                         </div>
                     </div>
                 </section>
             </main>
 
-            {/* Floating Refactory Bottom Pill Dock */}
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 hidden sm:flex items-center gap-1 p-1.5 rounded-full bg-carbon-900/90 backdrop-blur-md border border-carbon-800 shadow-2xl text-xs font-mono">
-                <div className="px-3 py-1 rounded-full bg-carbon-800 text-white font-bold flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-flame-500 animate-pulse" />
-                    <span>AAU</span>
-                </div>
-                <a href="#featured" className="px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-colors">
-                    Featured
-                </a>
-                <a href="#how-it-works" className="px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-colors">
-                    Workflow
-                </a>
-                <a href="#about" className="px-3 py-1 rounded-full text-neutral-400 hover:text-white transition-colors">
-                    Architecture
-                </a>
-                <Link
-                    href={route('projects.index')}
-                    className="px-4 py-1 rounded-full bg-flame-500 hover:bg-flame-600 text-white font-semibold flex items-center gap-1 transition-colors"
-                >
-                    <span>Discover Feed</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
-            </div>
-
             {/* Footer */}
-            <footer className="relative z-10 border-t border-carbon-800 py-8 mt-12 bg-carbon-950">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-neutral-500">
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-flame-500"></span>
-                        <span>PROJECTNODE &bull; ADDIS ABABA UNIVERSITY</span>
+            <footer className="border-t border-neutral-200/80 py-10 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-neutral-500">
+                    <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg bg-neutral-900 flex items-center justify-center shadow-xs">
+                            <ApplicationLogo className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="font-semibold text-neutral-900">ProjectNode</span>
+                        <span>&bull;</span>
+                        <span>Addis Ababa University</span>
                     </div>
-                    <div>ENGINEERED FOR TECHNICAL COLLABORATION</div>
+                    <div className="flex items-center gap-6 font-medium">
+                        <Link href={route('projects.index')} className="hover:text-neutral-900 transition-colors">
+                            Explore Projects
+                        </Link>
+                        <a href="#how-it-works" className="hover:text-neutral-900 transition-colors">
+                            Workflow
+                        </a>
+                        <Link href={route('login')} className="hover:text-neutral-900 transition-colors">
+                            Log In
+                        </Link>
+                        <Link href={route('register')} className="hover:text-neutral-900 transition-colors">
+                            Register
+                        </Link>
+                    </div>
+                    <div className="font-mono text-[11px] text-neutral-400">
+                        &copy; {new Date().getFullYear()} AAU Campus Node
+                    </div>
                 </div>
             </footer>
         </div>

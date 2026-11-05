@@ -20,11 +20,11 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Register - ProjectNode" />
 
-            <div className="mb-6">
-                <h1 className="text-xl font-bold font-display uppercase tracking-wider text-white">Create Account</h1>
-                <p className="text-xs font-mono text-neutral-400 mt-1">Join the Addis Ababa University technical network</p>
+            <div className="mb-6 text-center">
+                <h1 className="text-2xl font-bold font-display text-neutral-900 tracking-tight">Create your account</h1>
+                <p className="text-sm text-neutral-500 mt-1">Join ambitious peers building real projects at AAU</p>
             </div>
 
             <form onSubmit={submit} className="space-y-4">
@@ -74,14 +74,14 @@ export default function Register() {
                 />
 
                 <div className="pt-2">
-                    <Button type="submit" variant="primary" className="w-full" loading={processing}>
-                        Register
+                    <Button type="submit" variant="primary" size="lg" className="w-full" loading={processing}>
+                        Create Account
                     </Button>
                 </div>
 
-                <p className="text-center text-xs text-neutral-400 pt-2 font-mono">
+                <p className="text-center text-xs text-neutral-500 pt-3">
                     Already registered?{' '}
-                    <Link href={route('login')} className="text-flame-500 hover:underline font-medium">
+                    <Link href={route('login')} className="text-blue-600 hover:underline font-semibold">
                         Log in
                     </Link>
                 </p>

@@ -97,19 +97,19 @@ export default function Index({
                 />
 
                 {/* Search & Filter Toolbar */}
-                <Card className="p-4 space-y-4">
+                <Card className="p-4 space-y-4 bg-white border border-neutral-200/80 shadow-xs">
                     <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
                         {/* Keyword Search Box */}
                         <form onSubmit={handleSearchSubmit} className="flex-1 w-full flex items-center gap-2">
                             <div className="relative flex-1">
-                                <Search className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                                 <input
                                     type="text"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Search by title, description or keyword..."
                                     maxLength={100}
-                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-lg bg-carbon-950 border border-carbon-800 text-white placeholder-neutral-600 focus:outline-none focus:border-flame-500 focus:ring-1 focus:ring-flame-500 transition-colors font-mono"
+                                    className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl bg-neutral-50/70 border border-neutral-200 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
                                 />
                             </div>
                             <Button type="submit" variant="secondary" size="sm">
@@ -119,12 +119,12 @@ export default function Index({
 
                         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                             {/* Sort Selector */}
-                            <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-mono">
+                            <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-mono">
                                 <ArrowUpDown className="w-3.5 h-3.5" />
                                 <select
                                     value={filters.sort || 'newest'}
                                     onChange={(e) => applyFilter({ sort: e.target.value })}
-                                    className="bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg px-2.5 py-1.5 focus:border-flame-500 focus:outline-none font-mono"
+                                    className="bg-white border border-neutral-200 text-neutral-700 text-xs rounded-lg px-2.5 py-1.5 focus:border-blue-500 focus:outline-none font-mono"
                                 >
                                     <option value="newest">Newest First</option>
                                     <option value="deadline">Closing Soonest</option>
@@ -136,7 +136,7 @@ export default function Index({
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`border ${showFilters ? 'bg-carbon-850 text-white border-carbon-700' : 'border-carbon-800 text-neutral-400'}`}
+                                className={`border ${showFilters ? 'bg-neutral-100 text-neutral-900 border-neutral-300' : 'border-neutral-200 text-neutral-600'}`}
                             >
                                 <SlidersHorizontal className="w-3.5 h-3.5 mr-1.5" />
                                 Filters
@@ -146,14 +146,14 @@ export default function Index({
 
                     {/* Filter Panel */}
                     {showFilters && (
-                        <div className="pt-4 border-t border-carbon-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+                        <div className="pt-4 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
                             {/* Category Filter */}
                             <div className="space-y-1">
-                                <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Category</label>
+                                <label className="text-neutral-500 uppercase tracking-wider text-[11px] font-semibold">Category</label>
                                 <select
                                     value={filters.category || ''}
                                     onChange={(e) => applyFilter({ category: e.target.value })}
-                                    className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
+                                    className="w-full bg-white border border-neutral-200 text-neutral-800 text-xs rounded-lg p-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">All Categories</option>
                                     {categories.map((c) => (
@@ -166,11 +166,11 @@ export default function Index({
 
                             {/* Department Filter */}
                             <div className="space-y-1">
-                                <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Department</label>
+                                <label className="text-neutral-500 uppercase tracking-wider text-[11px] font-semibold">Department</label>
                                 <select
                                     value={filters.department_id || ''}
                                     onChange={(e) => applyFilter({ department_id: e.target.value })}
-                                    className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
+                                    className="w-full bg-white border border-neutral-200 text-neutral-800 text-xs rounded-lg p-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">All Departments</option>
                                     {departments.map((d) => (
@@ -183,11 +183,11 @@ export default function Index({
 
                             {/* Deadline Filter */}
                             <div className="space-y-1">
-                                <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Application Deadline</label>
+                                <label className="text-neutral-500 uppercase tracking-wider text-[11px] font-semibold">Application Deadline</label>
                                 <select
                                     value={filters.deadline_within || ''}
                                     onChange={(e) => applyFilter({ deadline_within: e.target.value })}
-                                    className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
+                                    className="w-full bg-white border border-neutral-200 text-neutral-800 text-xs rounded-lg p-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Any Deadline</option>
                                     <option value="7">Within 7 days</option>
@@ -199,11 +199,11 @@ export default function Index({
                             {/* Posted Filter & Closed Toggle */}
                             <div className="space-y-2">
                                 <div className="space-y-1">
-                                    <label className="text-neutral-400 uppercase tracking-wider text-[11px]">Posted Date</label>
+                                    <label className="text-neutral-500 uppercase tracking-wider text-[11px] font-semibold">Posted Date</label>
                                     <select
                                         value={filters.posted || ''}
                                         onChange={(e) => applyFilter({ posted: e.target.value })}
-                                        className="w-full bg-carbon-950 border border-carbon-800 text-neutral-200 text-xs rounded-lg p-2 focus:border-flame-500"
+                                        className="w-full bg-white border border-neutral-200 text-neutral-800 text-xs rounded-lg p-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     >
                                         <option value="">Any Time</option>
                                         <option value="7">Last 7 days</option>
@@ -211,12 +211,12 @@ export default function Index({
                                     </select>
                                 </div>
 
-                                <label className="flex items-center gap-2 cursor-pointer pt-1 text-neutral-400 select-none">
+                                <label className="flex items-center gap-2 cursor-pointer pt-1 text-neutral-600 select-none">
                                     <input
                                         type="checkbox"
                                         checked={Boolean(filters.include_closed)}
                                         onChange={(e) => applyFilter({ include_closed: e.target.checked ? 1 : '' })}
-                                        className="rounded border-carbon-700 text-flame-500 focus:ring-flame-500 bg-carbon-900"
+                                        className="rounded border-neutral-300 text-blue-600 focus:ring-blue-500 bg-white"
                                     />
                                     <span>Include closed</span>
                                 </label>
@@ -226,71 +226,71 @@ export default function Index({
 
                     {/* Active Filter Chips & Result Counter */}
                     <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs font-mono">
-                        <span className="text-neutral-400 font-mono">
-                            Showing <span className="text-white font-bold">{projects.total ?? projects.data.length}</span> project{projects.total === 1 ? '' : 's'}
+                        <span className="text-neutral-500 font-mono">
+                            Showing <span className="text-neutral-900 font-bold">{projects.total ?? projects.data.length}</span> project{projects.total === 1 ? '' : 's'}
                         </span>
 
                         {hasActiveFilters && (
                             <div className="flex flex-wrap items-center gap-1.5">
                                 {filters.q && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200">
                                         Keyword: &ldquo;{filters.q}&rdquo;
                                         <button type="button" onClick={() => { setSearch(''); applyFilter({ q: '' }); }}>
-                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-neutral-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.category && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700 capitalize">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200 capitalize">
                                         {filters.category.replace('_', ' ')}
                                         <button type="button" onClick={() => applyFilter({ category: '' })}>
-                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-neutral-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.department_id && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200">
                                         {departments.find((d) => d.id === Number(filters.department_id))?.name || 'Department'}
                                         <button type="button" onClick={() => applyFilter({ department_id: '' })}>
-                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-neutral-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 )}
 
                                 {activeSkillsList.map((skill) => (
-                                    <span key={skill.id} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-flame-500/10 text-flame-500 border border-flame-500/30">
+                                    <span key={skill.id} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                                         {skill.name}
                                         <button type="button" onClick={() => handleRemoveSkill(skill.id)}>
-                                            <X className="w-3 h-3 text-flame-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-blue-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 ))}
 
                                 {filters.deadline_within && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200">
                                         Within {filters.deadline_within}d
                                         <button type="button" onClick={() => applyFilter({ deadline_within: '' })}>
-                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-neutral-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.posted && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200">
                                         Past {filters.posted}d
                                         <button type="button" onClick={() => applyFilter({ posted: '' })}>
-                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-neutral-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 )}
 
                                 {filters.include_closed && (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-carbon-850 text-neutral-200 border border-carbon-700">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200">
                                         Including closed
                                         <button type="button" onClick={() => applyFilter({ include_closed: '' })}>
-                                            <X className="w-3 h-3 text-neutral-500 hover:text-red-400" />
+                                            <X className="w-3 h-3 text-neutral-400 hover:text-red-500" />
                                         </button>
                                     </span>
                                 )}
@@ -298,7 +298,7 @@ export default function Index({
                                 <button
                                     type="button"
                                     onClick={handleClearAll}
-                                    className="text-flame-500 hover:underline ml-1 font-mono font-medium"
+                                    className="text-blue-600 hover:underline ml-1 font-mono font-medium"
                                 >
                                     Clear all
                                 </button>
@@ -337,7 +337,7 @@ export default function Index({
                             const deadlinePassed = isDeadlinePassed(project.application_deadline);
 
                             return (
-                                <Card key={project.id} hover className="flex flex-col justify-between p-6 cad-crosshairs">
+                                <Card key={project.id} hover className="flex flex-col justify-between p-6 bg-white border border-neutral-200/80 shadow-card">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between gap-2">
                                             <CategoryBadge category={project.category} />
@@ -350,41 +350,62 @@ export default function Index({
                                         </div>
 
                                         <div>
-                                            <h3 className="text-base font-bold font-display text-white line-clamp-1">
-                                                <Link
-                                                    href={route('projects.show', project.id)}
-                                                    className="hover:text-flame-500 transition-colors"
-                                                >
+                                            <h3 className="text-lg font-bold font-display text-neutral-950 group-hover:text-blue-600 transition-colors line-clamp-1">
+                                                <Link href={route('projects.show', project.id)}>
                                                     {project.title}
                                                 </Link>
                                             </h3>
-                                            <p className="mt-2 text-xs text-neutral-400 line-clamp-3 leading-relaxed">
+                                            <p className="mt-1 text-xs text-neutral-500 line-clamp-2 leading-relaxed">
                                                 {project.description}
                                             </p>
                                         </div>
 
                                         {project.skills && project.skills.length > 0 && (
-                                            <div className="flex flex-wrap gap-1.5">
+                                            <div className="flex flex-wrap gap-1">
                                                 {project.skills.slice(0, 4).map((skill) => (
                                                     <span
                                                         key={skill.id}
-                                                        className="px-2 py-0.5 rounded bg-carbon-850 text-neutral-300 text-[11px] font-mono border border-carbon-700"
+                                                        className="px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-mono border border-neutral-200/80"
                                                     >
                                                         {skill.name}
                                                     </span>
                                                 ))}
                                                 {project.skills.length > 4 && (
-                                                    <span className="text-[11px] font-mono text-neutral-500 self-center">
-                                                        +{project.skills.length - 4} more
+                                                    <span className="text-[10px] font-mono text-neutral-400 self-center">
+                                                        +{project.skills.length - 4}
                                                     </span>
                                                 )}
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className="mt-6 pt-4 border-t border-carbon-800 flex items-center justify-between text-xs text-neutral-400 font-mono">
-                                        <SlotDots filled={project.accepted_count ?? 0} total={project.slots_total} />
-                                        <DeadlineRing deadline={project.application_deadline} />
+                                    <div className="pt-4 border-t border-neutral-100 space-y-3 mt-4">
+                                        <div className="flex items-center justify-between text-xs text-neutral-500 font-mono">
+                                            <span className="truncate max-w-[150px]">
+                                                {project.department?.name || 'AAU Campus'}
+                                            </span>
+                                            <DeadlineRing deadline={project.application_deadline} />
+                                        </div>
+
+                                        <div className="flex items-center justify-between pt-1">
+                                            <div className="flex items-center gap-2">
+                                                <SlotDots
+                                                    filled={project.accepted_count ?? 0}
+                                                    total={project.slots_total}
+                                                />
+                                                <span className="text-[11px] font-mono text-neutral-400">
+                                                    {project.accepted_count ?? 0}/{project.slots_total}
+                                                </span>
+                                            </div>
+
+                                            <Button
+                                                href={route('projects.show', project.id)}
+                                                variant="secondary"
+                                                size="sm"
+                                            >
+                                                View Spec
+                                            </Button>
+                                        </div>
                                     </div>
                                 </Card>
                             );
@@ -392,7 +413,7 @@ export default function Index({
                     </div>
                 )}
 
-                <Pagination links={projects.links} />
+                <Pagination links={projects.links} className="pt-4" />
             </div>
         </AuthenticatedLayout>
     );

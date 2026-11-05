@@ -6,22 +6,24 @@ export default function Badge({
     ...props
 }) {
     const variants = {
-        flame: 'bg-flame-500/10 text-flame-500 border-flame-500/30',
-        violet: 'bg-flame-500/10 text-flame-500 border-flame-500/30',
-        amber: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-        mint: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-        coral: 'bg-red-500/10 text-red-400 border-red-500/30',
-        neutral: 'bg-carbon-800/80 text-neutral-300 border-carbon-700',
+        flame: 'bg-blue-50 text-blue-700 border-blue-200/80',
+        brand: 'bg-blue-50 text-blue-700 border-blue-200/80',
+        amber: 'bg-amber-50 text-amber-800 border-amber-200/80',
+        mint: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
+        coral: 'bg-rose-50 text-rose-700 border-rose-200/80',
+        forest: 'bg-emerald-900 text-emerald-100 border-emerald-900',
+        terracotta: 'bg-orange-50 text-orange-800 border-orange-200/80',
+        neutral: 'bg-neutral-100 text-neutral-700 border-neutral-200/70',
     };
 
     const sizes = {
-        sm: 'text-[9px] px-2 py-0.5 tracking-wider',
-        md: 'text-[10px] px-2.5 py-0.5 tracking-wider',
+        sm: 'text-[10px] px-2.5 py-0.5 font-medium',
+        md: 'text-xs px-3 py-1 font-medium',
     };
 
     return (
         <span
-            className={`inline-flex items-center font-mono uppercase rounded-full border ${variants[variant] || variants.neutral} ${sizes[size] || sizes.md} ${className}`}
+            className={`inline-flex items-center rounded-full border ${variants[variant] || variants.neutral} ${sizes[size] || sizes.md} ${className}`}
             {...props}
         >
             {children}
