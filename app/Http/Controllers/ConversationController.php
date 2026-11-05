@@ -40,8 +40,51 @@ class ConversationController extends Controller
             })
             ->values();
 
+        $selectedId = $request->query('conversation');
+        $activeConversation = null;
+
+        if ($selectedId) {
+            $activeConversation = $conversations->firstWhere('id', (int) $selectedId);
+        }
+
+        if (! $activeConversation && $conversations->isNotEmpty()) {
+            $activeConversation = $conversations->first();
+        }
+
+        $messages = collect();
+        $hasEarlier = false;
+        $readUpTo = null;
+
+        if ($activeConversation) {
+            // Mark incoming messages as read
+            $activeConversation->messages()
+                ->where('sender_id', '!=', $user->id)
+                ->whereNull('read_at')
+                ->update(['read_at' => now()]);
+
+            $messages = $activeConversation->messages()
+                ->latest('id')
+                ->limit(50)
+                ->get()
+                ->reverse()
+                ->values();
+
+            $oldestLoadedId = $messages->first()?->id ?? 0;
+            $hasEarlier = $activeConversation->messages()->where('id', '<', $oldestLoadedId)->exists();
+
+            $readUpTo = $activeConversation->messages()
+                ->where('sender_id', $user->id)
+                ->whereNotNull('read_at')
+                ->max('id');
+        }
+
         return Inertia::render('Messages/Index', [
             'conversations' => ConversationResource::collection($conversations)->resolve(),
+            'active_conversation' => $activeConversation ? (new ConversationResource($activeConversation))->resolve() : null,
+            'conversation' => $activeConversation ? (new ConversationResource($activeConversation))->resolve() : null,
+            'messages' => MessageResource::collection($messages)->resolve(),
+            'has_earlier_messages' => $hasEarlier,
+            'read_up_to' => $readUpTo,
         ]);
     }
 
@@ -75,6 +118,25 @@ class ConversationController extends Controller
 
         $user = $request->user();
 
+        $conversations = Conversation::forUser($user)
+            ->whereHas('project')
+            ->with([
+                'project:id,title,status',
+                'owner:id,name',
+                'member:id,name',
+                'lastMessage',
+            ])
+            ->withCount([
+                'messages as unread_count' => function ($q) use ($user) {
+                    $q->where('sender_id', '!=', $user->id)->whereNull('read_at');
+                },
+            ])
+            ->get()
+            ->sortByDesc(function ($conv) {
+                return $conv->lastMessage?->created_at ?? $conv->created_at;
+            })
+            ->values();
+
         // Mark incoming messages as read
         $conversation->messages()
             ->where('sender_id', '!=', $user->id)
@@ -98,7 +160,9 @@ class ConversationController extends Controller
             ->max('id');
 
         return Inertia::render('Messages/Show', [
+            'conversations' => ConversationResource::collection($conversations)->resolve(),
             'conversation' => (new ConversationResource($conversation))->resolve(),
+            'active_conversation' => (new ConversationResource($conversation))->resolve(),
             'messages' => MessageResource::collection($messages)->resolve(),
             'has_earlier_messages' => $hasEarlier,
             'read_up_to' => $readUpTo,

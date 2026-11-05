@@ -221,5 +221,8 @@ class DemoSeeder extends Seeder
                 ]
             );
         }
+
+        // Backfill conversations for all accepted requests
+        \Illuminate\Support\Facades\Artisan::call('projectnode:backfill-conversations');
     }
 }
