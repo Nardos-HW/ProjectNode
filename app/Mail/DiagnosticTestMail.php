@@ -31,3 +31,4 @@ class DiagnosticTestMail extends Mailable
         );
     }
 }
+

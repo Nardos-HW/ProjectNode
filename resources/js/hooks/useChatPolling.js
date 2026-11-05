@@ -108,3 +108,4 @@ export function useChatPolling({
 
     return { pollingError, updateLastId };
 }
+

@@ -30,3 +30,4 @@ class MessageController extends Controller
             ->setStatusCode(201);
     }
 }
+
