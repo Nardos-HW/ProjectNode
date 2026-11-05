@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class DesignSystemTest extends TestCase
@@ -14,7 +13,7 @@ class DesignSystemTest extends TestCase
     public function test_design_system_preview_returns_ok_in_local_environment(): void
     {
         $user = User::factory()->create([
-            'email' => 'designer' . uniqid() . '@aau.edu.et',
+            'email' => 'designer'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
         ]);
 
@@ -29,11 +28,11 @@ class DesignSystemTest extends TestCase
         putenv('APP_ENV=production');
         $_ENV['APP_ENV'] = 'production';
         $_SERVER['APP_ENV'] = 'production';
-        
+
         $this->refreshApplication();
 
         $user = User::factory()->create([
-            'email' => 'user' . uniqid() . '@aau.edu.et',
+            'email' => 'user'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
         ]);
 

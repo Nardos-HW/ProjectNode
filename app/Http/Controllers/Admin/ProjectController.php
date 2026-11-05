@@ -27,7 +27,7 @@ class ProjectController extends Controller
             ->withCount(['acceptedRequests as accepted_count']);
 
         if ($search) {
-            $term = '%' . addcslashes($search, '%_') . '%';
+            $term = '%'.addcslashes($search, '%_').'%';
             $query->where(function ($sub) use ($term) {
                 $sub->where('title', 'ILIKE', $term)
                     ->orWhere('description', 'ILIKE', $term);

@@ -34,13 +34,13 @@ class UpdateProjectRequest extends FormRequest
                 'required',
                 'date',
                 'after_or_equal:today',
-                'before_or_equal:' . now()->addDays(180)->toDateString(),
+                'before_or_equal:'.now()->addDays(180)->toDateString(),
             ],
             'telegram_contact' => ['required', 'regex:/^[A-Za-z][A-Za-z0-9_]{4,31}$/'],
             'skill_ids' => ['nullable', 'array', 'max:10'],
             'skill_ids.*' => ['integer', 'distinct', 'exists:skills,id'],
             'new_skills' => ['nullable', 'array', 'max:3'],
-            'new_skills.*' => ['string', 'min:2', 'max:40', 'regex:' . SkillResolver::SKILL_NAME_REGEX],
+            'new_skills.*' => ['string', 'min:2', 'max:40', 'regex:'.SkillResolver::SKILL_NAME_REGEX],
         ];
     }
 

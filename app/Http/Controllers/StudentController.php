@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\ProjectStatus;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 

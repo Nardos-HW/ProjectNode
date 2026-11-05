@@ -20,7 +20,7 @@ class ProjectLifecycleTest extends TestCase
     private function createVerifiedStudent(): User
     {
         return User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
             'telegram_handle' => 'tg_handle',

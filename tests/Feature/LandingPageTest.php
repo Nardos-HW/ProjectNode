@@ -24,7 +24,7 @@ class LandingPageTest extends TestCase
     public function test_authenticated_user_can_view_the_landing_page_without_redirect(): void
     {
         $user = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
         ]);
 

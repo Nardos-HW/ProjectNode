@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -57,11 +58,11 @@ class HandleInertiaRequests extends Middleware
                 'info' => fn () => $request->session()->get('info'),
             ],
             'chat' => [
-                'unread' => fn () => $request->user() ? \App\Models\Message::whereHas('conversation', function ($q) use ($request) {
+                'unread' => fn () => $request->user() ? Message::whereHas('conversation', function ($q) use ($request) {
                     $q->forUser($request->user())->whereHas('project');
                 })->where('sender_id', '!=', $request->user()->id)
-                  ->whereNull('read_at')
-                  ->count() : 0,
+                    ->whereNull('read_at')
+                    ->count() : 0,
             ],
         ];
     }

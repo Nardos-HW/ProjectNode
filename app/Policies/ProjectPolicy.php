@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectStatus;
 use App\Models\Project;
 use App\Models\User;
@@ -28,14 +29,13 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        if ($project->status === \App\Enums\ProjectStatus::Completed) {
+        if ($project->status === ProjectStatus::Completed) {
             return false;
         }
 
         return $user->id === $project->owner_id && $project->canBeEdited();
     }
 
-    
     public function changeStatus(User $user, Project $project): bool
     {
         if ($user->id !== $project->owner_id) {
@@ -43,6 +43,7 @@ class ProjectPolicy
         }
 
         $status = $project->status instanceof ProjectStatus ? $project->status : ProjectStatus::from($project->status);
+
         return ! $status->isTerminal();
     }
 
@@ -71,7 +72,7 @@ class ProjectPolicy
 
         return $project->joinRequests()
             ->where('applicant_id', $user->id)
-            ->where('status', \App\Enums\JoinRequestStatus::Accepted)
+            ->where('status', JoinRequestStatus::Accepted)
             ->exists();
     }
 
@@ -85,8 +86,6 @@ class ProjectPolicy
         return $user->isAdmin() && $project->trashed();
     }
 
-    
-
     /**
      * Determine whether the user can mark the project as completed.
      */
@@ -96,11 +95,10 @@ class ProjectPolicy
             return false;
         }
 
-        $status = $project->status instanceof \App\Enums\ProjectStatus
+        $status = $project->status instanceof ProjectStatus
             ? $project->status
-            : \App\Enums\ProjectStatus::from($project->status);
+            : ProjectStatus::from($project->status);
 
-        return in_array($status, [\App\Enums\ProjectStatus::Open, \App\Enums\ProjectStatus::InProgress], true);
+        return in_array($status, [ProjectStatus::Open, ProjectStatus::InProgress], true);
     }
-    
 }

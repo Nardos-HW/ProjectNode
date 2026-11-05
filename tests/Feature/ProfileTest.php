@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
@@ -47,7 +48,7 @@ class ProfileTest extends TestCase
             ->get('/profile');
 
         $response->assertOk();
-        $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        $response->assertInertia(fn (AssertableInertia $page) => $page
             ->component('Profile/Edit')
             ->where('auth.user.name', $user->name)
             ->where('auth.user.department_id', $department->id)

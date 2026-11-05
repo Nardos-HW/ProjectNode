@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
 use App\Enums\ProjectStatus;
 use Illuminate\Database\Eloquent\Builder;
@@ -64,7 +65,7 @@ class Project extends Model
 
     public function acceptedRequests(): HasMany
     {
-        return $this->hasMany(JoinRequest::class)->where('status', \App\Enums\JoinRequestStatus::Accepted);
+        return $this->hasMany(JoinRequest::class)->where('status', JoinRequestStatus::Accepted);
     }
 
     public function conversations(): HasMany
@@ -79,7 +80,7 @@ class Project extends Model
             ->whereHas('owner', function (Builder $ownerQuery) {
                 $ownerQuery->whereNull('suspended_at');
             })
-            ->whereRaw('(SELECT COUNT(*) FROM join_requests WHERE join_requests.project_id = projects.id AND join_requests.status = ?) < projects.slots_total', [\App\Enums\JoinRequestStatus::Accepted->value]);
+            ->whereRaw('(SELECT COUNT(*) FROM join_requests WHERE join_requests.project_id = projects.id AND join_requests.status = ?) < projects.slots_total', [JoinRequestStatus::Accepted->value]);
     }
 
     public function isRecruiting(): bool
@@ -100,6 +101,7 @@ class Project extends Model
     public function canBeEdited(): bool
     {
         $statusVal = $this->status instanceof ProjectStatus ? $this->status : ProjectStatus::from($this->status);
+
         return ! $statusVal->isTerminal();
     }
 
@@ -132,7 +134,7 @@ class Project extends Model
             ->when($filters['q'] ?? null, function ($q, $term) {
                 // Escape LIKE wildcards typed by users per L14 and doc 03
                 $escaped = addcslashes($term, '%_');
-                $like = '%' . $escaped . '%';
+                $like = '%'.$escaped.'%';
                 $q->where(function ($sub) use ($like) {
                     $sub->where('title', 'ILIKE', $like)
                         ->orWhere('description', 'ILIKE', $like);
@@ -140,12 +142,12 @@ class Project extends Model
             });
     }
 
-    public function participants(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function participants(): HasMany
     {
         return $this->hasMany(ProjectParticipant::class);
     }
 
-    public function members(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function members(): HasMany
     {
         return $this->participants()->where('role', 'member');
     }

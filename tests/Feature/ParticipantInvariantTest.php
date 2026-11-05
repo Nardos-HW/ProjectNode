@@ -22,7 +22,7 @@ class ParticipantInvariantTest extends TestCase
         $dept = Department::firstOrCreate(['name' => 'Computer Science']);
 
         return User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'department_id' => $dept->id,
             'year_of_study' => 3,
             'bio' => 'A valid biography string that meets requirements.',

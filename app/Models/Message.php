@@ -49,4 +49,3 @@ class Message extends Model
         return $this->sender_id === $user->id;
     }
 }
-

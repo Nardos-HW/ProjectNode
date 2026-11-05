@@ -2,7 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\JoinRequestStatus;
+use App\Enums\ProjectCategory;
 use App\Models\Department;
+use App\Models\JoinRequest;
+use App\Models\Project;
 use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,7 +20,7 @@ class ProfileGateTest extends TestCase
     public function test_incomplete_profile_is_redirected_from_project_creation(): void
     {
         $user = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => null,
         ]);
@@ -31,7 +35,7 @@ class ProfileGateTest extends TestCase
     {
         $dept = Department::create(['name' => 'Software Engineering']);
         $user = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'department_id' => $dept->id,
             'year_of_study' => 3,
@@ -52,16 +56,16 @@ class ProfileGateTest extends TestCase
     public function test_incomplete_profile_cannot_access_owner_inbox_or_decide_requests(): void
     {
         $owner = User::factory()->create([
-            'email' => 'owner' . uniqid() . '@aau.edu.et',
+            'email' => 'owner'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => null,
         ]);
 
-        $project = \App\Models\Project::forceCreate([
+        $project = Project::forceCreate([
             'owner_id' => $owner->id,
             'title' => 'Sample Project',
             'description' => 'A valid project description for testing profile gate middleware.',
-            'category' => \App\Enums\ProjectCategory::Personal,
+            'category' => ProjectCategory::Personal,
             'slots_total' => 2,
             'hours_per_week' => 10,
             'duration_weeks' => 4,
@@ -71,16 +75,16 @@ class ProfileGateTest extends TestCase
         ]);
 
         $applicant = User::factory()->create([
-            'email' => 'applicant' . uniqid() . '@aau.edu.et',
+            'email' => 'applicant'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
         ]);
 
-        $request = \App\Models\JoinRequest::create([
+        $request = JoinRequest::create([
             'project_id' => $project->id,
             'applicant_id' => $applicant->id,
             'message' => 'Valid join request message.',
-            'status' => \App\Enums\JoinRequestStatus::Pending,
+            'status' => JoinRequestStatus::Pending,
         ]);
 
         // Owner inbox check
@@ -118,7 +122,7 @@ class ProfileGateTest extends TestCase
         $owner->skills()->attach($skill->id);
 
         $viewer = User::factory()->create([
-            'email' => 'viewer' . uniqid() . '@aau.edu.et',
+            'email' => 'viewer'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
         ]);
 

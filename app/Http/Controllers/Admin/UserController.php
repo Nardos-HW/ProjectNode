@@ -28,7 +28,7 @@ class UserController extends Controller
             ->with(['department:id,name', 'skills:id,name'])
             ->withCount(['ownedProjects', 'joinRequests'])
             ->when($search, function ($q, $term) {
-                $term = '%' . addcslashes($term, '%_') . '%';
+                $term = '%'.addcslashes($term, '%_').'%';
                 $q->where(function ($sub) use ($term) {
                     $sub->where('name', 'ILIKE', $term)
                         ->orWhere('email', 'ILIKE', $term);

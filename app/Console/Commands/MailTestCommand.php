@@ -30,6 +30,7 @@ class MailTestCommand extends Command
     {
         if (app()->environment('production')) {
             $this->error('This diagnostic command cannot be run in production.');
+
             return self::FAILURE;
         }
 
@@ -38,12 +39,14 @@ class MailTestCommand extends Command
         $this->info("Sending test email to [{$email}]...");
 
         try {
-            Mail::to($email)->send(new DiagnosticTestMail());
+            Mail::to($email)->send(new DiagnosticTestMail);
 
             $this->info("Success! Test email successfully sent to [{$email}].");
+
             return self::SUCCESS;
         } catch (Throwable $e) {
             $this->error("Failed to send test email: {$e->getMessage()}");
+
             return self::FAILURE;
         }
     }

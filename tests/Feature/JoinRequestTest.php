@@ -8,6 +8,7 @@ use App\Models\JoinRequest;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class JoinRequestTest extends TestCase
@@ -17,7 +18,7 @@ class JoinRequestTest extends TestCase
     private function createStudent(): User
     {
         return User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
         ]);
@@ -95,7 +96,7 @@ class JoinRequestTest extends TestCase
         $owner = $this->createStudent();
         $applicant1 = $this->createStudent();
         $applicant2 = $this->createStudent();
-        
+
         // Project with exactly 1 opening
         $project = $this->createProject($owner, slots: 1);
 
@@ -141,6 +142,7 @@ class JoinRequestTest extends TestCase
         $response = $this->actingAs($stranger)->patch(route('join-requests.accept', $request));
         $response->assertForbidden();
     }
+
     public function test_student_can_view_their_submitted_applications(): void
     {
         $owner = $this->createStudent();
@@ -157,7 +159,7 @@ class JoinRequestTest extends TestCase
         $response = $this->actingAs($applicant)->get(route('applications.index'));
 
         $response->assertOk();
-        $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        $response->assertInertia(fn (AssertableInertia $page) => $page
             ->component('Applications/Index')
             ->has('applications', 1)
             ->where('applications.0.project.title', $project->title)
@@ -181,7 +183,7 @@ class JoinRequestTest extends TestCase
         $response = $this->actingAs($owner)->get(route('projects.requests', $project));
 
         $response->assertOk();
-        $response->assertInertia(fn (\Inertia\Testing\AssertableInertia $page) => $page
+        $response->assertInertia(fn (AssertableInertia $page) => $page
             ->component('Projects/Requests')
             ->has('requests', 1)
             ->where('requests.0.id', $request->id)

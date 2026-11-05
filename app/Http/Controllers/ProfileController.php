@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Department;
 use App\Models\Skill;
+use App\Support\SkillResolver;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $finalSkillIds = \App\Support\SkillResolver::resolve(
+        $finalSkillIds = SkillResolver::resolve(
             $request->validated('skill_ids', []),
             $request->validated('new_skills', []),
             $user,

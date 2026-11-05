@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Enums\ProjectCategory;
+use App\Support\SkillResolver;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreProjectRequest extends FormRequest
 {
@@ -27,7 +28,7 @@ class StoreProjectRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:120'],
             'description' => ['required', 'string', 'max:5000'],
-            'category' => ['required', new \Illuminate\Validation\Rules\Enum(\App\Enums\ProjectCategory::class)],
+            'category' => ['required', new Enum(ProjectCategory::class)],
             'department_id' => ['required', 'exists:departments,id'],
             'slots_total' => ['required', 'integer', 'between:1,20'],
             'hours_per_week' => ['required', 'integer', 'between:1,40'],
@@ -37,7 +38,7 @@ class StoreProjectRequest extends FormRequest
             'skill_ids' => ['nullable', 'array', 'max:10'],
             'skill_ids.*' => ['integer', 'distinct', 'exists:skills,id'],
             'new_skills' => ['nullable', 'array', 'max:3'],
-            'new_skills.*' => ['string', 'min:2', 'max:40', 'regex:' . \App\Support\SkillResolver::SKILL_NAME_REGEX],
+            'new_skills.*' => ['string', 'min:2', 'max:40', 'regex:'.SkillResolver::SKILL_NAME_REGEX],
         ];
     }
 }

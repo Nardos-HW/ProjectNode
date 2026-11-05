@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\JoinRequest;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -64,17 +65,17 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function ownedProjects(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function ownedProjects(): HasMany
     {
         return $this->hasMany(Project::class, 'owner_id');
     }
 
-    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function skills(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class);
     }
@@ -83,11 +84,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->profile_completed_at !== null;
     }
+
     public function joinRequests(): HasMany
     {
         return $this->hasMany(JoinRequest::class, 'applicant_id');
     }
-    public function moderationActions(): \Illuminate\Database\Eloquent\Relations\HasMany
+
+    public function moderationActions(): HasMany
     {
         return $this->hasMany(ModerationAction::class, 'admin_id');
     }
@@ -96,12 +99,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->suspended_at !== null;
     }
-    public function participations(): \Illuminate\Database\Eloquent\Relations\HasMany
+
+    public function participations(): HasMany
     {
         return $this->hasMany(ProjectParticipant::class);
     }
 
-    public function conversations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class, 'owner_id');
     }

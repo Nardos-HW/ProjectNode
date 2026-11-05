@@ -12,12 +12,12 @@ class AllowedUniversityEmailTest extends TestCase
     {
         Config::set('projectnode.allowed_email_domains', ['aau.edu.et']);
 
-        $rule = new AllowedUniversityEmail();
+        $rule = new AllowedUniversityEmail;
 
         $validEmails = [
             'abebe@aau.edu.et',
             'abebe.kebede@aau.edu.et',
-            'student@AAU.EDU.ET', 
+            'student@AAU.EDU.ET',
         ];
 
         foreach ($validEmails as $email) {

@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Middleware\EnsureProfileIsComplete;
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\EnsureUserIsNotSuspended;
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,15 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-            \App\Http\Middleware\EnsureUserIsNotSuspended::class,
+            HandleInertiaRequests::class,
+            AddLinkHeadersForPreloadedAssets::class,
+            EnsureUserIsNotSuspended::class,
         ]);
 
         $middleware->alias([
-            'profile.complete' => \App\Http\Middleware\EnsureProfileIsComplete::class,
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'not.suspended' => \App\Http\Middleware\EnsureUserIsNotSuspended::class,
+            'profile.complete' => EnsureProfileIsComplete::class,
+            'admin' => EnsureUserIsAdmin::class,
+            'not.suspended' => EnsureUserIsNotSuspended::class,
         ]);
     })
 

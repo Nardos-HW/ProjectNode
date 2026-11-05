@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
+use App\Models\JoinRequest;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -16,7 +19,7 @@ class ProjectTest extends TestCase
     private function createVerifiedUser(): User
     {
         return User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
         ]);
     }
@@ -89,11 +92,11 @@ class ProjectTest extends TestCase
         $applicant = $this->createVerifiedUser();
         $project = $this->createSampleProject($owner);
 
-        \App\Models\JoinRequest::create([
+        JoinRequest::create([
             'project_id' => $project->id,
             'applicant_id' => $applicant->id,
             'message' => 'Applying to collaborate on project.',
-            'status' => \App\Enums\JoinRequestStatus::Accepted,
+            'status' => JoinRequestStatus::Accepted,
             'decided_at' => now(),
         ]);
 
@@ -136,11 +139,11 @@ class ProjectTest extends TestCase
         $applicant = $this->createVerifiedUser();
         $project = $this->createSampleProject($owner);
 
-        \App\Models\JoinRequest::create([
+        JoinRequest::create([
             'project_id' => $project->id,
             'applicant_id' => $applicant->id,
             'message' => 'Accepted team member.',
-            'status' => \App\Enums\JoinRequestStatus::Accepted,
+            'status' => JoinRequestStatus::Accepted,
             'decided_at' => now(),
         ]);
 
@@ -148,7 +151,7 @@ class ProjectTest extends TestCase
 
         $response->assertSessionHasErrors('message');
         $this->assertNotSoftDeleted($project);
-        $this->assertFalse(\Illuminate\Support\Facades\Gate::forUser($owner)->allows('delete', $project));
+        $this->assertFalse(Gate::forUser($owner)->allows('delete', $project));
     }
 
     public function test_feed_pagination_provides_null_urls_for_disabled_links(): void

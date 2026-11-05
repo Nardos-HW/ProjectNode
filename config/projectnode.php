@@ -7,4 +7,3 @@ return [
     ))),
     'feed_page_size' => 12,
 ];
-

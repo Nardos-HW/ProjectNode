@@ -17,7 +17,7 @@ class CustomSkillsTest extends TestCase
 
     public function test_skill_normalizes_and_deduplicates_by_name_key(): void
     {
-        $user = User::factory()->create(['email' => 'student' . uniqid() . '@aau.edu.et']);
+        $user = User::factory()->create(['email' => 'student'.uniqid().'@aau.edu.et']);
 
         $skill1 = Skill::findOrCreateByName('React JS', $user);
         $skill2 = Skill::findOrCreateByName('reactjs', $user);
@@ -30,7 +30,7 @@ class CustomSkillsTest extends TestCase
 
     public function test_symbols_in_skills_coexist_distinctly(): void
     {
-        $user = User::factory()->create(['email' => 'student' . uniqid() . '@aau.edu.et']);
+        $user = User::factory()->create(['email' => 'student'.uniqid().'@aau.edu.et']);
 
         $c = Skill::findOrCreateByName('C', $user);
         $cpp = Skill::findOrCreateByName('C++', $user);
@@ -45,7 +45,7 @@ class CustomSkillsTest extends TestCase
 
     public function test_resolver_rejects_more_than_three_new_skills_per_submission(): void
     {
-        $user = User::factory()->create(['email' => 'student' . uniqid() . '@aau.edu.et']);
+        $user = User::factory()->create(['email' => 'student'.uniqid().'@aau.edu.et']);
 
         $this->expectException(ValidationException::class);
 
@@ -54,7 +54,7 @@ class CustomSkillsTest extends TestCase
 
     public function test_resolver_enforces_maximum_total_skill_limits(): void
     {
-        $user = User::factory()->create(['email' => 'student' . uniqid() . '@aau.edu.et']);
+        $user = User::factory()->create(['email' => 'student'.uniqid().'@aau.edu.et']);
         $existing = Skill::create(['name' => 'Skill1', 'slug' => 'skill1', 'name_key' => 'skill1']);
 
         $this->expectException(ValidationException::class);
@@ -67,7 +67,7 @@ class CustomSkillsTest extends TestCase
     {
         $department = Department::create(['name' => 'Computer Science']);
         $user = User::factory()->create([
-            'email' => 'creator' . uniqid() . '@aau.edu.et',
+            'email' => 'creator'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
             'telegram_handle' => 'creator_tg',

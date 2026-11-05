@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectStatus;
 use App\Http\Requests\StoreJoinRequestRequest;
+use App\Models\Conversation;
 use App\Models\JoinRequest;
 use App\Models\Project;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -93,12 +94,13 @@ class JoinRequestController extends Controller
             $project = Project::whereKey($joinRequest->project_id)->lockForUpdate()->firstOrFail();
             $requestModel = JoinRequest::whereKey($joinRequest->id)->lockForUpdate()->firstOrFail();
 
-            $statusValue = $requestModel->status instanceof JoinRequestStatus 
-                ? $requestModel->status->value 
+            $statusValue = $requestModel->status instanceof JoinRequestStatus
+                ? $requestModel->status->value
                 : $requestModel->status;
 
             if ($statusValue !== JoinRequestStatus::Pending->value) {
                 $errorMessage = 'This request has already been decided.';
+
                 return;
             }
 
@@ -108,12 +110,14 @@ class JoinRequestController extends Controller
 
             if (! in_array($projectStatusValue, ['open', 'in_progress'], true)) {
                 $errorMessage = 'This project is no longer active.';
+
                 return;
             }
 
             $acceptedCount = $project->acceptedRequests()->count();
             if ($acceptedCount >= $project->slots_total) {
                 $errorMessage = 'Cannot accept applicant: project has reached full capacity.';
+
                 return;
             }
 
@@ -132,7 +136,7 @@ class JoinRequestController extends Controller
             );
 
             // Record conversation
-            \App\Models\Conversation::firstOrCreate(
+            Conversation::firstOrCreate(
                 ['join_request_id' => $requestModel->id],
                 [
                     'project_id' => $project->id,
@@ -148,7 +152,7 @@ class JoinRequestController extends Controller
 
         return back()->with('success', 'Applicant accepted into project.');
     }
-    
+
     /**
      * Reject a pending join request.
      */

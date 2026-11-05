@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
 use App\Enums\ProjectStatus;
-use App\Models\JoinRequest;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
 use App\Models\User;
@@ -19,7 +17,7 @@ class ProjectCompletionTest extends TestCase
     private function createStudent(): User
     {
         return User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
         ]);

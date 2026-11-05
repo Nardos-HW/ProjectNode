@@ -17,12 +17,12 @@ class ModerationActionTest extends TestCase
     public function test_moderation_action_records_admin_target_and_reason(): void
     {
         $admin = User::factory()->create([
-            'email' => 'admin' . uniqid() . '@aau.edu.et',
+            'email' => 'admin'.uniqid().'@aau.edu.et',
             'role' => 'admin',
         ]);
 
         $student = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'role' => 'student',
         ]);
 
@@ -50,12 +50,12 @@ class ModerationActionTest extends TestCase
     public function test_moderation_action_resolves_soft_deleted_project_target(): void
     {
         $admin = User::factory()->create([
-            'email' => 'admin' . uniqid() . '@aau.edu.et',
+            'email' => 'admin'.uniqid().'@aau.edu.et',
             'role' => 'admin',
         ]);
 
         $owner = User::factory()->create([
-            'email' => 'owner' . uniqid() . '@aau.edu.et',
+            'email' => 'owner'.uniqid().'@aau.edu.et',
         ]);
 
         $department = Department::create(['name' => 'Computer Science']);

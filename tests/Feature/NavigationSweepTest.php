@@ -40,7 +40,7 @@ class NavigationSweepTest extends TestCase
 
         $this->assertEmpty(
             $missingRoutes,
-            "The following frontend route() calls do not exist in Laravel's route collection:\n" . implode("\n", $missingRoutes)
+            "The following frontend route() calls do not exist in Laravel's route collection:\n".implode("\n", $missingRoutes)
         );
     }
 }

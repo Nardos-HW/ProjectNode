@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
-use App\Enums\ProjectStatus;
 use App\Models\Conversation;
 use App\Models\JoinRequest;
 use App\Models\Message;
@@ -22,10 +21,10 @@ class ChatTest extends TestCase
     private function createStudent(array $attributes = []): User
     {
         return User::factory()->create(array_merge([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
-            'telegram_handle' => 'tg_' . uniqid(),
+            'telegram_handle' => 'tg_'.uniqid(),
         ], $attributes));
     }
 
@@ -369,7 +368,7 @@ class ChatTest extends TestCase
 
         // 5. Database check constraint prevents empty body on direct insert
         $this->expectException(QueryException::class);
-        DB::statement("INSERT INTO messages (conversation_id, sender_id, body, created_at, updated_at) VALUES (?, ?, ?, now(), now())", [
+        DB::statement('INSERT INTO messages (conversation_id, sender_id, body, created_at, updated_at) VALUES (?, ?, ?, now(), now())', [
             $conversation->id,
             $owner->id,
             '',

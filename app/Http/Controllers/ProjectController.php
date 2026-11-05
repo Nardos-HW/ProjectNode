@@ -9,6 +9,7 @@ use App\Http\Requests\ProjectIndexRequest;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Department;
+use App\Models\JoinRequest;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Support\SkillResolver;
@@ -212,7 +213,7 @@ class ProjectController extends Controller
                 'delete' => Gate::allows('delete', $project),
                 'complete' => Gate::allows('complete', $project),
                 'viewContact' => Gate::allows('viewContact', $project),
-                'manageRequests' => Gate::allows('viewAny', [\App\Models\JoinRequest::class, $project]),
+                'manageRequests' => Gate::allows('viewAny', [JoinRequest::class, $project]),
                 'apply' => $user && $user->id !== $project->owner_id && ! $existingRequest && $project->isRecruiting(),
             ],
         ]);

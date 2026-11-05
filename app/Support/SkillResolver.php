@@ -13,8 +13,9 @@ class SkillResolver
     /**
      * Resolve existing IDs and new custom names into an array of unique skill IDs.
      *
-     * @param array<int> $skillIds
-     * @param array<string> $newNames
+     * @param  array<int>  $skillIds
+     * @param  array<string>  $newNames
+     *
      * @throws ValidationException
      */
     public static function resolve(array $skillIds, array $newNames, User $by, int $max): array

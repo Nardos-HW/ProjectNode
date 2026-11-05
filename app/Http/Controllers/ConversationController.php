@@ -98,8 +98,8 @@ class ConversationController extends Controller
         $count = Message::whereHas('conversation', function ($q) use ($user) {
             $q->forUser($user)->whereHas('project');
         })->where('sender_id', '!=', $user->id)
-          ->whereNull('read_at')
-          ->count();
+            ->whereNull('read_at')
+            ->count();
 
         return response()->json(['count' => $count]);
     }

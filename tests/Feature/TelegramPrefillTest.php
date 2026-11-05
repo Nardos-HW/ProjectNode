@@ -17,7 +17,7 @@ class TelegramPrefillTest extends TestCase
     public function test_project_create_page_receives_user_telegram_handle_as_default(): void
     {
         $user = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
             'telegram_handle' => 'profile_handle',
@@ -38,7 +38,7 @@ class TelegramPrefillTest extends TestCase
         $skill = Skill::create(['name' => 'React', 'slug' => 'react']);
 
         $user = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
             'telegram_handle' => 'original_profile_handle',

@@ -11,6 +11,7 @@ class CompleteProjectRequest extends FormRequest
     public function authorize(): bool
     {
         $project = $this->route('project');
+
         return $project instanceof Project && $this->user()->can('complete', $project);
     }
 

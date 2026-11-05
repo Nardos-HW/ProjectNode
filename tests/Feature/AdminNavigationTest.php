@@ -13,7 +13,7 @@ class AdminNavigationTest extends TestCase
     public function test_student_cannot_access_any_admin_page(): void
     {
         $student = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'role' => 'student',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
@@ -27,7 +27,7 @@ class AdminNavigationTest extends TestCase
     public function test_admin_can_access_all_admin_pages(): void
     {
         $admin = User::factory()->create([
-            'email' => 'admin' . uniqid() . '@aau.edu.et',
+            'email' => 'admin'.uniqid().'@aau.edu.et',
             'role' => 'admin',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),

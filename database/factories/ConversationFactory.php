@@ -56,4 +56,3 @@ class ConversationFactory extends Factory
         ];
     }
 }
-

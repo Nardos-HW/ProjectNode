@@ -19,7 +19,7 @@ class ProfileSkillsTest extends TestCase
         $existingSkill = Skill::create(['name' => 'Laravel', 'slug' => 'laravel', 'name_key' => 'laravel']);
 
         $user = User::factory()->create([
-            'email' => 'student' . uniqid() . '@aau.edu.et',
+            'email' => 'student'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'department_id' => $department->id,
             'year_of_study' => 3,
@@ -55,7 +55,7 @@ class ProfileSkillsTest extends TestCase
         $skill = Skill::create(['name' => 'Docker', 'slug' => 'docker', 'name_key' => 'docker']);
 
         $subject = User::factory()->create([
-            'email' => 'subject' . uniqid() . '@aau.edu.et',
+            'email' => 'subject'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'department_id' => $department->id,
             'year_of_study' => 3,
@@ -67,7 +67,7 @@ class ProfileSkillsTest extends TestCase
         $subject->skills()->sync([$skill->id]);
 
         $viewer = User::factory()->create([
-            'email' => 'viewer' . uniqid() . '@aau.edu.et',
+            'email' => 'viewer'.uniqid().'@aau.edu.et',
             'email_verified_at' => now(),
             'profile_completed_at' => now(),
         ]);

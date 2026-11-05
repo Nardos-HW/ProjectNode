@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Enums\JoinRequestStatus;
 use App\Enums\ProjectCategory;
 use App\Models\Department;
+use App\Models\JoinRequest;
 use App\Models\Project;
+use App\Models\ProjectParticipant;
 use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
-use App\Models\ProjectParticipant;
-use App\Models\JoinRequest;
-use App\Enums\JoinRequestStatus;
 
 class DemoSeeder extends Seeder
 {
@@ -23,11 +24,11 @@ class DemoSeeder extends Seeder
         $is = Department::firstOrCreate(['name' => 'Information Systems']);
         $ee = Department::firstOrCreate(['name' => 'Electrical Engineering']);
         // Create Admin user
-        \App\Models\User::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'admin@aau.edu.et'],
             [
                 'name' => 'Campus Administrator',
-                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'password' => Hash::make('password'),
                 'role' => 'admin',
                 'department_id' => $departments->first()->id,
                 'year_of_study' => 5,
@@ -44,13 +45,13 @@ class DemoSeeder extends Seeder
                 ->first() ?? Skill::create(['name' => $name, 'slug' => $slug]);
         };
 
-        $laravel  = $findSkill('Laravel', 'laravel');
-        $react    = $findSkill('React', 'react');
-        $python   = $findSkill('Python', 'python');
-        $uiux     = $findSkill('UI/UX Design', 'ui-ux-design');
+        $laravel = $findSkill('Laravel', 'laravel');
+        $react = $findSkill('React', 'react');
+        $python = $findSkill('Python', 'python');
+        $uiux = $findSkill('UI/UX Design', 'ui-ux-design');
         $postgres = $findSkill('PostgreSQL', 'postgresql');
         $tailwind = $findSkill('Tailwind CSS', 'tailwind-css');
-        $fastapi  = $findSkill('FastAPI', 'fastapi');
+        $fastapi = $findSkill('FastAPI', 'fastapi');
 
         // 2. Demo Student 1: Abebe Kebede (Owner)
         $abebe = User::updateOrCreate(
@@ -223,6 +224,6 @@ class DemoSeeder extends Seeder
         }
 
         // Backfill conversations for all accepted requests
-        \Illuminate\Support\Facades\Artisan::call('projectnode:backfill-conversations');
+        Artisan::call('projectnode:backfill-conversations');
     }
 }

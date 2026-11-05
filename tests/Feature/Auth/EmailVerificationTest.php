@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Mail\DiagnosticTestMail;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -148,7 +149,7 @@ class EmailVerificationTest extends TestCase
             ['id' => $user->id, 'hash' => sha1($user->email)]
         );
 
-        $tamperedUrl = $verificationUrl . '&extra=tampered';
+        $tamperedUrl = $verificationUrl.'&extra=tampered';
 
         $response = $this->actingAs($user)->get($tamperedUrl);
 
@@ -201,7 +202,7 @@ class EmailVerificationTest extends TestCase
             ->expectsOutput('Success! Test email successfully sent to [test@example.com].')
             ->assertSuccessful();
 
-        Mail::assertSent(\App\Mail\DiagnosticTestMail::class, function ($mail) {
+        Mail::assertSent(DiagnosticTestMail::class, function ($mail) {
             return $mail->hasTo('test@example.com');
         });
     }

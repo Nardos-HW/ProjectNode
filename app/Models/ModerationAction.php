@@ -35,7 +35,7 @@ class ModerationAction extends Model
     /**
      * Resolve the polymorphic moderation target including soft-deleted entities.
      */
-    public function getTargetAttribute(): Model|null
+    public function getTargetAttribute(): ?Model
     {
         return match ($this->target_type) {
             'user' => User::find($this->target_id),
